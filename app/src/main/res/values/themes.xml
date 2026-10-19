@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Papyrus from the first frame, so the launch never flashes white. -->
+    <style name="Theme.Pentalingo" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:windowBackground">@color/papyrus</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+    </style>
+</resources>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- An ankh in Egyptian blue on a gold disc: life, in the colours of a painted tomb. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path
+        android:fillColor="#FFA9780E"
+        android:pathData="M54,54m-31,0a31,31 0,1 1,62 0a31,31 0,1 1,-62 0" />
+    <path
+        android:fillColor="#FFDDAA2E"
+        android:pathData="M54,54m-28,0a28,28 0,1 1,56 0a28,28 0,1 1,-56 0" />
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#FF2154A6"
+        android:strokeWidth="5.5"
+        android:pathData="M54,27 C47.5,27 44.5,33.5 44.5,39 C44.5,45.5 49.5,50 54,51.5 C58.5,50 63.5,45.5 63.5,39 C63.5,33.5 60.5,27 54,27 Z" />
+    <path
+        android:fillColor="#FF2154A6"
+        android:pathData="M38,50.5 L70,50.5 L70,57 L38,57 Z" />
+    <path
+        android:fillColor="#FF2154A6"
+        android:pathData="M50.8,55 L57.2,55 L59.5,81 L48.5,81 Z" />
+</vector>
