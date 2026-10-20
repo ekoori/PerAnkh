@@ -42,6 +42,7 @@ import androidx.compose.ui.unit.dp
 import com.krbavcic.pentalingo.core.ui.GoldBar
 import com.krbavcic.pentalingo.core.ui.IconKind
 import com.krbavcic.pentalingo.core.ui.PaintButton
+import com.krbavcic.pentalingo.core.ui.ReportFlag
 import com.krbavcic.pentalingo.core.ui.Palette
 import com.krbavcic.pentalingo.core.ui.RoundIconButton
 import com.krbavcic.pentalingo.core.ui.Scrim
@@ -86,7 +87,7 @@ fun LessonScreen(
     onLeave: (SessionResult) -> Unit,
     onFinish: (SessionResult) -> Unit,
     modifier: Modifier = Modifier,
-    /** Debug builds only: a button that answers correctly, for testing later material. */
+    /** Tester mode: a button that answers correctly, for getting through a lesson quickly. */
     debugSolve: Boolean = false,
 ) {
     val voice = rememberVoice()
@@ -169,6 +170,10 @@ fun LessonScreen(
                         color = Palette.ochreLight,
                     )
                 }
+                ReportFlag(
+                    context = { lessonReport(session, exercise, verdict, pending, step, voice) },
+                    modifier = Modifier.padding(start = 10.dp),
+                )
             }
 
             val current = exercise

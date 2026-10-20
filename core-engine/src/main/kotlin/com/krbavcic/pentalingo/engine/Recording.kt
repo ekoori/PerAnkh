@@ -107,6 +107,7 @@ object Awards {
                 progress.memories.values.count { it.everLapsed && it.stability >= Memory.KNOWN_DAYS * 3 },
                 r.count,
             )
+            is Requirement.Coverage -> AwardProgress((k.coverage() * 100).toInt(), r.percent)
             is Requirement.ClearedReview -> {
                 val known = progress.memories.values.count { it.stability >= Memory.KNOWN_DAYS }
                 AwardProgress(if (known >= r.minKnown && k.fadingCount() == 0) 1 else 0, 1)

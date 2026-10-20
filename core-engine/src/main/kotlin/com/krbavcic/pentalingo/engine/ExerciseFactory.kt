@@ -9,6 +9,7 @@ import com.krbavcic.pentalingo.model.SignItem
 import com.krbavcic.pentalingo.model.SignRole
 import com.krbavcic.pentalingo.model.WordItem
 import com.krbavcic.pentalingo.script.Mdc
+import com.krbavcic.pentalingo.script.Pronounce
 import com.krbavcic.pentalingo.script.Translit
 import kotlin.math.max
 import kotlin.random.Random
@@ -61,12 +62,12 @@ class ExerciseFactory(
                 }
                 2 -> listOfNotNull(
                     ExerciseKind.SOUND_TO_SIGN,
-                    ExerciseKind.LISTEN_TO_SIGN.takeIf { item.say != null },
+                    ExerciseKind.LISTEN_TO_SIGN.takeIf { item.spoken != null },
                 )
                 else -> listOfNotNull(
                     ExerciseKind.SOUND_TO_SIGN,
                     ExerciseKind.SIGN_TO_SOUND,
-                    ExerciseKind.LISTEN_TO_SIGN.takeIf { item.say != null },
+                    ExerciseKind.LISTEN_TO_SIGN.takeIf { item.spoken != null },
                 )
             }
         }
@@ -187,6 +188,14 @@ class ExerciseFactory(
 
     private fun soundKey(s: String) = Translit.normalize(s)
 
+    /** What a sign's clip says, as sound: z and s are one sound by this period. */
+    private fun voiceOf(sign: SignItem): String? {
+        val spoken = sign.spoken ?: return null
+        return if (sign.role == SignRole.UNILITERAL) Pronounce.letterIpa(spoken) else Pronounce.ipa(spoken)
+    }
+
+    private fun soundsAlike(a: SignItem, b: SignItem): Boolean = voiceOf(a) != null && voiceOf(a) == voiceOf(b)
+
     private fun signToSound(sign: SignItem, hard: Boolean): MultipleChoice? {
         val answer = sign.sounds.firstOrNull() ?: return null
         val taken = mutableSetOf(soundKey(answer))
@@ -292,12 +301,12 @@ class ExerciseFactory(
 
     private fun soundToSign(sign: SignItem, hard: Boolean, listen: Boolean): MultipleChoice? {
         val answer = sign.sounds.firstOrNull() ?: return null
-        if (listen && sign.say == null) return null
+        if (listen && sign.spoken == null) return null
         // Conventional pronunciation merges some letters — h and ḥ are both "heh" — so when the
         // question is only a sound, a sign that sounds the same cannot be a wrong answer.
         val pool = phonograms.filter { other ->
             other.id != sign.id && other.sounds.none { soundKey(it) in sign.sounds.map(::soundKey) } &&
-                !(listen && other.say != null && other.say == sign.say)
+                !(listen && soundsAlike(other, sign))
         }
         val size = Translit.letters(answer).size
         val distractors = pick(pool, 3) { other ->
@@ -465,7 +474,7 @@ class ExerciseFactory(
 
     private fun listenToWord(word: WordItem, hard: Boolean): MultipleChoice? {
         // Homophones are indistinguishable by ear: kꜣ "ka" and kꜣ "ox" cannot be told apart here.
-        val distractors = distinctWords(word, hard, exclude = { it.say == word.say }) { it.mdc }
+        val distractors = distinctWords(word, hard, exclude = { Pronounce.ipa(it.translit) == Pronounce.ipa(word.translit) }) { it.mdc }
         if (distractors.size < 3) return null
         val (choices, correct) = shuffleWithAnswer(
             Choice(mdc = word.mdc, itemId = word.id),

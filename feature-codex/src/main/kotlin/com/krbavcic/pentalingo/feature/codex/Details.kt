@@ -30,10 +30,12 @@ import com.krbavcic.pentalingo.core.ui.Chip
 import com.krbavcic.pentalingo.core.ui.Glyphs
 import com.krbavcic.pentalingo.core.ui.IconKind
 import com.krbavcic.pentalingo.core.ui.Palette
+import com.krbavcic.pentalingo.core.ui.ReportFlag
 import com.krbavcic.pentalingo.core.ui.RoundIconButton
 import com.krbavcic.pentalingo.core.ui.Rubric
 import com.krbavcic.pentalingo.core.ui.Type
 import com.krbavcic.pentalingo.core.ui.Voice
+import com.krbavcic.pentalingo.core.ui.describeItem
 import com.krbavcic.pentalingo.engine.Awards
 import com.krbavcic.pentalingo.engine.Knowledge
 import com.krbavcic.pentalingo.engine.Numerals
@@ -43,6 +45,7 @@ import com.krbavcic.pentalingo.model.SignItem
 import com.krbavcic.pentalingo.model.SignRole
 import com.krbavcic.pentalingo.model.WordItem
 import com.krbavcic.pentalingo.script.Mdc
+import com.krbavcic.pentalingo.script.Pronounce
 import com.krbavcic.pentalingo.script.Translit
 import kotlin.math.roundToInt
 
@@ -82,6 +85,13 @@ private fun MemoryLine(k: Knowledge, id: String) {
     if (m.stability >= Memory.MASTERED_DAYS) Chip("Mastered", color = Palette.gold, textColor = Palette.ink)
 }
 
+/** How common a word is in real texts, from its count in 10,000 words. */
+private fun frequencyLine(perTenThousand: Double): String = when {
+    perTenThousand >= 10 -> "In real texts: about 1 word in ${(10_000 / perTenThousand).roundToInt()}"
+    perTenThousand >= 1 -> "In real texts: about ${perTenThousand.roundToInt()} in every 10,000 words"
+    else -> "Rare in the texts counted: fewer than 1 in 10,000 words"
+}
+
 @Composable
 fun SignDetail(k: Knowledge, sign: SignItem, voice: Voice) {
     val course = k.course
@@ -104,6 +114,7 @@ fun SignDetail(k: Knowledge, sign: SignItem, voice: Voice) {
                 }
             }
             if (voice.has(sign.id)) RoundIconButton(IconKind.SPEAKER, { voice.play(sign.id) }, description = "Hear it")
+            ReportFlag({ mapOf("screen" to "codex") + describeItem(course, sign.id, voice) }, Modifier.padding(start = 8.dp))
         }
         MemoryLine(k, sign.id)
         sign.meaning?.let { Text(if (sign.role == SignRole.DETERMINATIVE) "Marks: $it" else "Means: $it", style = Type.heading) }
@@ -132,11 +143,13 @@ fun WordDetail(k: Knowledge, word: WordItem, voice: Voice) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Column(Modifier.weight(1f)) {
                 Text(word.gloss.replaceFirstChar { it.uppercase() }, style = Type.title)
-                Text("${Translit.display(word.translit)} · said “${word.say}”", style = Type.translit)
+                Text("${Translit.display(word.translit)} · said “${Pronounce.latin(word.translit)}”", style = Type.translit)
             }
             if (voice.has(word.id)) RoundIconButton(IconKind.SPEAKER, { voice.play(word.id) }, description = "Hear it")
+            ReportFlag({ mapOf("screen" to "codex") + describeItem(course, word.id, voice) }, Modifier.padding(start = 8.dp))
         }
         MemoryLine(k, word.id)
+        course.frequency[word.id]?.let { Text(frequencyLine(it), style = Type.small) }
         Rubric("Sign by sign")
         for (code in Mdc.parse(word.mdc).signs.distinct()) {
             val s = course.signFor(code)

@@ -48,6 +48,7 @@ import com.krbavcic.pentalingo.model.SignItem
 import com.krbavcic.pentalingo.model.SignRole
 import com.krbavcic.pentalingo.model.WordItem
 import com.krbavcic.pentalingo.script.Mdc
+import com.krbavcic.pentalingo.script.Pronounce
 import com.krbavcic.pentalingo.script.Translit
 
 /** A teaching card: everything worth knowing about one new thing, before it is ever asked. */
@@ -89,11 +90,11 @@ private fun Framed(content: @Composable () -> Unit) {
 }
 
 @Composable
-private fun SoundLine(translit: String?, say: String?, id: String, voice: Voice) {
+private fun SoundLine(translit: String?, said: String?, id: String, voice: Voice) {
     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(14.dp)) {
         Column(Modifier.weight(1f)) {
             translit?.let { Text(Translit.display(it), style = Type.translit.copy(fontSize = 30.sp, lineHeight = 36.sp)) }
-            say?.let { Text("said “$it”", style = Type.bodySoft) }
+            said?.let { Text("said “$it”", style = Type.bodySoft) }
         }
         if (voice.has(id)) {
             RoundIconButton(IconKind.SPEAKER, { voice.play(id) }, description = "Hear it")
@@ -116,9 +117,14 @@ private fun SignCard(sign: SignItem, voice: Voice, firstTime: Boolean) {
     when {
         sign.role == SignRole.NUMERAL -> {
             Text(Numerals.valueOf(sign.code)?.let(Numerals::format).orEmpty(), style = Type.display.copy(fontSize = 40.sp))
-            SoundLine(null, sign.say, sign.id, voice)
+            SoundLine(sign.reading, sign.reading?.let(Pronounce::latin), sign.id, voice)
         }
-        sign.sounds.isNotEmpty() -> SoundLine(sign.sounds.joinToString(" / "), sign.say, sign.id, voice)
+        sign.sounds.isNotEmpty() -> SoundLine(
+            sign.sounds.joinToString(" / "),
+            if (sign.role == SignRole.UNILITERAL) Pronounce.letterLatin(sign.sounds[0]) else Pronounce.latin(sign.sounds[0]),
+            sign.id,
+            voice,
+        )
     }
     sign.meaning?.let {
         if (sign.role != SignRole.NUMERAL) Text(
@@ -168,7 +174,7 @@ private fun WordCard(word: WordItem, course: Course, voice: Voice, firstTime: Bo
         Glyphs(word.mdc, quadrat = 84.dp, color = { s -> course.signFor(s.glyph.code)?.let { Palette.paint(it.paint) } ?: Palette.ink })
     }
     Text(word.gloss.replaceFirstChar { it.uppercase() }, style = Type.display)
-    SoundLine(word.translit, word.say, word.id, voice)
+    SoundLine(word.translit, Pronounce.latin(word.translit), word.id, voice)
     Breakdown(word.mdc, course)
     word.note?.let { Text(Translit.display(it), style = Type.bodySoft.copy(fontStyle = FontStyle.Italic)) }
 }
@@ -211,7 +217,7 @@ private fun PhraseCard(phrase: PhraseItem, course: Course, voice: Voice) {
     Rubric("New phrase")
     Framed { Interlinear(phrase, voice, course) }
     Text(phrase.translation.replaceFirstChar { it.uppercase() }, style = Type.title)
-    SoundLine(phrase.translit, phrase.say, phrase.id, voice)
+    SoundLine(phrase.translit, Pronounce.latin(phrase.translit), phrase.id, voice)
     phrase.literal?.let { Text("Word for word: $it", style = Type.bodySoft.copy(fontStyle = FontStyle.Italic)) }
     phrase.note?.let { Text(Translit.display(it), style = Type.body) }
     Text("Tap a word to hear it alone.", style = Type.small)

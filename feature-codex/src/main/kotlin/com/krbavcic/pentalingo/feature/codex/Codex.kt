@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -84,6 +85,7 @@ fun CodexScreen(
                     "Paint fades as memory does — review brings it back.",
                 style = Type.small,
             )
+            if (course.frequency.isNotEmpty()) CoverageLine(knowledge)
             Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                 ShelfTab("Signs", shelf == Shelf.SIGNS, Modifier.weight(1f)) { shelf = Shelf.SIGNS }
                 ShelfTab("Words", shelf == Shelf.WORDS, Modifier.weight(1f)) { shelf = Shelf.WORDS }
@@ -94,6 +96,52 @@ fun CodexScreen(
             Shelf.WORDS -> WordShelf(knowledge, course, onWord)
         }
     }
+}
+
+/**
+ * How much of a real page the learner's words fill: progress told in terms that mean something
+ * outside the app, from word frequencies counted in Middle Kingdom texts.
+ */
+@Composable
+private fun CoverageLine(k: Knowledge) {
+    val known = k.coverage()
+    val settling = k.coverage(k::isIntroduced) - known
+    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text("Words you know fill ${percent(known)} of a real page", style = Type.heading, modifier = Modifier.weight(1f))
+        }
+        PageBar(known, settling)
+        Text(
+            buildString {
+                append("Counted in 26,000 words of Middle Kingdom texts")
+                if (settling >= 0.001) append("; another ${percent(settling)} is still settling in")
+                append(". The whole course reaches ${percent(k.fullCoverage)}.")
+            },
+            style = Type.small,
+        )
+    }
+}
+
+/** A page's worth of text: gold for words known, pale gold for words still settling in. */
+@Composable
+private fun PageBar(known: Double, settling: Double) {
+    val shape = RoundedCornerShape(50)
+    Box(
+        Modifier
+            .fillMaxWidth()
+            .height(10.dp)
+            .clip(shape)
+            .background(Palette.sheetDeep)
+            .border(1.dp, Palette.edge.copy(alpha = 0.6f), shape),
+    ) {
+        Box(Modifier.fillMaxHeight().fillMaxWidth((known + settling).toFloat().coerceIn(0f, 1f)).clip(shape).background(Palette.goldLight))
+        Box(Modifier.fillMaxHeight().fillMaxWidth(known.toFloat().coerceIn(0f, 1f)).clip(shape).background(Palette.gold))
+    }
+}
+
+internal fun percent(fraction: Double): String {
+    val p = fraction * 100
+    return if (p > 0 && p < 1) "%.1f%%".format(p) else "${Math.round(p)}%"
 }
 
 @Composable

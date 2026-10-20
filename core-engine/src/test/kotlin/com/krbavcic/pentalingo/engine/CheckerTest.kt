@@ -64,7 +64,7 @@ class ReadsInOrderTest {
         // jt "father" keeps a fossil f from older jtf: sounded out it gives jtf, so it is excluded.
         org.junit.Assert.assertFalse(readsInOrder(c, c.require("w:jt") as com.krbavcic.pentalingo.model.WordItem))
         val transposed = com.krbavcic.pentalingo.model.WordItem(
-            "w:x", "ptm", "G17-Q3:X1", "test", com.krbavcic.pentalingo.model.Pos.NAME, "x",
+            "w:x", "ptm", "G17-Q3:X1", "test", com.krbavcic.pentalingo.model.Pos.NAME,
         )
         org.junit.Assert.assertFalse(readsInOrder(c, transposed))
     }
@@ -73,15 +73,15 @@ class ReadsInOrderTest {
 class ListeningTest {
     @Test
     fun `a listening question never offers a sign that sounds the same`() {
-        // In the fixture h and ḥ are both voiced "he": by ear they are one sound.
+        // z and s merged in Middle Egyptian: their clips are the same sound.
         val course = Fixture.course
         val progress = com.krbavcic.pentalingo.model.Progress()
         val k = Knowledge(course, progress, 0L)
         repeat(60) { seed ->
             val factory = ExerciseFactory(course, k, kotlin.random.Random(seed)) { course.items.map { it.id }.toSet() }
-            val ex = factory.build(course.require("s:V28"), ExerciseKind.LISTEN_TO_SIGN, hard = true) as MultipleChoice? ?: return@repeat
+            val ex = factory.build(course.require("s:S29"), ExerciseKind.LISTEN_TO_SIGN, hard = true) as MultipleChoice? ?: return@repeat
             val offered = ex.choices.mapNotNull { it.itemId }
-            org.junit.Assert.assertFalse("h offered against ḥ by ear: $offered", "s:O4" in offered)
+            org.junit.Assert.assertFalse("z offered against s by ear: $offered", "s:O34" in offered)
         }
     }
 }

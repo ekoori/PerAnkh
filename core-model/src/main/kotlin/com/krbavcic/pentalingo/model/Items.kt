@@ -54,8 +54,11 @@ data class SignItem(
     val sounds: List<String> = emptyList(),
     /** For logograms and determinatives: what the sign means or classifies. */
     val meaning: String? = null,
-    /** What the voice says when this sign's sound is played: an Egyptological reading like "meh". */
-    val say: String? = null,
+    /**
+     * The Egyptian word this sign is read as when that is not simply its sound — a numeral is
+     * read as its number word: the stroke is wꜥ, "one".
+     */
+    val reading: String? = null,
     /** A memory hook. */
     val hint: String? = null,
     /** History, usage, culture. */
@@ -65,6 +68,9 @@ data class SignItem(
     val lookalikes: List<String> = emptyList(),
 ) : Item {
     override val kind get() = ItemKind.SIGN
+
+    /** The transliteration this sign's clip says, or null for a silent determinative. */
+    val spoken: String? get() = reading ?: sounds.firstOrNull()
 }
 
 enum class Pos { NOUN, VERB, ADJECTIVE, PREPOSITION, PRONOUN, NAME, PARTICLE, EXPRESSION }
@@ -77,8 +83,6 @@ data class WordItem(
     /** The meaning shown and asked for. */
     val gloss: String,
     val pos: Pos,
-    /** Egyptological pronunciation, as the voice should say it: "nefer". */
-    val say: String,
     /** Other renderings accepted as correct in typed or tile answers. */
     val accepts: List<String> = emptyList(),
     val note: String? = null,
@@ -111,7 +115,6 @@ data class PhraseItem(
     val translation: String,
     /** The translation cut into tiles, in order, for the arrange exercise. */
     val tiles: List<String>,
-    val say: String,
     /** A word-for-word rendering that shows the grammar. */
     val literal: String? = null,
     val note: String? = null,

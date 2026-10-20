@@ -52,11 +52,17 @@ data class ReadingText(
     val note: String,
 )
 
+/**
+ * @property frequency for each word, how many words in 10,000 of real running text are that
+ *   word — counted in a corpus, so that progress can be told as "how much of a real page you can
+ *   read" rather than as a number of items.
+ */
 data class Course(
     val units: List<CourseUnit>,
     val items: List<Item>,
     val texts: List<ReadingText>,
     val awards: List<Award>,
+    val frequency: Map<String, Double> = emptyMap(),
 ) {
     private val byId: Map<String, Item> = items.associateBy { it.id }
 

@@ -20,6 +20,12 @@ data class Settings(
     val sounds: Boolean = true,
     /** Play a word's pronunciation as soon as it appears. */
     val autoplay: Boolean = true,
+    /** Tester mode: a report button on every lesson screen, and the switches below. */
+    val tester: Boolean = false,
+    /** Tester mode: open any lesson, in any order. */
+    val openAnyLesson: Boolean = false,
+    /** Tester mode: a button that answers the current exercise correctly. */
+    val answerButton: Boolean = false,
 )
 
 /**
@@ -39,7 +45,13 @@ class ProgressStore(private val context: Context) {
     val progress: Flow<Progress> = context.store.data.map { it[PROGRESS]?.let(::decode) ?: Progress() }
 
     val settings: Flow<Settings> = context.store.data.map {
-        Settings(sounds = it[SOUNDS] ?: true, autoplay = it[AUTOPLAY] ?: true)
+        Settings(
+            sounds = it[SOUNDS] ?: true,
+            autoplay = it[AUTOPLAY] ?: true,
+            tester = it[TESTER] ?: false,
+            openAnyLesson = it[OPEN_ANY] ?: false,
+            answerButton = it[ANSWER_BUTTON] ?: false,
+        )
     }
 
     suspend fun update(transform: (Progress) -> Progress) {
@@ -55,6 +67,18 @@ class ProgressStore(private val context: Context) {
 
     suspend fun setAutoplay(on: Boolean) {
         context.store.edit { it[AUTOPLAY] = on }
+    }
+
+    suspend fun setTester(on: Boolean) {
+        context.store.edit { it[TESTER] = on }
+    }
+
+    suspend fun setOpenAnyLesson(on: Boolean) {
+        context.store.edit { it[OPEN_ANY] = on }
+    }
+
+    suspend fun setAnswerButton(on: Boolean) {
+        context.store.edit { it[ANSWER_BUTTON] = on }
     }
 
     suspend fun reset() {
@@ -73,5 +97,8 @@ class ProgressStore(private val context: Context) {
         val PROGRESS = stringPreferencesKey("progress-json")
         val SOUNDS = booleanPreferencesKey("sounds")
         val AUTOPLAY = booleanPreferencesKey("autoplay")
+        val TESTER = booleanPreferencesKey("tester")
+        val OPEN_ANY = booleanPreferencesKey("tester-open-any-lesson")
+        val ANSWER_BUTTON = booleanPreferencesKey("tester-answer-button")
     }
 }

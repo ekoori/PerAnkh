@@ -29,6 +29,9 @@ sealed interface Requirement {
 
     /** No fading items left, with at least [minKnown] known: a review queue honestly cleared. */
     data class ClearedReview(val minKnown: Int) : Requirement
+
+    /** Known words that make up at least [percent] of real text, by [Course.frequency]. */
+    data class Coverage(val percent: Int) : Requirement
 }
 
 /**

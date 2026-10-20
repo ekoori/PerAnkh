@@ -90,7 +90,7 @@ fun LessonSheet(
         }
         when (state) {
             LessonState.LOCKED -> if (allowLocked) {
-                PaintButton("Open anyway (debug)", onStart, Modifier.fillMaxWidth(), pigment = pigment)
+                PaintButton("Open anyway (tester)", onStart, Modifier.fillMaxWidth(), pigment = pigment)
             } else {
                 PaintButton("Finish the lesson before first", {}, Modifier.fillMaxWidth(), enabled = false)
             }

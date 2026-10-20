@@ -185,7 +185,7 @@ fun Chip(text: String, modifier: Modifier = Modifier, color: Color = Palette.she
     }
 }
 
-enum class IconKind { SPEAKER, CLOSE, BACK, CHECK, BACKSPACE, GEAR, SLOW }
+enum class IconKind { SPEAKER, CLOSE, BACK, CHECK, BACKSPACE, GEAR, SLOW, FLAG }
 
 /** The handful of icons the app needs, drawn rather than imported. */
 @Composable
@@ -208,6 +208,14 @@ fun DrawnIcon(kind: IconKind, modifier: Modifier = Modifier.size(24.dp), color: 
                 drawArc(color, 180f, 180f, true, topLeft = Offset(s * 0.18f, s * 0.3f), size = Size(s * 0.6f, s * 0.6f))
                 drawCircle(color, s * 0.09f, Offset(s * 0.84f, s * 0.56f))
                 drawLine(color, Offset(s * 0.12f, s * 0.62f), Offset(s * 0.9f, s * 0.62f), w)
+            }
+            IconKind.FLAG -> {
+                drawLine(color, Offset(s * 0.24f, s * 0.12f), Offset(s * 0.24f, s * 0.9f), w * 1.2f, StrokeCap.Round)
+                val p = Path().apply {
+                    moveTo(s * 0.26f, s * 0.14f); lineTo(s * 0.82f, s * 0.24f); lineTo(s * 0.62f, s * 0.38f)
+                    lineTo(s * 0.82f, s * 0.54f); lineTo(s * 0.26f, s * 0.5f); close()
+                }
+                drawPath(p, color)
             }
             IconKind.CLOSE -> {
                 drawLine(color, Offset(s * 0.22f, s * 0.22f), Offset(s * 0.78f, s * 0.78f), w * 1.2f, StrokeCap.Round)

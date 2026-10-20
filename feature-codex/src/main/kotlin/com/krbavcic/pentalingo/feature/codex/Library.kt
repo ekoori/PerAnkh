@@ -38,10 +38,12 @@ import com.krbavcic.pentalingo.core.ui.Chip
 import com.krbavcic.pentalingo.core.ui.Glyphs
 import com.krbavcic.pentalingo.core.ui.IconKind
 import com.krbavcic.pentalingo.core.ui.Palette
+import com.krbavcic.pentalingo.core.ui.ReportFlag
 import com.krbavcic.pentalingo.core.ui.RoundIconButton
 import com.krbavcic.pentalingo.core.ui.Rubric
 import com.krbavcic.pentalingo.core.ui.Type
 import com.krbavcic.pentalingo.core.ui.Voice
+import com.krbavcic.pentalingo.core.ui.describeItem
 import com.krbavcic.pentalingo.core.ui.lineOf
 import com.krbavcic.pentalingo.engine.Knowledge
 import com.krbavcic.pentalingo.model.PhraseItem
@@ -119,7 +121,18 @@ fun ReaderScreen(knowledge: Knowledge, text: ReadingText, voice: Voice, onBack: 
         Row(verticalAlignment = Alignment.CenterVertically) {
             RoundIconButton(IconKind.BACK, onBack, size = 40.dp, fill = Palette.sheetDeep, tint = Palette.inkSoft, description = "Back")
             Spacer(Modifier.size(12.dp))
-            Rubric("Library")
+            Rubric("Library", Modifier.weight(1f))
+            ReportFlag({
+                val out = linkedMapOf("screen" to "reader", "text" to "${text.id} · ${text.title}", "text.source" to text.source)
+                selected?.let { (lineId, i) ->
+                    out += describeItem(course, lineId, voice, "line")
+                    (course[lineId] as? PhraseItem)?.tokens?.getOrNull(i)?.let { t ->
+                        out["token"] = "${i + 1}: [${t.mdc}] ${t.translit} = ${t.gloss}"
+                        out += describeItem(course, t.wordId, voice, "word")
+                    }
+                }
+                out
+            })
         }
         Text(text.title, style = Type.display)
         Text(text.source, style = Type.small)

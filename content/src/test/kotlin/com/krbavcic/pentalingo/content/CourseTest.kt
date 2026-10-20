@@ -142,10 +142,19 @@ class CourseTest {
     }
 
     @Test
-    fun `everything that speaks has something to say`() {
-        val lines = spokenLines(course)
-        assertTrue(lines.size > 150)
-        for ((id, text) in lines) assertTrue("$id says nothing", text.isNotBlank() && text.length < 120)
+    fun `everything that speaks has something to say, and a way to check it was said`() {
+        val all = clips(course)
+        assertTrue(all.size > 150)
+        for (clip in all) {
+            assertTrue("${clip.id} says nothing", clip.candidates.isNotEmpty() && clip.candidates.all { it.isNotBlank() && it.length < 160 })
+            assertTrue("${clip.id} has no respelling", clip.latin.isNotBlank())
+            assertEquals(clip.id, clip.expect.size, clip.critical.size)
+        }
+        // Words with the hard consonants must be checked for them.
+        val ankh = all.first { it.id == "w:anx" }
+        assertTrue(ankh.critical.count { it } >= 2)
+        // Numerals are spoken as their Egyptian number words.
+        assertEquals("ḥeḥ", all.first { it.id == "s:C11" }.latin)
     }
 
     private fun play(session: Session, answer: (com.krbavcic.pentalingo.engine.Exercise) -> Answer): List<Pair<com.krbavcic.pentalingo.engine.Exercise, Outcome>> {

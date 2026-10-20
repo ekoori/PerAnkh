@@ -10,6 +10,7 @@ import json
 import os
 import re
 import sys
+import time
 import urllib.error
 import urllib.request
 
@@ -37,6 +38,31 @@ def load_key(key_file: str | None = None) -> str:
     raise SystemExit(f"no ElevenLabs key found in {path}")
 
 
+# Statuses that mean "not now" rather than "no": rate limits and a busy or failing server.
+RETRY_STATUS = {429, 500, 502, 503, 504}
+
+
+def _send(req: urllib.request.Request, what: str, attempts: int = 6) -> bytes:
+    """Sends a request, retrying network failures and busy-server answers with growing pauses.
+
+    Any other HTTP error is the server's answer and is raised at once.
+    """
+    for attempt in range(attempts):
+        last = attempt == attempts - 1
+        try:
+            with urllib.request.urlopen(req, timeout=120) as resp:
+                return resp.read()
+        except urllib.error.HTTPError as e:
+            detail = e.read().decode("utf-8", errors="replace")[:300]
+            if e.code not in RETRY_STATUS or last:
+                raise RuntimeError(f"{what} -> HTTP {e.code}: {detail}") from None
+        except (urllib.error.URLError, TimeoutError, ConnectionError) as e:
+            if last:
+                raise RuntimeError(f"{what} -> network error: {e}") from None
+        time.sleep(5 * 2 ** attempt)
+    raise AssertionError("unreachable")
+
+
 class Client:
     def __init__(self, key: str):
         self._key = key
@@ -49,12 +75,7 @@ class Client:
         req.add_header("accept", accept)
         if data is not None:
             req.add_header("content-type", "application/json")
-        try:
-            with urllib.request.urlopen(req, timeout=120) as resp:
-                return resp.read()
-        except urllib.error.HTTPError as e:
-            detail = e.read().decode("utf-8", errors="replace")[:500]
-            raise RuntimeError(f"{method} {path} -> HTTP {e.code}: {detail}") from None
+        return _send(req, f"{method} {path}")
 
     def get(self, path: str) -> object:
         return json.loads(self._request("GET", path))
@@ -71,6 +92,20 @@ class Client:
             "POST", f"/v1/text-to-speech/{voice_id}?output_format={output_format}",
             body, accept="audio/mpeg",
         )
+
+    def tts_timed(self, voice_id: str, text: str, model_id: str, voice_settings: dict,
+                  output_format: str = "mp3_44100_128", seed: int | None = None) -> dict:
+        """Speech plus the start and end time of every character, for cutting a word out of a phrase.
+
+        Returns the API's JSON: `audio_base64` and `alignment` with `characters`,
+        `character_start_times_seconds` and `character_end_times_seconds`.
+        """
+        body: dict = {"text": text, "model_id": model_id, "voice_settings": voice_settings}
+        if seed is not None:
+            body["seed"] = seed
+        return json.loads(self._request(
+            "POST", f"/v1/text-to-speech/{voice_id}/with-timestamps?output_format={output_format}", body,
+        ))
 
     def transcribe(self, audio: bytes, model_id: str = "scribe_v1",
                    language_code: str | None = "en") -> str:
@@ -97,12 +132,7 @@ class Client:
                                      method="POST")
         req.add_header("xi-api-key", self._key)
         req.add_header("content-type", f"multipart/form-data; boundary={boundary}")
-        try:
-            with urllib.request.urlopen(req, timeout=120) as resp:
-                return json.loads(resp.read()).get("text", "")
-        except urllib.error.HTTPError as e:
-            detail = e.read().decode("utf-8", errors="replace")[:300]
-            raise RuntimeError(f"speech-to-text -> HTTP {e.code}: {detail}") from None
+        return json.loads(_send(req, "speech-to-text")).get("text", "")
 
 
 def main(argv: list[str]) -> None:

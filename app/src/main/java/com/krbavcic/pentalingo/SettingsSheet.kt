@@ -32,14 +32,27 @@ import com.krbavcic.pentalingo.core.ui.Type
 import com.krbavcic.pentalingo.data.Settings
 import com.krbavcic.pentalingo.model.UnitColor
 
+/** Tester mode's switches and the reports it has saved. */
+class TesterOptions(
+    val reports: Int,
+    val path: String,
+    val onTester: (Boolean) -> Unit,
+    val onOpenAnyLesson: (Boolean) -> Unit,
+    val onAnswerButton: (Boolean) -> Unit,
+    val onShare: () -> Unit,
+    val onClear: () -> Unit,
+)
+
 @Composable
 fun SettingsSheet(
     settings: Settings,
     onSounds: (Boolean) -> Unit,
     onAutoplay: (Boolean) -> Unit,
     onReset: () -> Unit,
+    tester: TesterOptions,
 ) {
     var confirming by remember { mutableStateOf(false) }
+    var confirmClear by remember { mutableStateOf(false) }
     Column(
         Modifier
             .fillMaxWidth()
@@ -57,10 +70,15 @@ fun SettingsSheet(
 
         Rubric("About the voice")
         Text(
-            "Pronunciations were recorded with ElevenLabs’ Eleven v4 model. Nobody knows how Middle Egyptian " +
-                "sounded — the script wrote no vowels — so the voice reads the conventional Egyptological " +
-                "pronunciation, with an e between consonants: nfr is “nefer”. Each clip was checked by speech " +
-                "recognition against the spelling it was meant to say.",
+            "Nobody knows exactly how Middle Egyptian sounded — the script wrote no vowels — so the app speaks " +
+                "the Egyptological convention: an e between consonants (nfr is “nefer”), and the consonants " +
+                "Egyptian really had. ḥ is a breathy h from deep in the throat, ꜥ (ʿayin) a throaty catch, ḫ " +
+                "the kh of Scottish “loch”, q a k made far back: ptḥ is “peteḥ”, not “Ptah”.\n\n" +
+                "The voice is Chaouki, a native Arabic narrator from the ElevenLabs library, speaking with the " +
+                "Eleven v4 model. Each word is handed to him written in Arabic letters, because Arabic still has " +
+                "letters for exactly these sounds. Short words that came out wrong on their own were said inside " +
+                "a little Arabic frame — “qul: …”, “say: …” — and cut out of it. Every take was transcribed by " +
+                "speech recognition, and the one in which the hard consonants were heard was kept.",
             style = Type.small,
         )
         Rubric("Credits")
@@ -68,9 +86,43 @@ fun SettingsSheet(
             "Hieroglyphs: Noto Sans Egyptian Hieroglyphs. Text: Noto Serif. Both © Google, under the SIL Open " +
                 "Font License 1.1. Sign codes follow Gardiner’s sign list; transliteration follows Allen’s " +
                 "Middle Egyptian. Royal names and several spellings were checked against Wikipedia’s hieroglyph " +
-                "markup; the offering formula and the literary openings are simplified for learners.",
+                "markup; the offering formula and the literary openings are simplified for learners.\n\n" +
+                "Word frequencies were counted in the Thesaurus Linguae Aegyptiae (Berlin-Brandenburg Academy " +
+                "of Sciences and Saxon Academy of Sciences, Leipzig), Earlier Egyptian corpus v18: its 3,631 " +
+                "Middle Egyptian sentences. The counts are shared under CC BY-SA 4.0.",
             style = Type.small,
         )
+
+        Rubric("Testing")
+        Toggle(
+            "Tester mode", "A flag on every lesson page saves a report with the exact data on screen",
+            settings.tester, tester.onTester,
+        )
+        if (settings.tester) {
+            Toggle("Open any lesson", "Start lessons that are still locked", settings.openAnyLesson, tester.onOpenAnyLesson)
+            Toggle(
+                "Answer button", "A “solve” chip that answers for you, to reach a later page quickly",
+                settings.answerButton, tester.onAnswerButton,
+            )
+            Text("${tester.reports} ${if (tester.reports == 1) "report" else "reports"} saved", style = Type.heading)
+            Text("Kept in ${tester.path}", style = Type.small)
+            if (tester.reports > 0) {
+                PaintButton("Share reports", tester.onShare, Modifier.fillMaxWidth())
+                if (!confirmClear) {
+                    PaintButton(
+                        "Clear reports", { confirmClear = true }, Modifier.fillMaxWidth(),
+                        pigment = Palette.Pigment(Palette.sheetDeep, Palette.edge, Palette.sheet), textColor = Palette.rubric,
+                    )
+                } else {
+                    Text("Delete all ${tester.reports} reports? Share them first if you still need them.", style = Type.body)
+                    PaintButton(
+                        "Yes, delete them", { tester.onClear(); confirmClear = false }, Modifier.fillMaxWidth(),
+                        pigment = Palette.unit(UnitColor.CARNELIAN),
+                    )
+                    PaintButton("Keep them", { confirmClear = false }, Modifier.fillMaxWidth())
+                }
+            }
+        }
 
         Rubric("Start again")
         if (!confirming) {

@@ -50,6 +50,17 @@ class Knowledge(val course: Course, val progress: Progress, val now: Long) {
     fun masteredCount(): Int = progress.memories.values.count { it.stability >= Memory.MASTERED_DAYS }
 
     /**
+     * The share of real running text, 0 to 1, made of words that pass [counts] — by default the
+     * words known across days. Read off [Course.frequency]: the measure of progress that means
+     * something outside the app.
+     */
+    fun coverage(counts: (String) -> Boolean = ::isKnown): Double =
+        course.frequency.entries.sumOf { (id, perTenThousand) -> if (counts(id)) perTenThousand else 0.0 } / 10_000
+
+    /** What [coverage] would be with every word in the course known. */
+    val fullCoverage: Double get() = course.frequency.values.sum() / 10_000
+
+    /**
      * Items that need a review, weakest first.
      *
      * Due means recall has dropped below [DUE_RECALL] — the point where a review does the most

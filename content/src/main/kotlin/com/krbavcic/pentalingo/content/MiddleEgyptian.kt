@@ -130,6 +130,21 @@ private val UNITS = listOf(
         ),
     ),
     CourseUnit(
+        "u9", "The Words That Fill a Page", "The commonest words in real texts", UnitColor.TURQUOISE,
+        "Count every word in 3,600 sentences of real Middle Egyptian and ten words make up a quarter of them — half of those are the little pronouns glued to the ends of words. Learn these and any text is a quarter read.",
+        listOf(
+            Lesson("l44", "My, your, his, her", "The commonest words of all", "I9",
+                teach = c("frequency") + w("suff", "sufk", "sufj", "sufs", "sufsn") + p("jbj", "nTrk", "Hmtf", "nbsn"),
+                practice = p("rnf", "prk", "sAs")),
+            Lesson("l45", "On, not, this", "Four small words that are everywhere", "D2",
+                teach = s("D2", "D35") + w("Hr", "nn", "pn", "jr") + p("zpn", "Hrta", "nnrnf")),
+            Lesson("l46", "He hears", "Verbs with a pronoun for a subject", "F21",
+                teach = s("F21", "D54") + w("jrj", "sDm", "jwj") + c("sdmf") + p("sDmf", "jwjf", "jrjjmAat"),
+                practice = s("D4")),
+            Lesson("l47", "The page test", "The commonest words", "D2", checkpoint = true),
+        ),
+    ),
+    CourseUnit(
         "u8", "Reading the Stones", "Real texts, as scribes wrote them", UnitColor.OCHRE,
         "An offering formula from a tomb stela, and the first lines of two of the great stories of the Middle Kingdom.",
         listOf(
@@ -226,6 +241,10 @@ private val AWARDS = listOf(
         "Master 50 things",
         "Dominion. Mastered means remembered three weeks after the last review — knowledge that has become yours.",
         Requirement.Master(50)),
+    Award("a:page", "A Quarter of Every Page", "mḏꜣt", "Y1",
+        "Know words that make up a quarter of real Middle Egyptian text",
+        "Counted over 26,000 words of Middle Kingdom texts in the Thesaurus Linguae Aegyptiae, the words you know fill a quarter of any page before you start reading it. Most of them are small — and small words are where reading begins.",
+        Requirement.Coverage(25)),
     Award("a:thoth", "Thoth’s Ibis", "ḏḥwtj", "G26",
         "Know every sign in the course",
         "Thoth invented writing and recorded the judgement of the dead. Every sign in this course is now yours to read.",
@@ -234,5 +253,8 @@ private val AWARDS = listOf(
 
 /** The Middle Egyptian course. */
 val MIDDLE_EGYPTIAN: Course by lazy {
-    Course(units = UNITS, items = SIGNS + WORDS + PHRASES + CONCEPTS, texts = TEXTS, awards = AWARDS)
+    Course(
+        units = UNITS, items = SIGNS + WORDS + PHRASES + CONCEPTS, texts = TEXTS, awards = AWARDS,
+        frequency = FREQUENCY,
+    )
 }

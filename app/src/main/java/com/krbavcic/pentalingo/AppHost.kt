@@ -1,5 +1,6 @@
 package com.krbavcic.pentalingo
 
+import android.content.Intent
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
@@ -23,9 +24,11 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -40,12 +43,16 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import com.krbavcic.pentalingo.content.MIDDLE_EGYPTIAN
 import com.krbavcic.pentalingo.core.ui.Glyphs
+import com.krbavcic.pentalingo.core.ui.LocalReporter
 import com.krbavcic.pentalingo.core.ui.Palette
+import com.krbavcic.pentalingo.core.ui.Reporter
 import com.krbavcic.pentalingo.core.ui.Scrim
 import com.krbavcic.pentalingo.core.ui.Type
 import com.krbavcic.pentalingo.core.ui.papyrus
 import com.krbavcic.pentalingo.core.ui.rememberVoice
 import com.krbavcic.pentalingo.data.ProgressStore
+import com.krbavcic.pentalingo.data.Report
+import com.krbavcic.pentalingo.data.ReportStore
 import com.krbavcic.pentalingo.data.Settings
 import com.krbavcic.pentalingo.engine.Knowledge
 import com.krbavcic.pentalingo.engine.Recording
@@ -106,6 +113,7 @@ fun AppHost() {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val store = remember(context) { ProgressStore(context) }
+    val reports = remember(context) { ReportStore(context) }
     val loaded by store.progress.collectAsState(initial = null)
     val settings by store.settings.collectAsState(initial = Settings())
     val course = MIDDLE_EGYPTIAN
@@ -129,6 +137,18 @@ fun AppHost() {
         return
     }
     val knowledge = remember(progress, now) { Knowledge(course, progress, now) }
+
+    // Tester mode puts a flag on every lesson page; a report keeps what was on screen.
+    val reporter = remember(settings.tester) {
+        if (!settings.tester) null else Reporter { category, note, ctx ->
+            val build = "${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE}${if (BuildConfig.DEBUG) ", debug" else ""})"
+            scope.launch { reports.add(Report(System.currentTimeMillis(), category, note, build, ctx)) }
+        }
+    }
+    var reportCount by remember { mutableIntStateOf(0) }
+    LaunchedEffect(overlay is Overlay.SettingsSheet) {
+        if (overlay is Overlay.SettingsSheet) reportCount = reports.all().size
+    }
 
     fun record(result: SessionResult, lesson: Lesson?, show: Boolean) {
         scope.launch {
@@ -187,86 +207,113 @@ fun AppHost() {
         }
     }
 
-    when (val s = screen) {
-        is Screen.Playing -> {
-            LessonScreen(
-                session = s.session,
-                soundEffects = settings.sounds,
-                autoplay = settings.autoplay,
-                onLeave = { result -> record(result, s.lesson, show = false) },
-                onFinish = { result -> record(result, s.lesson, show = true) },
-                debugSolve = BuildConfig.DEBUG,
-            )
-            return
-        }
-        is Screen.Done -> {
-            BackHandler { screen = Screen.Home }
-            SummaryScreen(s.summary, course, settings.sounds) { screen = Screen.Home }
-            return
-        }
-        is Screen.Reading -> {
-            BackHandler { screen = Screen.Home }
-            Box(Modifier.fillMaxSize().papyrus()) {
-                ReaderScreen(knowledge, s.text, voice, onBack = { screen = Screen.Home })
+    CompositionLocalProvider(LocalReporter provides reporter) {
+        when (val s = screen) {
+            is Screen.Playing -> {
+                LessonScreen(
+                    session = s.session,
+                    soundEffects = settings.sounds,
+                    autoplay = settings.autoplay,
+                    onLeave = { result -> record(result, s.lesson, show = false) },
+                    onFinish = { result -> record(result, s.lesson, show = true) },
+                    debugSolve = settings.tester && settings.answerButton,
+                )
+                return@CompositionLocalProvider
             }
-            return
-        }
-        Screen.Home -> Unit
-    }
-
-    Box(Modifier.fillMaxSize().papyrus()) {
-        Column(Modifier.fillMaxSize()) {
-            Box(Modifier.weight(1f)) {
-                when (tab) {
-                    Tab.PATH -> PathScreen(
-                        course, progress, now,
-                        onOpenLesson = { overlay = Overlay.Preview(it) },
-                        onReview = ::startReview,
-                        onSettings = { overlay = Overlay.SettingsSheet },
-                    )
-                    Tab.CODEX -> CodexScreen(
-                        knowledge,
-                        onSign = { overlay = Overlay.SignInfo(it) },
-                        onWord = { overlay = Overlay.WordInfo(it) },
-                    )
-                    Tab.LIBRARY -> LibraryScreen(knowledge, onOpen = { screen = Screen.Reading(it) })
-                    Tab.TREASURY -> TreasuryScreen(knowledge, onAward = { overlay = Overlay.AwardInfo(it) })
+            is Screen.Done -> {
+                BackHandler { screen = Screen.Home }
+                SummaryScreen(s.summary, course, settings.sounds) { screen = Screen.Home }
+                return@CompositionLocalProvider
+            }
+            is Screen.Reading -> {
+                BackHandler { screen = Screen.Home }
+                Box(Modifier.fillMaxSize().papyrus()) {
+                    ReaderScreen(knowledge, s.text, voice, onBack = { screen = Screen.Home })
                 }
+                return@CompositionLocalProvider
             }
-            TabBar(tab) { tab = it }
+            Screen.Home -> Unit
         }
 
-        val current = overlay
-        if (current != null) {
-            BackHandler { overlay = null }
-            Scrim { overlay = null }
-        }
-        AnimatedVisibility(
-            visible = current != null,
-            enter = slideInVertically { it } + fadeIn(),
-            exit = slideOutVertically { it } + fadeOut(),
-            modifier = Modifier.align(Alignment.BottomCenter),
-        ) {
-            when (current) {
-                is Overlay.Preview -> LessonSheet(
-                    course, progress, current.lesson,
-                    onStart = { startLesson(current.lesson) },
-                    allowLocked = BuildConfig.DEBUG,
-                )
-                is Overlay.SignInfo -> SignDetail(knowledge, current.sign, voice)
-                is Overlay.WordInfo -> WordDetail(knowledge, current.word, voice)
-                is Overlay.AwardInfo -> AwardDetail(knowledge, current.award)
-                is Overlay.SettingsSheet -> SettingsSheet(
-                    settings,
-                    onSounds = { scope.launch { store.setSounds(it) } },
-                    onAutoplay = { scope.launch { store.setAutoplay(it) } },
-                    onReset = {
-                        scope.launch { store.reset() }
-                        overlay = null
-                    },
-                )
-                is Overlay.Message -> MessageSheet(current.text)
-                null -> Unit
+        Box(Modifier.fillMaxSize().papyrus()) {
+            Column(Modifier.fillMaxSize()) {
+                Box(Modifier.weight(1f)) {
+                    when (tab) {
+                        Tab.PATH -> PathScreen(
+                            course, progress, now,
+                            onOpenLesson = { overlay = Overlay.Preview(it) },
+                            onReview = ::startReview,
+                            onSettings = { overlay = Overlay.SettingsSheet },
+                        )
+                        Tab.CODEX -> CodexScreen(
+                            knowledge,
+                            onSign = { overlay = Overlay.SignInfo(it) },
+                            onWord = { overlay = Overlay.WordInfo(it) },
+                        )
+                        Tab.LIBRARY -> LibraryScreen(knowledge, onOpen = { screen = Screen.Reading(it) })
+                        Tab.TREASURY -> TreasuryScreen(knowledge, onAward = { overlay = Overlay.AwardInfo(it) })
+                    }
+                }
+                TabBar(tab) { tab = it }
+            }
+
+            val current = overlay
+            if (current != null) {
+                BackHandler { overlay = null }
+                Scrim { overlay = null }
+            }
+            AnimatedVisibility(
+                visible = current != null,
+                enter = slideInVertically { it } + fadeIn(),
+                exit = slideOutVertically { it } + fadeOut(),
+                modifier = Modifier.align(Alignment.BottomCenter),
+            ) {
+                when (current) {
+                    is Overlay.Preview -> LessonSheet(
+                        course, progress, current.lesson,
+                        onStart = { startLesson(current.lesson) },
+                        allowLocked = settings.tester && settings.openAnyLesson,
+                    )
+                    is Overlay.SignInfo -> SignDetail(knowledge, current.sign, voice)
+                    is Overlay.WordInfo -> WordDetail(knowledge, current.word, voice)
+                    is Overlay.AwardInfo -> AwardDetail(knowledge, current.award)
+                    is Overlay.SettingsSheet -> SettingsSheet(
+                        settings,
+                        onSounds = { scope.launch { store.setSounds(it) } },
+                        onAutoplay = { scope.launch { store.setAutoplay(it) } },
+                        onReset = {
+                            scope.launch { store.reset() }
+                            overlay = null
+                        },
+                        tester = TesterOptions(
+                            reports = reportCount,
+                            path = reports.path,
+                            onTester = { scope.launch { store.setTester(it) } },
+                            onOpenAnyLesson = { scope.launch { store.setOpenAnyLesson(it) } },
+                            onAnswerButton = { scope.launch { store.setAnswerButton(it) } },
+                            onShare = {
+                                scope.launch {
+                                    val text = reports.export()
+                                    if (text.isBlank()) return@launch
+                                    val send = Intent(Intent.ACTION_SEND).apply {
+                                        type = "text/plain"
+                                        putExtra(Intent.EXTRA_SUBJECT, "Per Ankh tester reports")
+                                        putExtra(Intent.EXTRA_TEXT, text)
+                                    }
+                                    context.startActivity(Intent.createChooser(send, "Share reports"))
+                                }
+                            },
+                            onClear = {
+                                scope.launch {
+                                    reports.clear()
+                                    reportCount = 0
+                                }
+                            },
+                        ),
+                    )
+                    is Overlay.Message -> MessageSheet(current.text)
+                    null -> Unit
+                }
             }
         }
     }

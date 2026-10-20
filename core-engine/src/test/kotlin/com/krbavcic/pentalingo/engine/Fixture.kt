@@ -21,8 +21,7 @@ object Fixture {
 
     private fun uni(code: String, name: String, sound: String, vararg lookalikes: String) = SignItem(
         id = "s:$code", code = code, name = name, role = SignRole.UNILITERAL, sounds = listOf(sound),
-        // Voiced as the real course voices them: h and ḥ alike, as an English speaker hears them.
-        say = sound.replace("ḥ", "h").replace("ḫ", "kh") + "e", lookalikes = lookalikes.toList(),
+        lookalikes = lookalikes.toList(),
     )
 
     val signs = listOf(
@@ -40,6 +39,8 @@ object Fixture {
         uni("V28", "twisted flax", "ḥ"),
         uni("Aa1", "placenta", "ḫ"),
         uni("X1", "bread loaf", "t"),
+        uni("S29", "folded cloth", "s"),
+        uni("O34", "door bolt", "z"),
         SignItem("s:F35", "F35", "heart and windpipe", SignRole.TRILITERAL, listOf("nfr"), meaning = "good"),
         SignItem("s:A1", "A1", "seated man", SignRole.DETERMINATIVE, meaning = "man, male person"),
         SignItem("s:B1", "B1", "seated woman", SignRole.DETERMINATIVE, meaning = "woman, female person"),
@@ -50,32 +51,32 @@ object Fixture {
     )
 
     val words = listOf(
-        WordItem("w:nfr", "nfr", "F35-I9:D21", "good", Pos.ADJECTIVE, "nefer", accepts = listOf("beautiful")),
-        WordItem("w:rn", "rn", "D21:N35", "name", Pos.NOUN, "ren"),
-        WordItem("w:pt", "pt", "Q3:X1-N1", "sky", Pos.NOUN, "pet", determinative = "N1"),
-        WordItem("w:jt", "jt", "M17-X1:I9-A1", "father", Pos.NOUN, "it", determinative = "A1"),
-        WordItem("w:ptH", "ptḥ", "Q3:X1-V28-A40", "Ptah", Pos.NAME, "ptah", determinative = "A40"),
-        WordItem("w:Hna", "ḥnꜥ", "V28-N35:D36", "with", Pos.PREPOSITION, "hena"),
-        WordItem("w:m", "m", "G17", "in", Pos.PREPOSITION, "em"),
-        WordItem("w:jn", "jn", "M17:N35", "by", Pos.PREPOSITION, "in"),
+        WordItem("w:nfr", "nfr", "F35-I9:D21", "good", Pos.ADJECTIVE, accepts = listOf("beautiful")),
+        WordItem("w:rn", "rn", "D21:N35", "name", Pos.NOUN),
+        WordItem("w:pt", "pt", "Q3:X1-N1", "sky", Pos.NOUN, determinative = "N1"),
+        WordItem("w:jt", "jt", "M17-X1:I9-A1", "father", Pos.NOUN, determinative = "A1"),
+        WordItem("w:ptH", "ptḥ", "Q3:X1-V28-A40", "Ptah", Pos.NAME, determinative = "A40"),
+        WordItem("w:Hna", "ḥnꜥ", "V28-N35:D36", "with", Pos.PREPOSITION),
+        WordItem("w:m", "m", "G17", "in", Pos.PREPOSITION),
+        WordItem("w:jn", "jn", "M17:N35", "by", Pos.PREPOSITION),
     )
 
     val phrases = listOf(
         PhraseItem(
             "p:rnf", listOf(Token("D21:N35", "rn", "name", "w:rn"), Token("I9", "=f", "his")),
-            "his name", listOf("his", "name"), "renef",
+            "his name", listOf("his", "name"),
         ),
         PhraseItem(
             "p:nfrrn", listOf(Token("F35-I9:D21", "nfr", "good", "w:nfr"), Token("D21:N35", "rn", "name", "w:rn")),
-            "the name is good", listOf("the", "name", "is", "good"), "nefer ren",
+            "the name is good", listOf("the", "name", "is", "good"),
         ),
         PhraseItem(
             "p:mpt", listOf(Token("G17", "m", "in", "w:m"), Token("Q3:X1-N1", "pt", "sky", "w:pt")),
-            "in the sky", listOf("in", "the", "sky"), "em pet",
+            "in the sky", listOf("in", "the", "sky"),
         ),
         PhraseItem(
             "p:jnptH", listOf(Token("M17:N35", "jn", "by", "w:jn"), Token("Q3:X1-V28-A40", "ptḥ", "Ptah", "w:ptH")),
-            "by Ptah", listOf("by", "Ptah"), "in ptah",
+            "by Ptah", listOf("by", "Ptah"),
         ),
     )
 

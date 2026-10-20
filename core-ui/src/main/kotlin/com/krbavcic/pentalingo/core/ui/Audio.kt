@@ -38,6 +38,9 @@ class Voice private constructor(private val context: Context) {
 
     fun has(id: String?): Boolean = id != null && id in manifest
 
+    /** The clip file an item plays, for tester reports. */
+    fun fileFor(id: String?): String? = id?.let { manifest[it] }
+
     fun play(id: String?, slow: Boolean = false) {
         val file = id?.let { manifest[it] } ?: return
         stop()

@@ -155,7 +155,7 @@ private fun Header(knowledge: Knowledge, progress: Progress, onSettings: () -> U
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Column(Modifier.weight(1f)) {
-                Text("Pentalingo", style = Type.display)
+                Text("Per Ankh", style = Type.display)
                 Rubric("Middle Egyptian")
             }
             RoundIconButton(IconKind.GEAR, onSettings, size = 42.dp, fill = Palette.sheetDeep, tint = Palette.inkSoft, description = "Settings")
