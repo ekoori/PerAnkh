@@ -107,8 +107,9 @@ Everything below `data` is plain JVM and tested without a device: `gradlew :core
   takes are retried with other seeds and spellings, and short words that still fail are said inside
   an Arabic frame ("qul: …") and cut out at the pause (needs ffmpeg). Takes are content-addressed,
   so nothing is billed twice; `rescore` re-judges them for free, `report` lists every clip with what
-  was heard, and `prune` moves unused takes to `tools/out/takes`. The key is read from
-  `C:\Users\igor\dev\11labs\.env` by path and never stored here.
+  was heard, and `prune` moves unused takes to `tools/out/takes`. The key comes from
+  `$ELEVENLABS_API_KEY`, or from a file outside the repository (`$ELEVENLABS_KEY_FILE`, default
+  `~/dev/11labs/.env`), read by path and never stored here.
 - `tools/tla.py` — counts lemma frequencies in the Thesaurus Linguae Aegyptiae's Earlier Egyptian
   corpus (download it to `tools/out/tla/`; run with `python -I`), reports how much of real Middle
   Egyptian the course's words cover and which frequent words it lacks, and with `--write`

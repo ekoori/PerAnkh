@@ -1,8 +1,8 @@
 """Minimal ElevenLabs client for the build tools.
 
 The API key is read from a file by path and never printed, logged or written anywhere else.
-Resolution order: $ELEVENLABS_API_KEY, then --key-file, then the shared dev key file used by
-dev/11labs and dev/intrf4ce. The file may hold either a bare key or KEY=value lines.
+Resolution order: $ELEVENLABS_API_KEY, then --key-file, then $ELEVENLABS_KEY_FILE, then
+~/dev/11labs/.env — a file outside this repository. It may hold a bare key or KEY=value lines.
 """
 from __future__ import annotations
 
@@ -14,7 +14,7 @@ import time
 import urllib.error
 import urllib.request
 
-DEFAULT_KEY_FILE = r"C:\Users\igor\dev\11labs\.env"
+DEFAULT_KEY_FILE = os.environ.get("ELEVENLABS_KEY_FILE") or os.path.join(os.path.expanduser("~"), "dev", "11labs", ".env")
 API = "https://api.elevenlabs.io"
 
 
