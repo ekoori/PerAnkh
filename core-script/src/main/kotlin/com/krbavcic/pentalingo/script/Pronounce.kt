@@ -222,40 +222,39 @@ object Pronounce {
     // ---- single letters --------------------------------------------------------------------
 
     /**
-     * How a single alphabet sign is voiced. A consonant on its own is swallowed by any speech
-     * model, so it is said between vowels, where it is fully articulated: "aḥa", "aqa". The four
-     * letters Egyptologists name by their Semitic names are said by those names — aleph, ayin,
-     * waw — except yod, which is said as the vowel "i" it is read as, so it cannot be confused
-     * with y.
+     * How a single alphabet sign is said: its sound, the way Egyptologists voice it. ꜣ and ꜥ are
+     * both "a" — one with a catch in the throat, one squeezed from deep in it — j is "i", and
+     * every other letter is its consonant with a short e after it, as letters are recited: "be",
+     * "he", "ḥe", "khe". The consonant comes first because that is where it is heard; after a
+     * vowel an h all but vanishes. Not the Semitic letter names (aleph, ayin, waw) and not
+     * "aha"-style frames: those made the alphabet sound like Arabic.
      */
     fun letterLatin(letter: String): String = when (letter) {
-        "ꜣ" -> "aleph"
+        "ꜣ" -> "a"
         "j" -> "i"
-        "y" -> "ya"
-        "ꜥ" -> "ʿayin"
-        "w" -> "waw"
-        else -> "a" + (LATIN[CONSONANTS[letter.single()] ?: letter] ?: CONSONANTS[letter.single()] ?: letter) + "a"
+        "ꜥ" -> "ʿa"
+        else -> letterPhone(letter).let { LATIN[it] ?: it } + "e"
     }
 
     /** Arabic-script candidates for a letter, best first; the voice tool keeps the first that checks out. */
     fun letterArabic(letter: String): List<String> = when (letter) {
-        "ꜣ" -> listOf("أَلِفْ", "آ")
-        "j" -> listOf("إِي", "إِيإِي")
-        "y" -> listOf("يَا", "أَيَا")
-        "ꜥ" -> listOf("عَيْنْ", "أَعَا", "عَا")
-        "w" -> listOf("وَاوْ", "أَوَا")
-        else -> {
-            val ar = ARABIC[CONSONANTS[letter.single()] ?: letter] ?: letter
-            listOf("أَ$ar${FATHA}ا", "$ar${KASRA}$ar$SUKUN", "$ar${FATHA}اء")
-        }
+        "ꜣ" -> listOf("آ")
+        "j" -> listOf("إِي")
+        "ꜥ" -> listOf("عَا", "عَ")
+        else -> listOf((ARABIC[letterPhone(letter)] ?: letter) + KASRA)
     }
 
     fun letterIpa(letter: String): String = when (letter) {
-        "ꜣ" -> "ʔalɛf"
-        "j" -> "ʔi"
-        "y" -> "ja"
-        "ꜥ" -> "ʕajin"
-        "w" -> "waw"
-        else -> "a" + (CONSONANTS[letter.single()] ?: letter) + "a"
+        "ꜣ" -> "ʔa"
+        "j" -> "i"
+        "ꜥ" -> "ʕa"
+        else -> letterPhone(letter) + "ɛ"
+    }
+
+    /** A letter's consonant in IPA; y and w as the glides they are before a vowel: "ye", "we". */
+    private fun letterPhone(letter: String): String = when (letter) {
+        "y" -> "j"
+        "w" -> "w"
+        else -> CONSONANTS[letter.single()] ?: letter
     }
 }

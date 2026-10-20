@@ -57,6 +57,23 @@ class PronounceTest {
     }
 
     @Test
+    fun `letters are said as their sounds, not by Semitic names`() {
+        assertEquals("a", Pronounce.letterLatin("ꜣ"))
+        assertEquals("ʿa", Pronounce.letterLatin("ꜥ"))
+        assertEquals("i", Pronounce.letterLatin("j"))
+        assertEquals("ye", Pronounce.letterLatin("y"))
+        assertEquals("we", Pronounce.letterLatin("w"))
+        assertEquals("be", Pronounce.letterLatin("b"))
+        assertEquals("ḥe", Pronounce.letterLatin("ḥ"))
+        assertEquals("khe", Pronounce.letterLatin("ḫ"))
+        assertEquals("tje", Pronounce.letterLatin("ṯ"))
+        assertEquals(listOf("حِ"), Pronounce.letterArabic("ḥ"))
+        assertEquals(listOf("قِ"), Pronounce.letterArabic("q"))
+        assertEquals(listOf("يِ"), Pronounce.letterArabic("y"))
+        assertEquals("ħɛ", Pronounce.letterIpa("ḥ"))
+    }
+
+    @Test
     fun `the four h's are four different sounds`() {
         val ipa = listOf("h", "ḥ", "ḫ", "ẖ").map(Pronounce::letterIpa)
         assertEquals(4, ipa.toSet().size)

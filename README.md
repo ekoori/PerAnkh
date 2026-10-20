@@ -9,6 +9,31 @@ copied. It is written with two signs the course teaches in Unit 3, the house �
 The project, its modules and the application id keep the working name `pentalingo`, so builds
 still install over earlier ones and keep their progress.
 
+<p align="center">
+  <img src="docs/demo.gif" width="320" alt="A lesson in Per Ankh: the path, a new word, a listening question, matching pairs, an explained mistake, sounding out a word never taught, the lesson summary, then the codex, a word, a royal inscription and the amulets">
+</p>
+
+<table>
+  <tr>
+    <td align="center" width="25%"><img src="docs/screenshots/path.png" alt="The path"><br><sub>The path, unit by unit</sub></td>
+    <td align="center" width="25%"><img src="docs/screenshots/new-word.png" alt="A new word"><br><sub>A new word, sign by sign</sub></td>
+    <td align="center" width="25%"><img src="docs/screenshots/listen.png" alt="A listening question"><br><sub>Which sign spells the sound?</sub></td>
+    <td align="center" width="25%"><img src="docs/screenshots/pairs.png" alt="Matching pairs"><br><sub>Matching pairs</sub></td>
+  </tr>
+  <tr>
+    <td align="center"><img src="docs/screenshots/mistake.png" alt="An explained mistake"><br><sub>A mistake, explained</sub></td>
+    <td align="center"><img src="docs/screenshots/sound-it-out.png" alt="Sounding out a new word"><br><sub>Sound out a word never taught</sub></td>
+    <td align="center"><img src="docs/screenshots/lesson-complete.png" alt="Lesson summary"><br><sub>The lesson summary</sub></td>
+    <td align="center"><img src="docs/screenshots/codex.png" alt="The codex"><br><sub>The codex: how much of a real page you can read</sub></td>
+  </tr>
+  <tr>
+    <td align="center"><img src="docs/screenshots/word.png" alt="A word sheet"><br><sub>A word: how it is said, how common it is</sub></td>
+    <td align="center"><img src="docs/screenshots/reader.png" alt="Royal names in the library"><br><sub>Real inscriptions in the library</sub></td>
+    <td align="center"><img src="docs/screenshots/treasury.png" alt="The treasury of amulets"><br><sub>Amulets for abilities</sub></td>
+    <td align="center"><img src="docs/screenshots/tester-report.png" alt="A tester report"><br><sub>Tester mode: report what is on screen</sub></td>
+  </tr>
+</table>
+
 ## What makes it not Duolingo
 
 - **Memory, not streaks.** Every sign, word, phrase and idea has its own memory, modelled with
@@ -38,8 +63,10 @@ still install over earlier ones and keep their progress.
   every page), each with its own piece of Egyptian lore.
 - **Sounds Egyptian really had.** Pronunciation follows the Egyptological convention, generated
   from the transliteration by `core-script` `Pronounce.kt`: e between consonants, and ḥ, ꜥ, ḫ, ẖ, q
-  kept distinct (ptḥ is "peteḥ", not "Ptah"). Clips are spoken by a native Arabic voice reading
-  fully vowelled Arabic script, the one input that reliably produces those consonants.
+  kept distinct (ptḥ is "peteḥ", not "Ptah"). A sign on its own is said as its sound: ꜣ and ꜥ as
+  "a", j as "i", every other letter with a short e ("be", "he", "ḥe", "khe"). Clips are spoken by
+  a native Arabic voice reading fully vowelled Arabic script, the one input that reliably produces
+  those consonants.
 
 ## Tester mode
 

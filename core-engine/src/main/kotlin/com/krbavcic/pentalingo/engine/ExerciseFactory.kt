@@ -189,9 +189,14 @@ class ExerciseFactory(
     private fun soundKey(s: String) = Translit.normalize(s)
 
     /** What a sign's clip says, as sound: z and s are one sound by this period. */
+    /**
+     * What a sign's clip says: the text the voice was given. Comparing that, not the IPA, means
+     * two signs whose recordings sound the same — ḫ and ẖ are both spoken as kh — are never
+     * told apart by ear.
+     */
     private fun voiceOf(sign: SignItem): String? {
         val spoken = sign.spoken ?: return null
-        return if (sign.role == SignRole.UNILITERAL) Pronounce.letterIpa(spoken) else Pronounce.ipa(spoken)
+        return if (sign.role == SignRole.UNILITERAL) Pronounce.letterArabic(spoken).first() else Pronounce.arabic(spoken)
     }
 
     private fun soundsAlike(a: SignItem, b: SignItem): Boolean = voiceOf(a) != null && voiceOf(a) == voiceOf(b)
@@ -474,7 +479,7 @@ class ExerciseFactory(
 
     private fun listenToWord(word: WordItem, hard: Boolean): MultipleChoice? {
         // Homophones are indistinguishable by ear: kꜣ "ka" and kꜣ "ox" cannot be told apart here.
-        val distractors = distinctWords(word, hard, exclude = { Pronounce.ipa(it.translit) == Pronounce.ipa(word.translit) }) { it.mdc }
+        val distractors = distinctWords(word, hard, exclude = { Pronounce.arabic(it.translit) == Pronounce.arabic(word.translit) }) { it.mdc }
         if (distractors.size < 3) return null
         val (choices, correct) = shuffleWithAnswer(
             Choice(mdc = word.mdc, itemId = word.id),
