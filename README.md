@@ -9,6 +9,9 @@ copied. It is written with two signs the course teaches in Unit 3, the house ð“‰
 The project, its modules and the application id keep the working name `pentalingo`, so builds
 still install over earlier ones and keep their progress.
 
+**Download:** the APK is attached to the [latest release](https://github.com/ekoori/PerAnkh/releases/latest).
+It needs Android 8.0 or newer, works offline and asks for no permissions.
+
 <p align="center">
   <img src="docs/demo.gif" width="320" alt="A lesson in Per Ankh: the path, a new word, a listening question, matching pairs, an explained mistake, sounding out a word never taught, the lesson summary, then the codex, a word, a royal inscription and the amulets">
 </p>
