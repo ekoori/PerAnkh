@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.2.0 (not yet released)
+## 0.2.0 (2026-10-22)
 
 A new app as far as Android is concerned: the app id is now `app.hrana.perankh` and builds are
 signed with the project's own key. It installs next to v0.1.0 rather than replacing it, and

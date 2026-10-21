@@ -21,17 +21,18 @@ Pre-release builds are `vX.Y.Z-beta.N` tags whose GitHub releases are marked "pr
 | Debug on the test phone | Igor | `gradlew :app:installDebug`, tester mode on | Every change |
 | Play **internal testing** | Up to 100 named testers | AAB, `gradlew :app:bundleRelease` | Each beta, minutes after upload |
 | Play **closed testing** | A tester group or list | Same AAB, promoted | Before each public release |
-| GitHub **pre-release** | Anyone, labelled not ready | Signed APK | Optional, for testers off Play |
-| Play **production** (staged 10% → 50% → 100%) and GitHub **release** | Everyone | AAB and APK | From 1.0.0 |
+| GitHub **pre-release** | Anyone, labelled not ready | Signed APK | Beta tags |
+| GitHub **release** | Everyone | Signed APK | From 0.2.0 |
+| Play **production** (staged 10% → 50% → 100%) | Everyone | AAB | From 1.0.0 |
 | F-Droid | Everyone, from source | Built by F-Droid | After 1.0, if wanted |
 
 ## Plan
 
-- **0.2.0, testers only.** New app id `app.hrana.perankh`, the project's release key, Android 16
-  target (API 36, which Play requires since 31 August 2026), report upload to perankh.hrana.app,
-  privacy policy, MIT licence. Goes to Play internal testing and the test phone. v0.1.0 stays a
-  GitHub pre-release; its 17 installs need one reinstall (different key and id), which deletes
-  their progress.
+- **0.2.0, the first public GitHub release (2026-10-22).** New app id `app.hrana.perankh`, the
+  project's release key, Android 16 target (API 36, which Play requires since 31 August 2026),
+  report upload to perankh.hrana.app, privacy policy, MIT licence, units 10–12. Play internal
+  testing to follow. v0.1.0 stays a GitHub pre-release; its 17 installs need one reinstall
+  (different key and id), which deletes their progress.
 - **0.3.x, closed testing.** Fix what testers report; re-record the three weak clips; finish the
   store listing. Two weeks in closed testing before production (a must for new *personal* Play
   accounts, which need 12 testers for 14 days; good practice for an organisation account too).
@@ -40,7 +41,7 @@ Pre-release builds are `vX.Y.Z-beta.N` tags whose GitHub releases are marked "pr
 - **1.x.** Donations; later, optional accounts and progress sync (`server/README.md`), each with
   a privacy policy update first.
 
-## Before the first public release
+## Before the Play launch
 
 1. **Play developer account for LOVI Tech.** An organisation account needs a D-U-N-S number for
    LOVI Tech, and verification takes days to weeks; start early.
@@ -55,9 +56,9 @@ Pre-release builds are `vX.Y.Z-beta.N` tags whose GitHub releases are marked "pr
    - Or upload the project's own release key to Play App Signing ("export and upload a key from a
      Java keystore"), and keep a separate upload key: the same signature everywhere. Recommended,
      since GitHub (and maybe F-Droid) builds are planned.
-   The current release key's certificate reads `CN=Igor Krbavcic`. Every APK shows it. Since LOVI
-   Tech publishes, consider replacing it before anything is signed for the public with one reading
-   `CN=Per Ankh, O=LOVI Tech, C=AU` (README, "Release signing", shows the keytool command).
+   The release key's certificate reads `CN=Igor Krbavcic`. It was kept for the first public
+   release, 0.2.0, so it is now fixed: every later release, on GitHub and, through Play App
+   Signing, on Play, must be signed with it, or installs cannot update.
 4. **Store listing** from `docs/play/`: texts, Data safety answers, content rating, graphics.
 
 ## Donations
@@ -83,5 +84,5 @@ donation feature, not before.
 5. Install on the test phone over the previous release (progress must survive); play a lesson,
    send a test report, then resolve it with `tools/reports.sh`.
 6. Upload the AAB to the Play track; tag `vX.Y.Z`; create the GitHub release with the APK and
-   its SHA-256 (pre-release until 1.0).
+   its SHA-256 (a full release; only `-beta.N` tags are pre-releases).
 7. Resolve the reports fixed in this version: `tools/reports.sh resolve ID --in X.Y.Z`.

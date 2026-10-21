@@ -10,11 +10,12 @@ The application id is `app.hrana.perankh`, after hrana.app like its sibling app.
 code's packages and Gradle modules keep the working name `pentalingo`. Open source under the
 [MIT licence](LICENSE), published by LOVI Tech; third-party terms in [NOTICE.md](NOTICE.md).
 
-**Download:** not publicly released yet; see [RELEASING.md](RELEASING.md) for the plan. The
-v0.1.0 test build on GitHub is a pre-release under the old id `com.krbavcic.pentalingo`, signed
-with a debug key: later versions install next to it, not over it, and its progress does not carry
-over. Android 8.0 or newer; works offline; the only permission is internet access, used solely to
-send the problem reports people choose to send ([privacy policy](PRIVACY.md)).
+**Download:** [the latest release](https://github.com/ekoori/PerAnkh/releases/latest), an APK for
+Android 8.0 or newer; Google Play is planned ([RELEASING.md](RELEASING.md)). It works offline; the
+only permission is internet access, used solely to send the problem reports people choose to send
+([privacy policy](PRIVACY.md)). The v0.1.0 test build was a pre-release under the old id
+`com.krbavcic.pentalingo`, signed with a debug key: later versions install next to it, not over it,
+and its progress does not carry over.
 
 <p align="center">
   <img src="docs/demo.gif" width="320" alt="A lesson in Per Ankh: the path, a new word, a listening question, matching pairs, an explained mistake, sounding out a word never taught, the lesson summary, then the codex, a word, a royal inscription and the amulets">
