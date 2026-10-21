@@ -55,23 +55,15 @@ STORIES = {
 }
 
 # Units proposed after the present course, in teaching order, as the lemmas each would teach
-# (grammar such as sḏm.n=f has no lemma of its own, so it is not counted here). Measured
-# cumulatively: each line is what that unit adds to the ones above it.
+# (grammar such as the negative n sḏm.n=f has no lemma of its own, so it is not counted here).
+# Measured cumulatively: each line is what that unit adds to the ones above it. The first three
+# proposed — little words, pronouns, telling a story — are now units 10 to 12 of the course.
 UNITS = {
-    "Every, other, like (nb, ky, mj, jm, ḫr, ẖr, tp, m-ꜥ, wꜥ)": [
-        "81660", "163760", "400645", "850796", "24640", "850795", "850794", "850801", "851449",
-        "44150", "600041", "400101"],
-    "Pronouns II (wj, ṯw, sj, st, =n, =ṯn, =tw, tn, nn, mk, jsṯ, ptr)": [
-        "44000", "174900", "127770", "147350", "175650", "10070", "10130", "10120", "170100",
-        "172360", "851523", "64440", "851440", "62920"],
-    "Telling a story (ꜥḥꜥ.n; see, find, bring, go out, enter, reach...)": [
-        "40111", "66270", "167210", "26870", "60920", "41180", "61370", "132830", "154340",
-        "33560", "97580", "102060", "851887", "78140", "51970"],
-    "Not and do not (n, m, tm, jmi̯, jn)": ["850806", "64410", "854578", "25170", "851706", "851426"],
+    "Not and do not (n, m, tm, jmi̯)": ["850806", "64410", "854578", "25170", "851706"],
     "Face, mouth, eye (the body; place, way, time, foreign land)": [
         "107510", "92560", "28250", "122080", "854577", "854540", "42490", "854543", "114300"],
-    "Beloved of the god (mri̯, ḥzi̯, mꜣꜥ-ḫrw, n.tj, jr.j-pꜥ.t, dwꜣ)": [
-        "72470", "109620", "66750", "400178", "89850", "94060", "854584", "72650"],
+    "Beloved of the god (ḥzi̯, mꜣꜥ-ḫrw, n.tj, jr.j-pꜥ.t, dwꜣ, mrw.t)": [
+        "109620", "66750", "400178", "89850", "94060", "854584", "72650"],
     "Lord of Abydos (the full offering formula)": [
         "103", "400976", "119180", "45580", "82090", "113110", "99940", "400114", "138670",
         "71170", "156950"],

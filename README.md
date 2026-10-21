@@ -65,7 +65,7 @@ send the problem reports people choose to send ([privacy policy](PRIVACY.md)).
   library shows real inscriptions with the words you know painted in. The codex fills with the
   colours of a tomb wall as you learn, and fades back to ink as memory fades, and says how much of
   a real page your words fill — word frequencies counted in the Thesaurus Linguae Aegyptiae's
-  Middle Egyptian sentences (the whole course reaches 50%). Amulets mark abilities (telling the
+  Middle Egyptian sentences (the whole course reaches 57%). Amulets mark abilities (telling the
   four h's apart, relearning what you forgot, reading the offering formula, knowing a quarter of
   every page), each with its own piece of Egyptian lore.
 - **Sounds Egyptian really had.** Pronunciation follows the Egyptological convention, generated
@@ -97,7 +97,7 @@ shared or pulled with `adb pull` from
 | `core-script` | Gardiner sign table (generated from the font), Manuel de Codage parser, quadrat layout, transliteration |
 | `core-model` | items, lessons, course, memory, progress, awards — pure Kotlin, serialisable |
 | `core-engine` | FSRS scheduler, exercise factory, answer checker, session planner, recording, awards |
-| `content` | the Middle Egyptian course: 9 units, 47 lessons, ~105 signs, 99 words, phrases, texts; word frequencies |
+| `content` | the Middle Egyptian course: 12 units, 66 lessons, ~125 signs, 138 words, phrases, texts; word frequencies |
 | `data` | `ProgressStore`: one JSON document in DataStore; `ReportStore`: tester reports |
 | `core-ui` | papyrus, palette, hieroglyph renderer, painted buttons, audio, sound effects |
 | `feature-path` / `feature-lesson` / `feature-codex` | the screens |
@@ -130,6 +130,11 @@ run with `cd server && python -m unittest discover -s tests`.
   corpus (download it to `tools/out/tla/`; run with `python -I`), reports how much of real Middle
   Egyptian the course's words cover and which frequent words it lacks, and with `--write`
   regenerates `content/.../Frequency.kt`.
+- `tools/aes.py` — measures the course against AES, Simon Schweitzer's corpus of 101,796 TLA
+  sentences (CC BY-SA 4.0; download it to `tools/out/corpus/aes/`; run with `python -I`): coverage
+  by period and kind of text, the commonest words not yet taught, verb forms by frequency, what
+  proposed units would add, and passages of the great stories that are nearly readable. With
+  `--show TEXT_ID` it prints a text with the words the course does not teach in brackets.
 
 ## Release signing
 

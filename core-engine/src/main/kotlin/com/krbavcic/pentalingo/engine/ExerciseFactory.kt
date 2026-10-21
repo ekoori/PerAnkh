@@ -442,7 +442,8 @@ class ExerciseFactory(
     }
 
     private fun wordToMeaning(word: WordItem, showTranslit: Boolean): MultipleChoice? {
-        val distractors = distinctWords(word, hard = !showTranslit) { it.gloss.lowercase() }
+        // Words written alike — nb "lord" and nb "every" — cannot be told apart by their spelling.
+        val distractors = distinctWords(word, hard = !showTranslit, exclude = { it.mdc == word.mdc }) { it.gloss.lowercase() }
         if (distractors.size < 3) return null
         val (choices, correct) = shuffleWithAnswer(
             Choice(label = word.gloss, itemId = word.id),

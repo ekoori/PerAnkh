@@ -36,9 +36,11 @@ MIDDLE_FROM = -2150
 # 162930; zꜣ "son" 125510, not sꜣ "back" 125670). Each was checked against the German
 # translations of sentences using it. Spelling alone also catches homographs the course does not
 # teach: jt "barley" for jtj "father", ḥmt "copper" for ḥm.t "wife", mn "suffer", wn "open",
-# wḏꜣ "go"; those words are pinned too. The two corpora give a few lemmas different ids: rḏi̯
-# "give" is mostly 96700 and 550028 in corpus v18 but 851711 in AES (tools/aes.py), which comes
-# from the TLA's 2018 database, and ḫpr "become" 116230 there is 858535 in AES.
+# wḏꜣ "go", dp.t "taste" for dpt "ship"; those words are pinned too, as are words whose lemma
+# has a part of speech or spelling the matcher cannot reach (jm "there" is an adverb, mk "look"
+# the particle m, sqdw "sailors" the lemma sqd). The two corpora give a few lemmas different ids:
+# rḏi̯ "give" is mostly 96700 and 550028 in corpus v18 but 851711 in AES (tools/aes.py), which
+# comes from the TLA's 2018 database, and ḫpr "become" 116230 there is 858535 in AES.
 MANUAL: dict[str, list[str]] = {
     "w:sA": ["125510"], "w:sAt": ["125630"], "w:mwt": ["69040"], "w:xt": ["30750", "850967"],
     "w:ra": ["400015"], "w:Hmf": ["104690"], "w:dj": ["96700", "550028", "851711"], "w:HtpDjnswt": ["111510"],
@@ -49,11 +51,15 @@ MANUAL: dict[str, list[str]] = {
     "w:suff": ["10050"], "w:sufk": ["10110"], "w:sufj": ["10030"], "w:sufs": ["10090"], "w:sufsn": ["10100"],
     "w:jt": ["32820"], "w:Hmt": ["104730"], "w:mn": ["69590"], "w:wDA": ["52090", "52100"],
     "w:xpr": ["116230", "858535", "854383"], "w:wn": ["46050", "400006"],
+    "w:jm": ["24640"], "w:mk": ["64440"], "w:sqdw": ["146280"], "w:dpt": ["179040"],
+    "w:ky": ["163760", "400645"], "w:wa": ["44150", "600041", "400101"],
 }
 # Lemmas a course word covers besides its own: the course teaches N35 n as "to, for, of", which
-# is both the preposition and the genitive n.ꞽ (79800 in corpus v18, 850787 in AES). wn "exist"
-# is pinned above to wnn, of which it is the short form.
-EXTRA: dict[str, list[str]] = {"w:n": ["79800", "850788", "850787"]}
+# is both the preposition and the genitive n.ꞽ (79800 in corpus v18, 850787 in AES). jn "by" is
+# also taught as the jn that points out a doer, "it is the heart that…" (26670 in corpus v18;
+# AES's 851426 counts jn introducing a question too). wn "exist" is pinned above to wnn, of
+# which it is the short form.
+EXTRA: dict[str, list[str]] = {"w:n": ["79800", "850788", "850787"], "w:jn": ["26670", "851426"]}
 
 # Which TLA parts of speech can stand for a course word of each kind.
 UPOS = {
