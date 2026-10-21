@@ -34,19 +34,23 @@ import com.krbavcic.pentalingo.core.ui.Type
 import com.krbavcic.pentalingo.data.Settings
 import com.krbavcic.pentalingo.model.UnitColor
 
-/** Tester mode's switches and the reports it has saved. */
-class TesterOptions(
-    val reports: Int,
+/** Problem reports kept on this phone: how many, how many are still waiting to go out. */
+class ReportOptions(
+    val saved: Int,
     val unsent: Int,
     val sending: Boolean,
     val sendResult: String?,
     val path: String,
     val onSend: () -> Unit,
+    val onShare: () -> Unit,
+    val onClear: () -> Unit,
+)
+
+/** Tester mode's switches. */
+class TesterOptions(
     val onTester: (Boolean) -> Unit,
     val onOpenAnyLesson: (Boolean) -> Unit,
     val onAnswerButton: (Boolean) -> Unit,
-    val onShare: () -> Unit,
-    val onClear: () -> Unit,
 )
 
 @Composable
@@ -56,6 +60,7 @@ fun SettingsSheet(
     onAutoplay: (Boolean) -> Unit,
     onReset: () -> Unit,
     onPrivacy: () -> Unit,
+    reports: ReportOptions,
     tester: TesterOptions,
 ) {
     var confirming by remember { mutableStateOf(false) }
@@ -102,8 +107,10 @@ fun SettingsSheet(
 
         Rubric("Privacy")
         Text(
-            "Per Ankh works offline and collects nothing about you. Your progress stays on this phone. " +
-                "Tester reports leave it only when you send them.",
+            "Per Ankh works offline and collects nothing about you; your progress stays on this phone. " +
+                "If you report a problem with the flag on a page, the report goes to the people who make " +
+                "Per Ankh over an encrypted connection, with what was on screen. No name, account or " +
+                "device ID is sent.",
             style = Type.small,
         )
         Text(
@@ -111,10 +118,20 @@ fun SettingsSheet(
             style = Type.small.copy(color = Palette.lapisDeep),
             modifier = Modifier.clickable(role = Role.Button, onClick = onPrivacy),
         )
+        // Reports go out as soon as they are written; this shows only while some are still waiting.
+        if (reports.unsent > 0) {
+            val n = reports.unsent
+            Text("$n ${if (n == 1) "report is" else "reports are"} waiting to be sent", style = Type.heading)
+            PaintButton(
+                if (reports.sending) "Sending…" else "Send now",
+                reports.onSend, Modifier.fillMaxWidth(), enabled = !reports.sending,
+            )
+        }
+        reports.sendResult?.let { Text(it, style = Type.body) }
 
         Rubric("Testing")
         Toggle(
-            "Tester mode", "A flag on every lesson page saves a report with the exact data on screen",
+            "Tester mode", "Tools for testing the course: open locked lessons, an answer button, and the reports kept on this phone",
             settings.tester, tester.onTester,
         )
         if (settings.tester) {
@@ -123,38 +140,23 @@ fun SettingsSheet(
                 "Answer button", "A “solve” chip that answers for you, to reach a later page quickly",
                 settings.answerButton, tester.onAnswerButton,
             )
-            val saved = "${tester.reports} ${if (tester.reports == 1) "report" else "reports"} saved"
-            Text(
-                when {
-                    tester.unsent > 0 -> "$saved · ${tester.unsent} not sent yet"
-                    tester.reports > 0 -> "$saved · all sent"
-                    else -> saved
-                },
-                style = Type.heading,
-            )
-            if (tester.unsent > 0) {
-                PaintButton(
-                    if (tester.sending) "Sending…" else "Send ${tester.unsent} ${if (tester.unsent == 1) "report" else "reports"}",
-                    tester.onSend, Modifier.fillMaxWidth(), enabled = !tester.sending,
-                )
-            }
-            tester.sendResult?.let { Text(it, style = Type.body) }
-            Text(
-                "Sending uses an encrypted connection to the Per Ankh server. A report holds what was on " +
-                    "screen and your note: no name, account or device ID. Kept on this phone in ${tester.path}",
-                style = Type.small,
-            )
-            if (tester.reports > 0) {
-                PaintButton("Share reports", tester.onShare, Modifier.fillMaxWidth())
+            val saved = "${reports.saved} ${if (reports.saved == 1) "report" else "reports"} on this phone"
+            Text(if (reports.saved > 0 && reports.unsent == 0) "$saved · all sent" else saved, style = Type.heading)
+            Text("Kept in ${reports.path}", style = Type.small)
+            if (reports.saved > 0) {
+                PaintButton("Share reports", reports.onShare, Modifier.fillMaxWidth())
                 if (!confirmClear) {
                     PaintButton(
                         "Clear reports", { confirmClear = true }, Modifier.fillMaxWidth(),
                         pigment = Palette.Pigment(Palette.sheetDeep, Palette.edge, Palette.sheet), textColor = Palette.rubric,
                     )
                 } else {
-                    Text("Delete all ${tester.reports} reports? Share them first if you still need them.", style = Type.body)
+                    Text(
+                        "Delete the ${reports.saved} reports on this phone? Ones already sent stay on the server.",
+                        style = Type.body,
+                    )
                     PaintButton(
-                        "Yes, delete them", { tester.onClear(); confirmClear = false }, Modifier.fillMaxWidth(),
+                        "Yes, delete them", { reports.onClear(); confirmClear = false }, Modifier.fillMaxWidth(),
                         pigment = Palette.unit(UnitColor.CARNELIAN),
                     )
                     PaintButton("Keep them", { confirmClear = false }, Modifier.fillMaxWidth())

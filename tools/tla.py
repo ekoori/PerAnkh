@@ -34,19 +34,26 @@ MIDDLE_FROM = -2150
 # Course words pinned by hand to TLA lemma ids: where the spellings differ (rꜥ / Rꜥw, ḫt / ꞽḫ.t),
 # and where a homograph must go to the meaning the course teaches (kꜣ "ka" 162870, not kꜣ "bull"
 # 162930; zꜣ "son" 125510, not sꜣ "back" 125670). Each was checked against the German
-# translations of sentences using it.
+# translations of sentences using it. Spelling alone also catches homographs the course does not
+# teach: jt "barley" for jtj "father", ḥmt "copper" for ḥm.t "wife", mn "suffer", wn "open",
+# wḏꜣ "go"; those words are pinned too. The two corpora give a few lemmas different ids: rḏi̯
+# "give" is mostly 96700 and 550028 in corpus v18 but 851711 in AES (tools/aes.py), which comes
+# from the TLA's 2018 database, and ḫpr "become" 116230 there is 858535 in AES.
 MANUAL: dict[str, list[str]] = {
     "w:sA": ["125510"], "w:sAt": ["125630"], "w:mwt": ["69040"], "w:xt": ["30750", "850967"],
-    "w:ra": ["400015"], "w:Hmf": ["104690"], "w:dj": ["96700", "550028"], "w:HtpDjnswt": ["111510"],
+    "w:ra": ["400015"], "w:Hmf": ["104690"], "w:dj": ["96700", "550028", "851711"], "w:HtpDjnswt": ["111510"],
     "w:kA": ["162870"], "w:kA2": ["162930"], "w:dd2": ["400140"], "w:Dt": ["181401", "181400"],
     "w:nb": ["81650"], "w:jmAxy": ["25090", "25060"], "w:jnpw": ["27360"], "w:HwtHr": ["99960"],
     "w:xwnjnpw": ["705497"], "w:xwfw": ["400277"], "w:njwt": ["80890"], "w:tAwj": ["168970"],
     "w:ntf": ["90030"], "w:Sw": ["152710"], "w:nwt": ["80940"], "w:Hrw": ["107500", "400034", "400146", "850587"],
     "w:suff": ["10050"], "w:sufk": ["10110"], "w:sufj": ["10030"], "w:sufs": ["10090"], "w:sufsn": ["10100"],
+    "w:jt": ["32820"], "w:Hmt": ["104730"], "w:mn": ["69590"], "w:wDA": ["52090", "52100"],
+    "w:xpr": ["116230", "858535", "854383"], "w:wn": ["46050", "400006"],
 }
 # Lemmas a course word covers besides its own: the course teaches N35 n as "to, for, of", which
-# is both the preposition and the genitive n.ꞽ; wn "exist" is the short form of wnn.
-EXTRA: dict[str, list[str]] = {"w:n": ["79800", "850788"], "w:wn": ["46050", "400006"]}
+# is both the preposition and the genitive n.ꞽ (79800 in corpus v18, 850787 in AES). wn "exist"
+# is pinned above to wnn, of which it is the short form.
+EXTRA: dict[str, list[str]] = {"w:n": ["79800", "850788", "850787"]}
 
 # Which TLA parts of speech can stand for a course word of each kind.
 UPOS = {
@@ -69,6 +76,43 @@ def norm(translit: str) -> str:
 def loose(translit: str) -> str:
     """A second, looser key: z and s merged, as the course spells both s."""
     return norm(translit).replace("z", "s")
+
+
+def course_words(speech_path: str) -> list[tuple[str, str, str | None]]:
+    """The course's words as (id, transliteration, part of speech), from the speech export."""
+    with open(speech_path, encoding="utf-8") as f:
+        clips = json.load(f)
+    return [(c["id"], c["spoken"], c.get("pos")) for c in clips if c["id"].startswith("w:")]
+
+
+def match(words, spelling: dict[str, str], tag) -> tuple[dict[str, list[str]], list[tuple[str, str]]]:
+    """Lemma ids for each course word: hand pins first, else by spelling and part of speech.
+
+    `spelling` maps lemma id to its transliteration; `tag(lemma id)` gives its UPOS tag. Shared
+    with tools/aes.py, whose corpus uses the same lemma ids.
+    """
+    by_norm: dict[str, list[str]] = collections.defaultdict(list)
+    by_loose: dict[str, list[str]] = collections.defaultdict(list)
+    for lid, tr in spelling.items():
+        by_norm[norm(tr)].append(lid)
+        by_loose[loose(tr)].append(lid)
+    found: dict[str, list[str]] = {}
+    missing = []
+    for wid, tr, kind in words:
+        if wid in MANUAL:
+            ids = list(MANUAL[wid])
+        else:
+            ids = by_norm.get(norm(tr)) or by_loose.get(loose(tr)) or []
+            allowed = UPOS.get(kind or "EXPRESSION")
+            if allowed is not None:
+                allowed = allowed | ({"VERB"} if wid in ALSO_VERB else set())
+                ids = [i for i in ids if tag(i) in allowed]
+        ids += [i for i in EXTRA.get(wid, []) if i not in ids]
+        if ids:
+            found[wid] = ids
+        else:
+            missing.append((wid, tr))
+    return found, missing
 
 
 def main(argv: list[str]) -> None:
@@ -104,35 +148,12 @@ def main(argv: list[str]) -> None:
                 pos[lid][tags[i]] += 1
     total = sum(counts.values())
 
-    by_norm: dict[str, list[str]] = collections.defaultdict(list)
-    by_loose: dict[str, list[str]] = collections.defaultdict(list)
-    for lid, tr in spelling.items():
-        by_norm[norm(tr)].append(lid)
-        by_loose[loose(tr)].append(lid)
-
-    with open(speech_path, encoding="utf-8") as f:
-        clips = json.load(f)
-    words = [(c["id"], c["spoken"], c.get("pos")) for c in clips if c["id"].startswith("w:")]
+    words = course_words(speech_path)
 
     def tag(lid: str) -> str:
         return pos[lid].most_common(1)[0][0] if pos[lid] else ""
 
-    found: dict[str, list[str]] = {}
-    missing = []
-    for wid, tr, kind in words:
-        if wid in MANUAL:
-            ids = list(MANUAL[wid])
-        else:
-            ids = by_norm.get(norm(tr)) or by_loose.get(loose(tr)) or []
-            allowed = UPOS.get(kind or "EXPRESSION")
-            if allowed is not None:
-                allowed = allowed | ({"VERB"} if wid in ALSO_VERB else set())
-                ids = [i for i in ids if tag(i) in allowed]
-        ids += [i for i in EXTRA.get(wid, []) if i not in ids]
-        if ids:
-            found[wid] = ids
-        else:
-            missing.append((wid, tr))
+    found, missing = match(words, spelling, tag)
 
     covered = {lid for ids in found.values() for lid in ids}
     covered_tokens = sum(counts[lid] for lid in covered)
@@ -144,7 +165,7 @@ def main(argv: list[str]) -> None:
     print("course words, most frequent first:")
     for wid, ids in sorted(found.items(), key=lambda kv: -sum(counts[i] for i in kv[1])):
         n = sum(counts[i] for i in ids)
-        detail = ", ".join(f"{i}|{spelling[i]}:{counts[i]}" for i in ids)
+        detail = ", ".join(f"{i}|{spelling[i]}:{counts[i]}" for i in ids if i in spelling)
         print(f"  {wid:12} {10_000 * n / total:7.1f}/10k  {detail}")
     if missing:
         print("\nnot found (map by hand in MANUAL):")

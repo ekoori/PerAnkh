@@ -7,8 +7,9 @@ signed with the project's own key. It installs next to v0.1.0 rather than replac
 progress made in v0.1.0 does not carry over; uninstall v0.1.0 once you have moved.
 
 - Targets Android 16 (API 36), as Google Play requires.
-- Tester mode can send reports to the Per Ankh server, over HTTPS, only when the tester taps
-  Send. Reports carry no name, account or device id. New privacy policy (PRIVACY.md).
+- Anyone can report a problem with the flag on a page; tapping Send uploads it to the Per Ankh
+  server over HTTPS (or as soon as the phone is back online). Reports carry no name, account or
+  device id. New privacy policy (PRIVACY.md). Tester mode keeps the testing tools.
 - Alphabet signs are said as their Egyptological sounds ("a", "i", "be", "ḥe", "khe") instead
   of Arabic letter names.
 - Matching pairs no longer plays the wrong word after the last pair.

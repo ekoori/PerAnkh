@@ -3,6 +3,7 @@ package com.krbavcic.pentalingo
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
+import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
@@ -142,20 +143,57 @@ fun AppHost() {
     }
     val knowledge = remember(progress, now) { Knowledge(course, progress, now) }
 
-    // Tester mode puts a flag on every lesson page; a report keeps what was on screen.
+    // Anyone can report a problem with the flag on a page. The report is kept on the phone and sent
+    // at once; if the server cannot be reached it waits, and goes out the next time the app starts
+    // or another report is sent.
     val build = "${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE}${if (BuildConfig.DEBUG) ", debug" else ""})"
-    val reporter = remember(settings.tester) {
-        if (!settings.tester) null else Reporter { category, note, ctx ->
-            scope.launch {
-                reports.add(Report(System.currentTimeMillis(), category, note, build, ctx, UUID.randomUUID().toString()))
-            }
-        }
-    }
     val uploader = remember { ReportUploader(BuildConfig.REPORTS_URL, build) }
     var reportCount by remember { mutableIntStateOf(0) }
     var unsentCount by remember { mutableIntStateOf(0) }
     var sending by remember { mutableStateOf(false) }
     var sendResult by remember { mutableStateOf<String?>(null) }
+
+    /**
+     * Sends every report the server does not have yet, including any saved while sending. Returns
+     * the last outcome, or null if another send was already running (it will pick these up).
+     */
+    suspend fun sendPending(): ReportUploader.Outcome? {
+        if (sending) return null
+        sending = true
+        var last: ReportUploader.Outcome? = null
+        try {
+            while (true) {
+                val pending = reports.unsent()
+                if (pending.isEmpty()) break
+                val outcome = uploader.upload(pending)
+                last = outcome
+                if (outcome is ReportUploader.Outcome.Sent) reports.markSent(outcome.stored)
+                // Stop on failure, or when nothing more was taken (reports the server rejects).
+                if (outcome !is ReportUploader.Outcome.Sent || outcome.stored.isEmpty()) break
+            }
+        } finally {
+            unsentCount = reports.unsent().size
+            reportCount = reports.all().size
+            sending = false
+        }
+        return last
+    }
+
+    val reporter = remember {
+        Reporter { category, note, ctx ->
+            scope.launch {
+                reports.add(Report(System.currentTimeMillis(), category, note, build, ctx, UUID.randomUUID().toString()))
+                val message = when (sendPending()) {
+                    is ReportUploader.Outcome.Sent -> "Report sent. Thank you!"
+                    is ReportUploader.Outcome.Failed -> "Report saved. It will be sent once the app can reach the internet."
+                    null -> "Report saved. It will be sent in a moment."
+                }
+                Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+            }
+        }
+    }
+    // Reports that could not go out last time.
+    LaunchedEffect(Unit) { sendPending() }
     LaunchedEffect(overlay is Overlay.SettingsSheet) {
         if (overlay is Overlay.SettingsSheet) {
             reportCount = reports.all().size
@@ -307,31 +345,25 @@ fun AppHost() {
                                 overlay = Overlay.Message("The privacy policy is at ${BuildConfig.PRIVACY_URL}")
                             }
                         },
-                        tester = TesterOptions(
-                            reports = reportCount,
+                        reports = ReportOptions(
+                            saved = reportCount,
                             unsent = unsentCount,
                             sending = sending,
                             sendResult = sendResult,
+                            path = reports.path,
                             onSend = {
                                 scope.launch {
-                                    sending = true
-                                    sendResult = when (val outcome = uploader.upload(reports.unsent())) {
+                                    sendResult = when (val outcome = sendPending()) {
                                         is ReportUploader.Outcome.Sent -> {
-                                            reports.markSent(outcome.stored)
                                             val n = outcome.stored.size
                                             "Sent $n ${if (n == 1) "report" else "reports"}. Thank you." +
                                                 if (outcome.rejected > 0) " ${outcome.rejected} could not be accepted." else ""
                                         }
                                         is ReportUploader.Outcome.Failed -> outcome.reason
+                                        null -> null
                                     }
-                                    unsentCount = reports.unsent().size
-                                    sending = false
                                 }
                             },
-                            path = reports.path,
-                            onTester = { scope.launch { store.setTester(it) } },
-                            onOpenAnyLesson = { scope.launch { store.setOpenAnyLesson(it) } },
-                            onAnswerButton = { scope.launch { store.setAnswerButton(it) } },
                             onShare = {
                                 scope.launch {
                                     val text = reports.export()
@@ -351,6 +383,11 @@ fun AppHost() {
                                     unsentCount = 0
                                 }
                             },
+                        ),
+                        tester = TesterOptions(
+                            onTester = { scope.launch { store.setTester(it) } },
+                            onOpenAnyLesson = { scope.launch { store.setOpenAnyLesson(it) } },
+                            onAnswerButton = { scope.launch { store.setAnswerButton(it) } },
                         ),
                     )
                     is Overlay.Message -> MessageSheet(current.text)

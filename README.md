@@ -14,7 +14,7 @@ code's packages and Gradle modules keep the working name `pentalingo`. Open sour
 v0.1.0 test build on GitHub is a pre-release under the old id `com.krbavcic.pentalingo`, signed
 with a debug key: later versions install next to it, not over it, and its progress does not carry
 over. Android 8.0 or newer; works offline; the only permission is internet access, used solely to
-send tester reports when asked ([privacy policy](PRIVACY.md)).
+send the problem reports people choose to send ([privacy policy](PRIVACY.md)).
 
 <p align="center">
   <img src="docs/demo.gif" width="320" alt="A lesson in Per Ankh: the path, a new word, a listening question, matching pairs, an explained mistake, sounding out a word never taught, the lesson summary, then the codex, a word, a royal inscription and the amulets">
@@ -75,18 +75,20 @@ send tester reports when asked ([privacy policy](PRIVACY.md)).
   a native Arabic voice reading fully vowelled Arabic script, the one input that reliably produces
   those consonants.
 
-## Tester mode
+## Problem reports and tester mode
 
-Settings → Testing → *Tester mode* puts a flag in the corner of every lesson page, Codex sheet and
-reader. A report saves a category, a note and everything on screen — lesson, exercise, prompt,
+A flag in the corner of every lesson page, Codex sheet and the reader lets anyone report a
+problem. A report holds a category, a note and everything on screen — lesson, exercise, prompt,
 options and accepted answers, the item's spelling, transliteration, respelling, IPA, the Arabic
-text the voice was given and the clip file, the answer given and the verdict — one JSON line per
-report in `/sdcard/Android/data/app.hrana.perankh/files/reports/reports.jsonl`. **Send reports**
-in Settings uploads the ones not yet sent, over HTTPS, to the Per Ankh server at
-perankh.hrana.app, where they wait in SQLite to be triaged with `tools/reports.sh` (see
-[server/README.md](server/README.md)); they can also be shared from Settings or pulled with
-`adb pull`. Nothing is sent without that tap. Two more switches: *Open any lesson* (start locked
-lessons) and *Answer button* (a "solve" chip).
+text the voice was given and the clip file, the answer given and the verdict. Tapping **Send**
+uploads it at once, over HTTPS, to the Per Ankh server at perankh.hrana.app, where reports wait in
+SQLite to be triaged with `tools/reports.sh` (see [server/README.md](server/README.md)). Offline,
+it waits on the phone and goes out the next time the app starts.
+
+Settings → Testing → *Tester mode* adds tools for testing the course: *Open any lesson* (start
+locked lessons), *Answer button* (a "solve" chip), and the reports kept on the phone, which can be
+shared or pulled with `adb pull` from
+`/sdcard/Android/data/app.hrana.perankh/files/reports/reports.jsonl`.
 
 ## Modules
 

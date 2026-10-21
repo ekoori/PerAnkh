@@ -1,6 +1,5 @@
 package com.krbavcic.pentalingo.core.ui
 
-import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -27,7 +26,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -41,7 +39,7 @@ import com.krbavcic.pentalingo.model.SignRole
 import com.krbavcic.pentalingo.model.WordItem
 import com.krbavcic.pentalingo.script.Pronounce
 
-/** Saves a tester's report. Provided only in tester mode, so screens show their flag only then. */
+/** Sends a report about what is on screen. The app provides one; without it, screens show no flag. */
 fun interface Reporter {
     fun report(category: String, note: String, context: Map<String, String>)
 }
@@ -59,10 +57,10 @@ val REPORT_CATEGORIES = listOf(
 )
 
 /**
- * In tester mode, a small flag that opens a report about what is on screen.
+ * A small flag that opens a report about what is on screen.
  *
- * [context] is read when the flag is tapped, so the report holds the screen as the tester saw it.
- * Outside tester mode this draws nothing.
+ * [context] is read when the flag is tapped, so the report holds the screen as the learner saw it.
+ * Sending it is the [Reporter]'s job, which also says how it went. Draws nothing without one.
  */
 @Composable
 fun ReportFlag(context: () -> Map<String, String>, modifier: Modifier = Modifier, size: Dp = 40.dp) {
@@ -70,16 +68,14 @@ fun ReportFlag(context: () -> Map<String, String>, modifier: Modifier = Modifier
     var open by remember { mutableStateOf<Map<String, String>?>(null) }
     RoundIconButton(
         IconKind.FLAG, onClick = { open = context() }, modifier = modifier, size = size,
-        fill = Palette.sheetDeep, tint = Palette.rubric, description = "Report an issue",
+        fill = Palette.sheetDeep, tint = Palette.inkSoft, description = "Report a problem",
     )
     val snapshot = open ?: return
-    val toastContext = LocalContext.current
     ReportDialog(
         context = snapshot,
         onSave = { category, note ->
             reporter.report(category, note, snapshot)
             open = null
-            Toast.makeText(toastContext, "Report saved", Toast.LENGTH_SHORT).show()
         },
         onDismiss = { open = null },
     )
@@ -107,8 +103,14 @@ private fun ReportDialog(
                 .padding(20.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            Text("Report an issue", style = Type.title)
+            Text("Report a problem", style = Type.title)
             Text(summary(context), style = Type.small)
+            Text(
+                "It goes to the people who make Per Ankh, with what is on this screen. No name, account " +
+                    "or device ID is sent.",
+                style = Type.small,
+                color = Palette.inkSoft,
+            )
             FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 for (c in REPORT_CATEGORIES) {
                     val on = c == category
@@ -159,7 +161,7 @@ private fun ReportDialog(
                     pigment = Palette.Pigment(Palette.sheetDeep, Palette.edge, Palette.sheet), textColor = Palette.inkSoft,
                 )
                 PaintButton(
-                    "Save", { onSave(category ?: "Other", note.trim()) }, Modifier.weight(1f),
+                    "Send", { onSave(category ?: "Other", note.trim()) }, Modifier.weight(1f),
                     enabled = category != null || note.isNotBlank(),
                 )
             }

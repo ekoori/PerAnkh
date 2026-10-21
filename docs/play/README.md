@@ -44,12 +44,12 @@ Learn to read Middle Egyptian hieroglyphs: signs, sounds, words and real texts.
 
 Answers for version 0.2.0. Update them before any version that adds accounts or sync.
 
-- Does your app collect or share any of the required user data types? **Yes** (tester reports
+- Does your app collect or share any of the required user data types? **Yes** (problem reports
   only).
 - Is all user data collected by your app encrypted in transit? **Yes**.
 - Do you provide a way for users to request that their data be deleted? **Yes** (privacy policy:
   contact us; reports are anonymous).
-- Data types collected (both **optional**: tester mode only, sent only when the tester taps Send;
+- Data types collected (both **optional**: sent only when the user taps Send in the report form;
   **not shared**; not processed ephemerally; purpose **Analytics**, which is where Play files
   information used to find and fix problems):
   - **App activity → Other user-generated content**: the tester's note.
@@ -86,7 +86,7 @@ each other; no location sharing; no purchases. Expected rating: Everyone / PEGI 
 ## Policy notes
 
 - Target API: 36, as required for new apps and updates since 31 August 2026.
-- Permissions: INTERNET only, for sending tester reports on request.
+- Permissions: INTERNET only, for sending problem reports the user chooses to send.
 - No external payment links in the Play build (see RELEASING.md, "Donations").
-- App access for review: everything is reachable without an account; tester mode is under
-  Settings → Testing.
+- App access for review: everything is reachable without an account. The report flag is on every
+  lesson page; tester tools are under Settings → Testing.

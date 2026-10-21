@@ -6,8 +6,8 @@ https://perankh.hrana.app/privacy.
 ## In short
 
 Per Ankh works offline and collects nothing about you. The only data that ever leaves your phone
-is a problem report that you write yourself, in tester mode, and choose to send. Reports carry no
-name, email address, account or device identifier.
+is a problem report that you write yourself and choose to send. Reports carry no name, email
+address, account or device identifier.
 
 ## What stays on your phone
 
@@ -15,11 +15,11 @@ Your progress (what you have learned, your reviews, awards) and your settings ar
 your phone. If Android's backup is on, Android may copy them to your own Google account, under
 Google's terms; we never receive that copy. Deleting the app deletes the data.
 
-## Problem reports (tester mode)
+## Problem reports
 
-Tester mode is off unless you turn it on in Settings. With it on, a flag on lesson pages lets you
-write a report. Reports are saved on your phone and are sent only when you tap **Send reports**
-in Settings. A report contains:
+A flag on lesson pages, in the Codex and in the reader lets you report a problem. A report is sent
+only when you tap **Send** in the report form; if your phone is offline, it waits on your phone and
+is sent the next time the app starts. A report contains:
 
 - the category you pick and the note you type (please do not put personal details in it);
 - what was on screen: the lesson, the exercise, the hieroglyphs, transliterations and options
