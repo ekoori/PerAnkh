@@ -1,0 +1,7 @@
+#!/bin/sh
+# Triage Per Ankh reports on the server. Runs the CLI as the service user, which alone can read
+# the database:  perankh-reports list | show ID | resolve ID --in VERSION | ...  (see --help)
+if [ "$(id -un)" != perankh ]; then
+    exec sudo -n -u perankh "$0" "$@"
+fi
+PYTHONPATH=/opt/perankh PERANKH_DB=/var/lib/perankh/reports.db exec /usr/bin/python3 -m perankh.cli "$@"

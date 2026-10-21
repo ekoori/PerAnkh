@@ -4,24 +4,61 @@ plugins {
     alias(libs.plugins.kotlin.compose)
 }
 
+// The release key never enters the repository: its keystore and password are Gradle properties
+// (kept in ~/.gradle/gradle.properties) or environment variables. See README, "Release signing".
+fun releaseSigning(property: String, variable: String): String? =
+    providers.gradleProperty(property).orElse(providers.environmentVariable(variable)).orNull
+
+val releaseKeystore = releaseSigning("perAnkhKeystore", "PER_ANKH_KEYSTORE")
+
+// The version, and a version code derived from it so it always rises: 1.2.3 is 10203. Release
+// steps are in RELEASING.md.
+val appVersion = "0.2.0"
+val appVersionCode = appVersion.split(".").map(String::toInt)
+    .let { (major, minor, patch) -> major * 10_000 + minor * 100 + patch }
+
 android {
     namespace = "com.krbavcic.pentalingo"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.krbavcic.pentalingo"
+        // Permanent once on Google Play. Named after hrana.app, like Hrana's own app.hrana.twa.
+        applicationId = "app.hrana.perankh"
         minSdk = 26
-        targetSdk = 35
-        versionCode = 1
-        versionName = "0.1.0"
+        targetSdk = 36
+        versionCode = appVersionCode
+        versionName = appVersion
+
+        buildConfigField("String", "REPORTS_URL", "\"https://perankh.hrana.app/v1/reports\"")
+        buildConfigField("String", "PRIVACY_URL", "\"https://perankh.hrana.app/privacy\"")
+    }
+
+    signingConfigs {
+        create("release") {
+            storeFile = releaseKeystore?.let { file(it) }
+            storePassword = releaseSigning("perAnkhKeystorePassword", "PER_ANKH_KEYSTORE_PASSWORD")
+            keyAlias = "per-ankh"
+            // keytool's default PKCS12 keystore has one password for the store and its key.
+            keyPassword =
+                releaseSigning("perAnkhKeyPassword", "PER_ANKH_KEY_PASSWORD") ?: storePassword
+        }
     }
 
     buildTypes {
         release {
             isMinifyEnabled = false
-            // A personal app, sideloaded: signed with the local debug key so a release build
-            // installs over a debug one without losing progress. Not for a store upload.
-            signingConfig = signingConfigs.getByName("debug")
+            signingConfig = if (releaseKeystore != null) {
+                signingConfigs.getByName("release")
+            } else {
+                // So the project still builds anywhere; but Android installs an update only over
+                // an app signed with the same key, so this APK cannot update a published release.
+                logger.warn(
+                    "Per Ankh: no release key (perAnkhKeystore is not set; see README, \"Release " +
+                        "signing\"). The release APK is signed with the debug key and will not " +
+                        "install over a published release."
+                )
+                signingConfigs.getByName("debug")
+            }
         }
     }
 

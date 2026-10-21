@@ -1,6 +1,8 @@
 package com.krbavcic.pentalingo
 
+import android.content.ActivityNotFoundException
 import android.content.Intent
+import android.net.Uri
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
@@ -53,6 +55,7 @@ import com.krbavcic.pentalingo.core.ui.rememberVoice
 import com.krbavcic.pentalingo.data.ProgressStore
 import com.krbavcic.pentalingo.data.Report
 import com.krbavcic.pentalingo.data.ReportStore
+import com.krbavcic.pentalingo.data.ReportUploader
 import com.krbavcic.pentalingo.data.Settings
 import com.krbavcic.pentalingo.engine.Knowledge
 import com.krbavcic.pentalingo.engine.Recording
@@ -76,6 +79,7 @@ import com.krbavcic.pentalingo.model.Progress
 import com.krbavcic.pentalingo.model.ReadingText
 import com.krbavcic.pentalingo.model.SignItem
 import com.krbavcic.pentalingo.model.WordItem
+import java.util.UUID
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -139,15 +143,26 @@ fun AppHost() {
     val knowledge = remember(progress, now) { Knowledge(course, progress, now) }
 
     // Tester mode puts a flag on every lesson page; a report keeps what was on screen.
+    val build = "${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE}${if (BuildConfig.DEBUG) ", debug" else ""})"
     val reporter = remember(settings.tester) {
         if (!settings.tester) null else Reporter { category, note, ctx ->
-            val build = "${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE}${if (BuildConfig.DEBUG) ", debug" else ""})"
-            scope.launch { reports.add(Report(System.currentTimeMillis(), category, note, build, ctx)) }
+            scope.launch {
+                reports.add(Report(System.currentTimeMillis(), category, note, build, ctx, UUID.randomUUID().toString()))
+            }
         }
     }
+    val uploader = remember { ReportUploader(BuildConfig.REPORTS_URL, build) }
     var reportCount by remember { mutableIntStateOf(0) }
+    var unsentCount by remember { mutableIntStateOf(0) }
+    var sending by remember { mutableStateOf(false) }
+    var sendResult by remember { mutableStateOf<String?>(null) }
     LaunchedEffect(overlay is Overlay.SettingsSheet) {
-        if (overlay is Overlay.SettingsSheet) reportCount = reports.all().size
+        if (overlay is Overlay.SettingsSheet) {
+            reportCount = reports.all().size
+            unsentCount = reports.unsent().size
+        } else {
+            sendResult = null
+        }
     }
 
     fun record(result: SessionResult, lesson: Lesson?, show: Boolean) {
@@ -285,8 +300,34 @@ fun AppHost() {
                             scope.launch { store.reset() }
                             overlay = null
                         },
+                        onPrivacy = {
+                            try {
+                                context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(BuildConfig.PRIVACY_URL)))
+                            } catch (e: ActivityNotFoundException) {
+                                overlay = Overlay.Message("The privacy policy is at ${BuildConfig.PRIVACY_URL}")
+                            }
+                        },
                         tester = TesterOptions(
                             reports = reportCount,
+                            unsent = unsentCount,
+                            sending = sending,
+                            sendResult = sendResult,
+                            onSend = {
+                                scope.launch {
+                                    sending = true
+                                    sendResult = when (val outcome = uploader.upload(reports.unsent())) {
+                                        is ReportUploader.Outcome.Sent -> {
+                                            reports.markSent(outcome.stored)
+                                            val n = outcome.stored.size
+                                            "Sent $n ${if (n == 1) "report" else "reports"}. Thank you." +
+                                                if (outcome.rejected > 0) " ${outcome.rejected} could not be accepted." else ""
+                                        }
+                                        is ReportUploader.Outcome.Failed -> outcome.reason
+                                    }
+                                    unsentCount = reports.unsent().size
+                                    sending = false
+                                }
+                            },
                             path = reports.path,
                             onTester = { scope.launch { store.setTester(it) } },
                             onOpenAnyLesson = { scope.launch { store.setOpenAnyLesson(it) } },
@@ -307,6 +348,7 @@ fun AppHost() {
                                 scope.launch {
                                     reports.clear()
                                     reportCount = 0
+                                    unsentCount = 0
                                 }
                             },
                         ),

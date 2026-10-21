@@ -1,6 +1,7 @@
 package com.krbavcic.pentalingo
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -24,6 +25,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import com.krbavcic.pentalingo.core.ui.PaintButton
 import com.krbavcic.pentalingo.core.ui.Palette
@@ -35,7 +37,11 @@ import com.krbavcic.pentalingo.model.UnitColor
 /** Tester mode's switches and the reports it has saved. */
 class TesterOptions(
     val reports: Int,
+    val unsent: Int,
+    val sending: Boolean,
+    val sendResult: String?,
     val path: String,
+    val onSend: () -> Unit,
     val onTester: (Boolean) -> Unit,
     val onOpenAnyLesson: (Boolean) -> Unit,
     val onAnswerButton: (Boolean) -> Unit,
@@ -49,6 +55,7 @@ fun SettingsSheet(
     onSounds: (Boolean) -> Unit,
     onAutoplay: (Boolean) -> Unit,
     onReset: () -> Unit,
+    onPrivacy: () -> Unit,
     tester: TesterOptions,
 ) {
     var confirming by remember { mutableStateOf(false) }
@@ -93,6 +100,18 @@ fun SettingsSheet(
             style = Type.small,
         )
 
+        Rubric("Privacy")
+        Text(
+            "Per Ankh works offline and collects nothing about you. Your progress stays on this phone. " +
+                "Tester reports leave it only when you send them.",
+            style = Type.small,
+        )
+        Text(
+            "Read the privacy policy",
+            style = Type.small.copy(color = Palette.lapisDeep),
+            modifier = Modifier.clickable(role = Role.Button, onClick = onPrivacy),
+        )
+
         Rubric("Testing")
         Toggle(
             "Tester mode", "A flag on every lesson page saves a report with the exact data on screen",
@@ -104,8 +123,27 @@ fun SettingsSheet(
                 "Answer button", "A “solve” chip that answers for you, to reach a later page quickly",
                 settings.answerButton, tester.onAnswerButton,
             )
-            Text("${tester.reports} ${if (tester.reports == 1) "report" else "reports"} saved", style = Type.heading)
-            Text("Kept in ${tester.path}", style = Type.small)
+            val saved = "${tester.reports} ${if (tester.reports == 1) "report" else "reports"} saved"
+            Text(
+                when {
+                    tester.unsent > 0 -> "$saved · ${tester.unsent} not sent yet"
+                    tester.reports > 0 -> "$saved · all sent"
+                    else -> saved
+                },
+                style = Type.heading,
+            )
+            if (tester.unsent > 0) {
+                PaintButton(
+                    if (tester.sending) "Sending…" else "Send ${tester.unsent} ${if (tester.unsent == 1) "report" else "reports"}",
+                    tester.onSend, Modifier.fillMaxWidth(), enabled = !tester.sending,
+                )
+            }
+            tester.sendResult?.let { Text(it, style = Type.body) }
+            Text(
+                "Sending uses an encrypted connection to the Per Ankh server. A report holds what was on " +
+                    "screen and your note: no name, account or device ID. Kept on this phone in ${tester.path}",
+                style = Type.small,
+            )
             if (tester.reports > 0) {
                 PaintButton("Share reports", tester.onShare, Modifier.fillMaxWidth())
                 if (!confirmClear) {

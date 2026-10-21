@@ -133,7 +133,9 @@ fun LessonScreen(
             Outcome.WRONG -> { sfx.wrong(); haptics.wrong() }
         }
         val ex = session.current
-        if (autoplay && ex != null) {
+        // Pairs say each pair as it is matched; replaying the exercise's own item here would talk
+        // over the last pair with a different word.
+        if (autoplay && ex != null && ex !is Pairs) {
             // Hearing the right answer after every question is how the sounds stick.
             val audioId = (ex as? MultipleChoice)?.prompt?.audio ?: ex.itemId
             if (voice.has(audioId)) voice.play(audioId)

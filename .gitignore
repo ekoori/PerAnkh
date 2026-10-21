@@ -13,3 +13,9 @@ local.properties
 __pycache__/
 # Speech exported for the voice tool; regenerated from content on demand.
 /tools/out/
+# Signing keys stay out of the repository (README, "Release signing").
+*.jks
+*.keystore
+*.p12
+# The report server's SSH login, user@host (server/deploy.sh, tools/reports.sh).
+/server/.host

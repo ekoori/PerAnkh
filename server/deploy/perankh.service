@@ -1,0 +1,46 @@
+[Unit]
+Description=Per Ankh API (tester reports)
+After=network.target
+
+[Service]
+Type=simple
+User=perankh
+Group=perankh
+WorkingDirectory=/opt/perankh
+Environment=PYTHONPATH=/opt/perankh
+Environment=PYTHONDONTWRITEBYTECODE=1
+ExecStart=/usr/bin/python3 -m perankh.serve --db /var/lib/perankh/reports.db --host 127.0.0.1 --port 5101
+Restart=on-failure
+RestartSec=3
+
+# The service may write its database and nothing else, and reach nothing it does not need.
+UMask=0077
+NoNewPrivileges=yes
+ProtectSystem=strict
+ReadWritePaths=/var/lib/perankh
+ProtectHome=yes
+PrivateTmp=yes
+PrivateDevices=yes
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectKernelLogs=yes
+ProtectControlGroups=yes
+ProtectClock=yes
+ProtectHostname=yes
+ProtectProc=invisible
+RestrictNamespaces=yes
+RestrictRealtime=yes
+RestrictSUIDSGID=yes
+LockPersonality=yes
+MemoryDenyWriteExecute=yes
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+SystemCallArchitectures=native
+SystemCallFilter=@system-service
+SystemCallFilter=~@privileged
+CapabilityBoundingSet=
+AmbientCapabilities=
+MemoryMax=256M
+TasksMax=64
+
+[Install]
+WantedBy=multi-user.target

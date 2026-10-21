@@ -1,0 +1,4 @@
+# Files that run on Linux keep LF line endings in every checkout, Windows included: a shell
+# script or systemd unit with CRLF fails on the server.
+*.sh        text eol=lf
+server/**   text eol=lf

@@ -6,11 +6,15 @@ DataStore), with a papyrus-and-paint look.
 
 The name is pr-ꜥnḫ, "House of Life": the temple school where scribes were trained and books were
 copied. It is written with two signs the course teaches in Unit 3, the house 𓉐 and the ankh 𓋹.
-The project, its modules and the application id keep the working name `pentalingo`, so builds
-still install over earlier ones and keep their progress.
+The application id is `app.hrana.perankh`, after hrana.app like its sibling app.hrana.twa; the
+code's packages and Gradle modules keep the working name `pentalingo`. Open source under the
+[MIT licence](LICENSE), published by LOVI Tech; third-party terms in [NOTICE.md](NOTICE.md).
 
-**Download:** the APK is attached to the [latest release](https://github.com/ekoori/PerAnkh/releases/latest).
-It needs Android 8.0 or newer, works offline and asks for no permissions.
+**Download:** not publicly released yet; see [RELEASING.md](RELEASING.md) for the plan. The
+v0.1.0 test build on GitHub is a pre-release under the old id `com.krbavcic.pentalingo`, signed
+with a debug key: later versions install next to it, not over it, and its progress does not carry
+over. Android 8.0 or newer; works offline; the only permission is internet access, used solely to
+send tester reports when asked ([privacy policy](PRIVACY.md)).
 
 <p align="center">
   <img src="docs/demo.gif" width="320" alt="A lesson in Per Ankh: the path, a new word, a listening question, matching pairs, an explained mistake, sounding out a word never taught, the lesson summary, then the codex, a word, a royal inscription and the amulets">
@@ -77,9 +81,12 @@ Settings → Testing → *Tester mode* puts a flag in the corner of every lesson
 reader. A report saves a category, a note and everything on screen — lesson, exercise, prompt,
 options and accepted answers, the item's spelling, transliteration, respelling, IPA, the Arabic
 text the voice was given and the clip file, the answer given and the verdict — one JSON line per
-report in `/sdcard/Android/data/com.krbavcic.pentalingo/files/reports/reports.jsonl`. Pull it with
-`adb pull` or share it from Settings. Two more switches: *Open any lesson* (start locked lessons)
-and *Answer button* (a "solve" chip).
+report in `/sdcard/Android/data/app.hrana.perankh/files/reports/reports.jsonl`. **Send reports**
+in Settings uploads the ones not yet sent, over HTTPS, to the Per Ankh server at
+perankh.hrana.app, where they wait in SQLite to be triaged with `tools/reports.sh` (see
+[server/README.md](server/README.md)); they can also be shared from Settings or pulled with
+`adb pull`. Nothing is sent without that tap. Two more switches: *Open any lesson* (start locked
+lessons) and *Answer button* (a "solve" chip).
 
 ## Modules
 
@@ -93,10 +100,12 @@ and *Answer button* (a "solve" chip).
 | `core-ui` | papyrus, palette, hieroglyph renderer, painted buttons, audio, sound effects |
 | `feature-path` / `feature-lesson` / `feature-codex` | the screens |
 | `app` | activity and navigation |
+| `server/` | the report API (Python, SQLite), its triage tool and deployment ([server/README.md](server/README.md)) |
 
 Everything below `data` is plain JVM and tested without a device: `gradlew :core-script:test
 :core-engine:test :content:test`. The content tests walk the whole course with a perfect learner
-(every exercise must be answerable) and a careless one (nothing may get stuck).
+(every exercise must be answerable) and a careless one (nothing may get stuck). The server's tests
+run with `cd server && python -m unittest discover -s tests`.
 
 ## Tools
 
@@ -113,14 +122,58 @@ Everything below `data` is plain JVM and tested without a device: `gradlew :core
   was heard, and `prune` moves unused takes to `tools/out/takes`. The key comes from
   `$ELEVENLABS_API_KEY`, or from a file outside the repository (`$ELEVENLABS_KEY_FILE`, default
   `~/dev/11labs/.env`), read by path and never stored here.
+- `tools/reports.sh` — triages tester reports on the server over SSH: `list`, `show`, `resolve`,
+  `export` (see [server/README.md](server/README.md)).
 - `tools/tla.py` — counts lemma frequencies in the Thesaurus Linguae Aegyptiae's Earlier Egyptian
   corpus (download it to `tools/out/tla/`; run with `python -I`), reports how much of real Middle
   Egyptian the course's words cover and which frequent words it lacks, and with `--write`
   regenerates `content/.../Frequency.kt`.
 
+## Release signing
+
+Releases are signed with the project's own key, which is not in the repository: alias `per-ankh` in
+a PKCS12 keystore, `~/.android/per-ankh-release.jks` on the machine that builds them. The build
+reads where it is and its password from Gradle properties in `~/.gradle/gradle.properties` (never
+the repository's own `gradle.properties`):
+
+```properties
+perAnkhKeystore=C:/Users/you/.android/per-ankh-release.jks
+perAnkhKeystorePassword=…
+```
+
+or from the environment variables `PER_ANKH_KEYSTORE` and `PER_ANKH_KEYSTORE_PASSWORD`. Write the
+path with forward slashes: a backslash is an escape in a properties file. `perAnkhKeyPassword` /
+`PER_ANKH_KEY_PASSWORD` is needed only by a key whose password differs from its keystore's (JKS
+allows that; keytool's PKCS12 does not). Without `perAnkhKeystore`, `assembleRelease` still works
+but signs with the debug key, and Gradle warns that the APK will not install over a published
+release. The key was made with
+
+```
+keytool -genkeypair -keystore per-ankh-release.jks -storetype PKCS12 -alias per-ankh -keyalg RSA -keysize 4096 -validity 10000 -dname "CN=Igor Krbavcic"
+```
+
+Build with `gradlew :app:assembleRelease`, and before attaching
+`app/build/outputs/apk/release/app-release.apk` to a release check its signer with `apksigner`
+from the SDK's `build-tools` (anyone can check a downloaded APK the same way):
+
+```
+apksigner verify --print-certs app/build/outputs/apk/release/app-release.apk
+```
+
+It must report `CN=Igor Krbavcic` with certificate SHA-256 digest
+`f7ba04de0f40ee4ac623e0c61ecea7cccbf877044817cb13439445aae9d95773`, never `CN=Android Debug`.
+
+**Back up the keystore and its password together, away from the build machine** (a password
+manager can hold both). Android installs an update only if it is signed with the same key as the
+app already installed: without this key no later release could reach an existing install, and
+everyone would have to uninstall and lose their progress. That is what v0.1.0 users have to do
+once now, because v0.1.0 was signed with a development machine's debug key. Debug builds still
+use the debug key, so on a test phone a debug build and a release build cannot replace each other
+either: uninstall when switching between them.
+
 ## Licences
 
-Noto Sans Egyptian Hieroglyphs and Noto Serif: © Google, SIL Open Font License 1.1 (the licence
-is embedded in each font file's name table). Course content written for this project. Word
-frequencies in `Frequency.kt` are derived from the Thesaurus Linguae Aegyptiae (BBAW / SAW
-Leipzig), Earlier Egyptian corpus v18, CC BY-SA 4.0, and are shared under the same licence.
+The code and course content are MIT-licensed, © 2026 LOVI Tech ([LICENSE](LICENSE)). The fonts
+(SIL Open Font License 1.1), the word frequencies (CC BY-SA 4.0, from the Thesaurus Linguae
+Aegyptiae) and the pronunciation clips (generated with ElevenLabs) keep their own terms, listed in
+[NOTICE.md](NOTICE.md). Store listing material for Google Play is in [docs/play](docs/play).
