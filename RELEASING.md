@@ -33,6 +33,8 @@ Pre-release builds are `vX.Y.Z-beta.N` tags whose GitHub releases are marked "pr
   report upload to perankh.hrana.app, privacy policy, MIT licence, units 10–12. Play internal
   testing to follow. v0.1.0 stays a GitHub pre-release; its 17 installs need one reinstall
   (different key and id), which deletes their progress.
+- **0.3.0, GitHub release (2026-10-22).** Sections, units 13–14, the fixes from the first problem
+  reports, and Settings → About, which from now on tells people when a newer release is out.
 - **0.3.x, closed testing.** Fix what testers report; re-record the three weak clips; finish the
   store listing. Two weeks in closed testing before production (a must for new *personal* Play
   accounts, which need 12 testers for 14 days; good practice for an organisation account too).

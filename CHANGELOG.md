@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.3.0 (not yet released)
+## 0.3.0 (2026-10-22)
 
 - Sections. Units 1–9 are Section 1, The Scribe’s School; units 10–14 are Section 2, The
   Storytellers, which waits at the end of the path as a sealed door until Section 1 is finished.

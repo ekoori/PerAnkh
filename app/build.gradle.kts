@@ -13,7 +13,7 @@ val releaseKeystore = releaseSigning("perAnkhKeystore", "PER_ANKH_KEYSTORE")
 
 // The version, and a version code derived from it so it always rises: 1.2.3 is 10203. Release
 // steps are in RELEASING.md.
-val appVersion = "0.2.0"
+val appVersion = "0.3.0"
 val appVersionCode = appVersion.split(".").map(String::toInt)
     .let { (major, minor, patch) -> major * 10_000 + minor * 100 + patch }
 

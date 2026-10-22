@@ -65,7 +65,7 @@ minute, on the phone itself:
 
 1. Open **[the latest release](https://github.com/ekoori/PerAnkh/releases/latest)** in your
    phone's browser.
-2. Under **Assets**, tap the file whose name ends in **.apk** (such as `PerAnkh-0.2.0.apk`), not
+2. Under **Assets**, tap the file whose name ends in **.apk** (such as `PerAnkh-0.3.0.apk`), not
    "Source code". The browser downloads it.
 3. Open the downloaded file, from the browser's download message or from the Files app.
 4. The first time, Android says your browser (or Files app) is not allowed to install apps. Tap
