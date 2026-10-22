@@ -219,8 +219,6 @@ internal fun ChoiceExercise(
 
 private val AUDIO_KINDS = setOf(ExerciseKind.LISTEN_TO_SIGN, ExerciseKind.LISTEN_TO_WORD, ExerciseKind.SOUND_TO_SIGN)
 
-private fun face(c: Choice): String = c.label ?: c.translit ?: c.mdc.orEmpty()
-
 @Composable
 private fun TileFaceSmall(choice: Choice, glyphSize: androidx.compose.ui.unit.Dp = 38.dp) {
     when {
@@ -251,7 +249,7 @@ internal fun ArrangeExercise(
     fun update(next: List<Int>) {
         chosen = next
         onTap()
-        onPending(if (next.isEmpty()) null else Answer.Tiles(next.map { face(ex.tiles[it]) }))
+        onPending(if (next.isEmpty()) null else Answer.Tiles(next.map { ex.tiles[it].face }))
     }
     Instruction(ex.instruction)
     Prompt(ex.prompt, voice, autoplayAudio = false, hint = hint)

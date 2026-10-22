@@ -48,7 +48,7 @@ data class Display(
     val words: List<String> = emptyList(),
 )
 
-/** An option or tile. Exactly one of [label], [mdc] or [translit] is the face; the rest annotate. */
+/** An option or tile. The first of [mdc], [translit] or [label] that is set is the face; the rest annotate. */
 data class Choice(
     val label: String? = null,
     val mdc: String? = null,
@@ -56,7 +56,10 @@ data class Choice(
     /** The item this option stands for, so a wrong pick can be recorded as a confusion. */
     val itemId: String? = null,
     val audio: String? = null,
-)
+) {
+    /** What the tile shows, and so what an [Answer.Tiles] built from it says. */
+    val face: String get() = mdc ?: translit ?: label.orEmpty()
+}
 
 sealed interface Exercise {
     /** The item the exercise is about. */
@@ -183,7 +186,18 @@ data class Pairs(
 fun Exercise.solution(): Answer = when (this) {
     is Teach, is ReadText -> Answer.Seen
     is MultipleChoice -> Answer.Pick(correct)
-    is Arrange -> Answer.Tiles(answers.first())
+    is Arrange -> {
+        // Tap tiles as a learner would, each once, so an answer the tiles cannot build fails here
+        // rather than on every phone.
+        val unused = tiles.indices.toMutableList()
+        Answer.Tiles(
+            answers.first().map { want ->
+                val i = unused.first { tiles[it].face == want }
+                unused.remove(i)
+                tiles[i].face
+            },
+        )
+    }
     is Spell -> Answer.Signs(answers.first())
     is ReadNumber -> Answer.Value(value)
     is BuildNumber -> Answer.Signs(

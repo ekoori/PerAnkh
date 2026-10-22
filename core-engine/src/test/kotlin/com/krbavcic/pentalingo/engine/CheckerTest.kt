@@ -53,6 +53,19 @@ class CheckerTest {
         assertEquals(Outcome.NEAR, checker.check(ex, Answer.Tiles(listOf("the", "in", "sky"))).outcome)
         assertEquals(Outcome.WRONG, checker.check(ex, Answer.Tiles(listOf("in", "sky"))).outcome)
     }
+
+    @Test
+    fun `hieroglyph tiles answer with their hieroglyphs, not their transliterations`() {
+        // The lesson screen once answered with the transliteration under each tile, so every
+        // hieroglyph-arranging question was marked wrong however it was answered.
+        val tiles = listOf(Choice(mdc = "Z1", translit = "nb"), Choice(mdc = "D21:Z1", translit = "r"))
+        val ex = Arrange(
+            "p:x", ExerciseKind.ARRANGE_GLYPHS, "", Display(), tiles,
+            answers = listOf(listOf("D21:Z1", "Z1")), solution = Display(text = "x"),
+        )
+        assertEquals(Outcome.CORRECT, checker.check(ex, Answer.Tiles(listOf(tiles[1].face, tiles[0].face))).outcome)
+        assertEquals(Outcome.CORRECT, checker.check(ex, ex.solution()).outcome)
+    }
 }
 
 class ReadsInOrderTest {

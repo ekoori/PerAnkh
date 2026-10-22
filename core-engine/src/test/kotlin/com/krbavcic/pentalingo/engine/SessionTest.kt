@@ -152,6 +152,25 @@ class SessionTest {
     }
 
     @Test
+    fun `the word to sound out is one sounded out least`() {
+        // After lessons 1 and 2, lesson 3 could stretch to ḥnꜥ, jn or pt; the other two are worn.
+        val worn = mapOf(
+            ExerciseFactory.soundedOut("w:jn") to 3,
+            ExerciseFactory.soundedOut("w:pt") to 2,
+            ExerciseFactory.soundedOut("w:Hna") to 1,
+        )
+        val before = afterLessons("l1", "l2")
+        val p = before.copy(counters = before.counters + worn)
+        val now = t0 + 10 * day
+        val offered = (1L..8L).flatMap { seed ->
+            val s = Session.forLesson(course, p, Fixture.lesson3, now, seed = seed, clock = { now })
+            play(s).map { it.first }.filter { it.kind == ExerciseKind.SOUND_OUT }.map { it.itemId }
+        }
+        assertTrue("never sounded anything out", offered.isNotEmpty())
+        assertEquals(setOf("w:Hna"), offered.toSet())
+    }
+
+    @Test
     fun `memory stays modest after one lesson and grows with spaced reviews`() {
         val p = afterLessons("l1")
         val owl = p.memory("s:G17")!!

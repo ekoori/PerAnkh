@@ -47,7 +47,24 @@ class PronounceTest {
     fun `suffixes join their word, compounds split into words`() {
         assertEquals("renef", Pronounce.latin("rn=f"))
         assertEquals("ḥetep di nesut", Pronounce.latin("ḥtp-dj-nswt"))
-        assertEquals("ḥati ʿai", Pronounce.latin("ḥꜣtj-ꜥ=j"))
+    }
+
+    @Test
+    fun `a compound with a one-letter part is said as one word`() {
+        // Said apart, m-ꜥ was "em", a pause, then a lone "ʿa".
+        assertEquals("emʿa", Pronounce.latin("m-ꜥ"))
+        assertEquals("إِمْعَ", Pronounce.arabic("m-ꜥ"))
+        assertEquals("embaḥef", Pronounce.latin("m-bꜣḥ=f"))
+        assertEquals("ḥatiʿai", Pronounce.latin("ḥꜣtj-ꜥ=j"))
+        assertEquals("imenemḥat", Pronounce.latin("jmn-m-ḥꜣt"))
+        assertEquals("khuninpu", Pronounce.latin("ḫw-n-jnpw"))
+    }
+
+    @Test
+    fun `tj is one sound, with no vowel inside it`() {
+        assertEquals("چُو", Pronounce.arabic("ṯw"))
+        assertEquals("نِچِرْ", Pronounce.arabic("nṯr"))
+        assertEquals(listOf("چِ"), Pronounce.letterArabic("ṯ"))
     }
 
     @Test

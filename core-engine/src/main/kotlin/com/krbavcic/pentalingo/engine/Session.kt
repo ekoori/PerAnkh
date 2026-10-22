@@ -376,7 +376,9 @@ internal class Planner(
 
     /**
      * An untaught word made only of signs the learner has met, to be sounded out — offered once
-     * per lesson at most, and dropped at run time if the learner is struggling.
+     * per lesson at most, and dropped at run time if the learner is struggling. Words sounded out
+     * least often come first: early in the course only a few words qualify, and the same one
+     * lesson after lesson stops being a puzzle.
      */
     private fun stretchWord(newItems: List<String>): WordItem? {
         val met = (progress.memories.keys + newItems).toSet()
@@ -388,7 +390,8 @@ internal class Planner(
                     sign != null && sign.id in met
                 }
         }
-        return candidates.randomOrNull(rng)
+        val fewest = candidates.minOfOrNull { progress.counter(ExerciseFactory.soundedOut(it.id)) } ?: return null
+        return candidates.filter { progress.counter(ExerciseFactory.soundedOut(it.id)) == fewest }.random(rng)
     }
 
     /** Moves each second exercise on a new item at least three steps after its first. */

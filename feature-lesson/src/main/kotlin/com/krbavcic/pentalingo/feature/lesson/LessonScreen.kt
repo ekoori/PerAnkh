@@ -134,8 +134,9 @@ fun LessonScreen(
         }
         val ex = session.current
         // Pairs say each pair as it is matched; replaying the exercise's own item here would talk
-        // over the last pair with a different word.
-        if (autoplay && ex != null && ex !is Pairs) {
+        // over the last pair with a different word. A number's item is one of its numeral signs,
+        // whose clip says the sign's sound, not the number.
+        if (autoplay && ex != null && ex !is Pairs && ex !is ReadNumber && ex !is BuildNumber) {
             // Hearing the right answer after every question is how the sounds stick.
             val audioId = (ex as? MultipleChoice)?.prompt?.audio ?: ex.itemId
             if (voice.has(audioId)) voice.play(audioId)

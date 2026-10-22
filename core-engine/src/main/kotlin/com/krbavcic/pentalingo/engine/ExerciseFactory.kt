@@ -641,7 +641,7 @@ class ExerciseFactory(
             correct = correct,
             explain = "${breakdown(word.mdc)} → ${Translit.display(word.translit)}, “${word.gloss}”.",
             credits = phonetic.map { it.id }.distinct(),
-            tallies = listOf(TALLY_SOUNDED_OUT),
+            tallies = listOf(TALLY_SOUNDED_OUT, soundedOut(word.id)),
         )
     }
 
@@ -770,6 +770,9 @@ class ExerciseFactory(
     companion object {
         const val TALLY_H_FAMILY = "h-family"
         const val TALLY_SOUNDED_OUT = "sounded-out"
+
+        /** How often one word has been sounded out, so the next stretch can be a different word. */
+        fun soundedOut(wordId: String) = "$TALLY_SOUNDED_OUT:$wordId"
     }
 }
 

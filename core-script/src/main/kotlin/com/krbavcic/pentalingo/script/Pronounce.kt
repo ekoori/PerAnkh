@@ -119,11 +119,29 @@ object Pronounce {
         phones
     }
 
-    /** Words of a transliteration: spaces and compound hyphens separate them, "=" joins. */
-    fun words(translit: String): List<String> =
-        translit.replace("=", "").split(' ', '-').filter { it.isNotBlank() }
-
-    fun phones(translit: String): List<List<Phone>> = words(translit).map(::word)
+    /**
+     * The words of a transliteration as said, each as its phones. Spaces separate words and "="
+     * joins a suffix to its word. A compound's hyphen separates its parts too, unless one part is
+     * a single letter, like the m of m-ꜥ "in the hand of" or the n of ḫw-n-jnpw: too slight to
+     * be said apart, it makes the compound one word, "emʿa", "khuninpu".
+     */
+    fun phones(translit: String): List<List<Phone>> =
+        translit.split(' ').filter { it.isNotBlank() }.flatMap { token ->
+            val parts = token.split('-').filter { it.isNotBlank() }
+            val words = parts.map { word(it.replace("=", "")) }
+            val bound = parts.size > 1 && parts.any { Translit.letters(it.substringBefore('=')).size == 1 }
+            if (!bound) {
+                words
+            } else {
+                listOf(
+                    words.reduce { said, next ->
+                        // A part's e is there to start it; after a vowel it has nothing to do.
+                        val dropE = said.lastOrNull()?.isVowel == true && next.firstOrNull()?.kind == Phone.Kind.EPENTHETIC
+                        said + if (dropE) next.drop(1) else next
+                    },
+                )
+            }
+        }
 
     // ---- renderings --------------------------------------------------------------------------
 
@@ -141,7 +159,9 @@ object Pronounce {
 
     private val ARABIC = mapOf(
         "ʔ" to "أ", "ʕ" to "ع", "ħ" to "ح", "χ" to "خ", "ç" to "خ", "q" to "ق", "k" to "ك",
-        "g" to "گ", "t" to "ت", "tʃ" to "تش", "d" to "د", "dʒ" to "ج", "s" to "س", "ʃ" to "ش",
+        // ṯ takes the Persian letter for it, as p and g do: the voice split تش into "te-shu" and
+        // dropped the sh of تْش ("toe"), but says چ as the one sound it is.
+        "g" to "گ", "t" to "ت", "tʃ" to "چ", "d" to "د", "dʒ" to "ج", "s" to "س", "ʃ" to "ش",
         "h" to "ه", "b" to "ب", "p" to "پ", "f" to "ف", "m" to "م", "n" to "ن", "r" to "ر",
         "w" to "و", "j" to "ي",
     )
