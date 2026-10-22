@@ -54,6 +54,7 @@ import com.krbavcic.pentalingo.core.ui.Type
 import com.krbavcic.pentalingo.core.ui.papyrus
 import com.krbavcic.pentalingo.core.ui.rememberVoice
 import com.krbavcic.pentalingo.data.ProgressStore
+import com.krbavcic.pentalingo.data.ReleaseCheck
 import com.krbavcic.pentalingo.data.Report
 import com.krbavcic.pentalingo.data.ReportStore
 import com.krbavcic.pentalingo.data.ReportUploader
@@ -209,6 +210,27 @@ fun AppHost() {
     }
     // Reports that could not go out last time.
     LaunchedEffect(Unit) { sendPending() }
+
+    // Settings → About looks up the newest release: on GitHub, or on the Per Ankh server when
+    // GitHub cannot be reached. Once found, it is kept until the app closes.
+    val releaseCheck = remember {
+        ReleaseCheck(
+            listOf(BuildConfig.LATEST_RELEASE_API, BuildConfig.LATEST_RELEASE_MIRROR),
+            pages = "${BuildConfig.PROJECT_URL}/releases",
+            // The app's name and version, and nothing else (PRIVACY.md).
+            userAgent = "PerAnkh/${BuildConfig.VERSION_NAME}",
+        )
+    }
+    var latestRelease by remember { mutableStateOf<LatestRelease>(LatestRelease.NotChecked) }
+
+    fun openPage(url: String) {
+        try {
+            context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+        } catch (e: ActivityNotFoundException) {
+            overlay = Overlay.Message("No app on this phone can open web pages. The page is $url")
+        }
+    }
+
     LaunchedEffect(overlay is Overlay.SettingsSheet) {
         if (overlay is Overlay.SettingsSheet) {
             reportCount = reports.all().size
@@ -367,13 +389,6 @@ fun AppHost() {
                             scope.launch { store.reset() }
                             overlay = null
                         },
-                        onPrivacy = {
-                            try {
-                                context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(BuildConfig.PRIVACY_URL)))
-                            } catch (e: ActivityNotFoundException) {
-                                overlay = Overlay.Message("The privacy policy is at ${BuildConfig.PRIVACY_URL}")
-                            }
-                        },
                         reports = ReportOptions(
                             saved = reportCount,
                             unsent = unsentCount,
@@ -423,6 +438,24 @@ fun AppHost() {
                                     screen = Screen.RevealPreview(section)
                                 }
                             },
+                        ),
+                        about = AboutOptions(
+                            version = BuildConfig.VERSION_NAME,
+                            build = build,
+                            latest = latestRelease,
+                            onCheck = {
+                                if (latestRelease !is LatestRelease.Checking) {
+                                    latestRelease = LatestRelease.Checking
+                                    scope.launch {
+                                        latestRelease = releaseCheck.latest()?.let(LatestRelease::Found)
+                                            ?: LatestRelease.Unreachable
+                                    }
+                                }
+                            },
+                            onOpen = ::openPage,
+                            latestUrl = "${BuildConfig.PROJECT_URL}/releases/latest",
+                            projectUrl = BuildConfig.PROJECT_URL,
+                            privacyUrl = BuildConfig.PRIVACY_URL,
                         ),
                     )
                     is Overlay.Message -> MessageSheet(current.text)

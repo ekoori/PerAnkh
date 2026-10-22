@@ -4,6 +4,7 @@ Public surface, deliberately small:
 
     GET  /v1/health   -> {"ok": true, "schema": 1}
     POST /v1/reports  -> {"accepted": [...], "duplicate": [...], "rejected": [{"id", "error"}]}
+    GET  /v1/latest   -> {"tag_name", "html_url", "published_at"}: the newest release (releases.py)
 
 Reports are anonymous: the body carries the app version, the Android API level and the reports
 themselves, nothing that identifies a person or a device. The service logs no request bodies and
@@ -20,6 +21,7 @@ import sqlite3
 import threading
 
 from . import db
+from .releases import Releases
 
 MAX_BODY = 256 * 1024
 MAX_REPORTS = 50
@@ -105,10 +107,12 @@ def parse_upload(body: bytes) -> tuple[str | None, int | None, list]:
 class Api:
     """The WSGI callable. One SQLite connection, serialised by a lock: traffic is tiny."""
 
-    def __init__(self, db_path: str):
+    def __init__(self, db_path: str, releases: Releases | None = None):
         self.db_path = db_path
         self.conn = db.connect(db_path)
         self.lock = threading.Lock()
+        # Kept beside the database: the one directory the service may write.
+        self.releases = releases or Releases(os.path.join(os.path.dirname(os.path.abspath(db_path)), "latest.json"))
 
     def __call__(self, environ, start_response):
         method = environ.get("REQUEST_METHOD", "GET")
@@ -122,6 +126,13 @@ class Api:
                 if method != "POST":
                     return self.reply(start_response, 405, {"error": "method not allowed"}, allow="POST")
                 return self.upload(environ, start_response)
+            if path == "/v1/latest":
+                if method not in ("GET", "HEAD"):
+                    return self.reply(start_response, 405, {"error": "method not allowed"}, allow="GET")
+                release = self.releases.latest()
+                if release is None:
+                    return self.reply(start_response, 503, {"error": "the latest release is not known yet"})
+                return self.reply(start_response, 200, release)
             return self.reply(start_response, 404, {"error": "not found"})
         except Invalid as e:
             return self.reply(start_response, 400, {"error": str(e)})

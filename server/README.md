@@ -1,8 +1,9 @@
 # Per Ankh server
 
-A small service that receives tester reports from the app, so they can be triaged, investigated
-and resolved in one place. It can share a server with other sites, and shares nothing with them
-except nginx: its own system user, code directory, database, systemd unit and nginx site.
+A small service that receives problem reports from the app, so they can be triaged, investigated
+and resolved in one place, and that tells apps which release is the newest when they cannot ask
+GitHub themselves. It can share a server with other sites, and shares nothing with them except
+nginx: its own system user, code directory, database, systemd unit and nginx site.
 
 ```
 phone ──HTTPS──▶ nginx (perankh.hrana.app, Let's Encrypt) ──▶ 127.0.0.1:5101 perankh.service ──▶ SQLite
@@ -17,6 +18,7 @@ so no proxy in between sees a report.
 |---|---|
 | `GET /v1/health` | `{"ok": true, "schema": 1}` |
 | `POST /v1/reports` | Body `{"app": {"version", "sdk"}, "reports": [{"id", "at", "category", "note", "app", "context"}]}`; replies `{"accepted": [ids], "duplicate": [ids], "rejected": [{"id", "error"}]}` |
+| `GET /v1/latest` | The newest full release, in the shape of GitHub's release API: `{"tag_name": "v0.3.0", "html_url": "https://github.com/ekoori/PerAnkh/releases/tag/v0.3.0", "published_at"}`; 503 until GitHub has answered once |
 | `GET /privacy` | The privacy policy page (static) |
 
 Everything else is 404, other methods 403/405. The version prefix lets later releases add
@@ -25,6 +27,12 @@ endpoints (accounts, progress) without breaking apps already installed.
 Uploads are idempotent: a report's id is a UUID made on the phone, so a retry after a dropped
 connection stores nothing twice. A bad report is rejected on its own; the rest of the batch is
 kept.
+
+`/v1/latest` backs up the app's own question to GitHub (Settings → About). The service asks
+`api.github.com` at most every half hour, keeps only a full release of this repository (tag,
+page under `github.com/ekoori/PerAnkh/releases/`, publication date), and goes on serving the last
+good answer while GitHub cannot be reached, retrying every five minutes. The answer is kept in
+`/var/lib/perankh/latest.json`, so a restart does not have to ask again.
 
 ## Security and privacy
 
@@ -37,7 +45,11 @@ kept.
   address is used, in memory, only for rate limiting.
 - **Abuse limits**: 10 uploads a minute per address (burst 5) at nginx; 256 KB per request; 50
   reports per upload; strict field validation and length limits; control characters stripped; the
-  service stops accepting reports if the database passes 512 MB.
+  service stops accepting reports if the database passes 512 MB. `/v1/latest` allows 30 requests
+  a minute per address (burst 10), and however often it is asked, GitHub is asked at most twice
+  an hour.
+- **One outgoing connection**: to `api.github.com`, made by the server itself for `/v1/latest`.
+  Nothing about the phone that asked goes with it.
 - **No admin surface on the network**: triage happens over SSH on the server. There is nothing
   to log into over HTTP.
 - **Least privilege**: the service runs as `perankh` (no shell, no home), can write only

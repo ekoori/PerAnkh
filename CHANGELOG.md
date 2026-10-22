@@ -11,6 +11,9 @@
 - Unit 14, Face, Mouth, Eye: body words and the prepositions built on them, place, way, time and
   foreign land, ending with the serpent of the Shipwrecked Sailor: “Who brought you, little one?”
 - The course’s words now cover 60% of real Middle Egyptian text, up from 57%.
+- Settings has three tabs: Settings, Testing and About. About shows the version you have and
+  whether a newer one is out, asking GitHub (or the Per Ankh server, when GitHub cannot be
+  reached), with a link to the newest release. The privacy policy describes the question.
 - Writing a phrase in hieroglyphs is marked right again: the lesson compared the
   transliterations under the tiles with the signs, so every answer counted as wrong.
 - Number exercises no longer play a numeral sign’s own sound (“medj”) after the answer.

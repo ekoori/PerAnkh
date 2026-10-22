@@ -71,12 +71,14 @@ Google made AnkiDroid remove its donation links from its Play build for exactly 
 - **Play build**: no external donation link. Either nothing, or "tips" as Play Billing in-app
   products (Google keeps 15%).
 
-That needs two product flavors (`play`, `github`), differing only there. Add them with the
-donation feature, not before.
+That needs two product flavors (`play`, `github`), differing only there and in the About page's
+check for a newer version, which links to GitHub releases: Play does not allow an app to offer
+updates from elsewhere, so the `play` flavour hides it or links to the Play listing. Add the
+flavours with the donation feature, or before the first Play upload, whichever comes first.
 
 ## Release checklist
 
-1. `gradlew :core-script:test :core-engine:test :content:test` and `cd server && python -m unittest discover -s tests` pass.
+1. `gradlew :core-script:test :core-engine:test :content:test :data:testDebugUnitTest` and `cd server && python -m unittest discover -s tests` pass.
 2. Set `appVersion`; add the CHANGELOG entry.
 3. Build: `gradlew :app:bundleRelease :app:assembleRelease`.
 4. Check the APK: `apksigner verify --print-certs` shows the release certificate, never
@@ -86,3 +88,6 @@ donation feature, not before.
 6. Upload the AAB to the Play track; tag `vX.Y.Z`; create the GitHub release with the APK and
    its SHA-256 (a full release; only `-beta.N` tags are pre-releases).
 7. Resolve the reports fixed in this version: `tools/reports.sh resolve ID --in X.Y.Z`.
+8. On a phone with the previous release, Settings → About offers the new version, and within half
+   an hour so does `https://perankh.hrana.app/v1/latest`, the copy for phones that cannot reach
+   GitHub.

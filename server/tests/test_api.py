@@ -14,6 +14,7 @@ import uuid
 
 from perankh import cli, db
 from perankh.app import MAX_BODY, MAX_REPORTS, Api
+from perankh.releases import FRESH, PAGES, RETRY, Releases
 
 
 def report(**overrides) -> dict:
@@ -121,6 +122,99 @@ class ApiTest(unittest.TestCase):
         too_many = [report() for _ in range(MAX_REPORTS + 1)]
         self.assertEqual(400, self.upload(*too_many)[0])
         self.assertEqual(400, self.upload(report(), app={"version": "1", "sdk": "34"})[0])
+
+
+class LatestTest(unittest.TestCase):
+    """GET /v1/latest, with GitHub stood in for by a function and the clock by a number."""
+
+    def setUp(self):
+        self.dir = tempfile.TemporaryDirectory()
+        self.now = 1_800_000_000.0
+        self.asked = 0
+        self.github = {
+            "tag_name": "v0.3.0", "html_url": PAGES + "tag/v0.3.0", "published_at": "2026-11-02T10:00:00Z",
+            "draft": False, "prerelease": False, "body": "What changed", "assets": [{"name": "PerAnkh-0.3.0.apk"}],
+        }
+        self.apis = []
+
+    def tearDown(self):
+        for api in self.apis:
+            api.conn.close()
+        self.dir.cleanup()
+
+    def fetch(self):
+        self.asked += 1
+        if isinstance(self.github, Exception):
+            raise self.github
+        return self.github
+
+    def api(self, name="a"):
+        folder = os.path.join(self.dir.name, name)
+        os.makedirs(folder, exist_ok=True)
+        cache = os.path.join(folder, "latest.json")
+        api = Api(os.path.join(folder, "reports.db"), Releases(cache, fetch=self.fetch, clock=lambda: self.now))
+        self.apis.append(api)
+        return api
+
+    def get(self, api, method="GET"):
+        seen = {}
+
+        def start_response(status, headers):
+            seen["status"] = int(status.split()[0])
+
+        environ = {"REQUEST_METHOD": method, "PATH_INFO": "/v1/latest", "wsgi.input": io.BytesIO(b"")}
+        payload = json.loads(b"".join(api(environ, start_response)))
+        return seen["status"], payload
+
+    def test_serves_github_s_release_trimmed_to_what_the_app_reads(self):
+        status, payload = self.get(self.api())
+        self.assertEqual(200, status)
+        self.assertEqual(
+            {"tag_name": "v0.3.0", "html_url": PAGES + "tag/v0.3.0", "published_at": "2026-11-02T10:00:00Z"}, payload,
+        )
+
+    def test_asks_github_at_most_every_half_hour(self):
+        api = self.api()
+        self.get(api)
+        self.get(api)
+        self.assertEqual(1, self.asked)
+        self.now += FRESH
+        self.get(api)
+        self.assertEqual(2, self.asked)
+
+    def test_keeps_serving_the_last_answer_while_github_is_down(self):
+        api = self.api()
+        self.get(api)
+        self.now += FRESH
+        self.github = OSError("unreachable")
+        status, payload = self.get(api)
+        self.assertEqual((200, "v0.3.0"), (status, payload["tag_name"]))
+        self.get(api)
+        self.assertEqual(2, self.asked, "asked again before the retry interval")
+        self.now += RETRY
+        self.get(api)
+        self.assertEqual(3, self.asked)
+
+    def test_refuses_what_is_not_a_full_release_of_per_ankh(self):
+        good = dict(self.github)
+        bad = [
+            dict(good, draft=True), dict(good, prerelease=True), dict(good, tag_name="latest"),
+            dict(good, html_url="https://github.com/someone/else/releases/tag/v9.0.0"), ["not", "a", "release"],
+        ]
+        for i, answer in enumerate(bad):
+            self.github = answer
+            self.assertEqual(503, self.get(self.api(f"bad{i}"))[0], answer)
+
+    def test_remembers_the_answer_across_restarts(self):
+        self.get(self.api())
+        self.github = OSError("unreachable")
+        status, payload = self.get(self.api())  # a new service, same directory
+        self.assertEqual((200, "v0.3.0"), (status, payload["tag_name"]))
+        self.assertEqual(1, self.asked)
+
+    def test_only_get(self):
+        self.assertEqual(405, self.get(self.api(), method="POST")[0])
+        self.assertEqual(0, self.asked)
 
 
 class TriageTest(unittest.TestCase):

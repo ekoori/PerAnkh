@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <!-- Only to send tester reports, and only when the tester taps Send. -->
+    <!-- Only to send the problem reports people choose to send, and for Settings → About to look
+         up the newest release. -->
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application

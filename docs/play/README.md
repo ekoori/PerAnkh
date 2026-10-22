@@ -86,7 +86,11 @@ each other; no location sharing; no purchases. Expected rating: Everyone / PEGI 
 ## Policy notes
 
 - Target API: 36, as required for new apps and updates since 31 August 2026.
-- Permissions: INTERNET only, for sending problem reports the user chooses to send.
+- Permissions: INTERNET only, for sending problem reports the user chooses to send and for the
+  About page's check for a newer version.
 - No external payment links in the Play build (see RELEASING.md, "Donations").
+- No updates from outside Play: the About page links to new releases on GitHub, which a Play
+  build must not do (Device and Network Abuse policy). The `play` flavour hides that check or
+  links to the Play listing instead (DEVELOPING.md, "The newest release").
 - App access for review: everything is reachable without an account. The report flag is on every
   lesson page; tester tools are under Settings → Testing.

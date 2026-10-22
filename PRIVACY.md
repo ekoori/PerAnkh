@@ -1,13 +1,14 @@
 # Per Ankh privacy policy
 
-Effective 21 October 2026. Per Ankh is published by LOVI Tech. This policy is also served at
+Effective 22 October 2026. Per Ankh is published by LOVI Tech. This policy is also served at
 https://perankh.hrana.app/privacy.
 
 ## In short
 
-Per Ankh works offline and collects nothing about you. The only data that ever leaves your phone
-is a problem report that you write yourself and choose to send. Reports carry no name, email
-address, account or device identifier.
+Per Ankh works offline and collects nothing about you. Only two things ever go over the internet:
+a problem report that you write yourself and choose to send, and, when you open About in the
+settings, a question about which version of Per Ankh is the newest. Neither carries your name,
+email address, account or device identifier.
 
 ## What stays on your phone
 
@@ -43,6 +44,20 @@ use them for advertising, or combine them with other data.
 A report is kept while the problem is open, and deleted within 12 months of being closed.
 Because reports are anonymous we cannot find "your" reports; if you want one deleted, tell us
 roughly when you sent it and what it said, and we will remove it.
+
+## Checking for a new version
+
+From version 0.3.0, the About page in the settings shows whether a newer version of Per Ankh is
+out. To find out, the app asks GitHub (github.com, a Microsoft service, where Per Ankh's releases
+are published) for the newest release; if GitHub cannot be reached, it asks our server at
+perankh.hrana.app, which answers from its own copy of GitHub's answer. The app asks only when you
+open About, and not again until it is restarted once it has an answer. The question carries the
+app's name and version and nothing else.
+
+Like any connection, it shows the server your phone's network address. GitHub handles that under
+the [GitHub General Privacy Statement](https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement).
+Our server treats it as it does for reports: no access log, the address held in memory only to
+limit how often the server can be asked, and error logs kept for up to 14 days.
 
 ## Children
 

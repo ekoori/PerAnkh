@@ -1,5 +1,5 @@
 [Unit]
-Description=Per Ankh API (tester reports)
+Description=Per Ankh API (problem reports, newest release)
 After=network.target
 
 [Service]
@@ -13,7 +13,8 @@ ExecStart=/usr/bin/python3 -m perankh.serve --db /var/lib/perankh/reports.db --h
 Restart=on-failure
 RestartSec=3
 
-# The service may write its database and nothing else, and reach nothing it does not need.
+# The service may write its database (and its copy of the newest release) and nothing else, and
+# reach nothing it does not need: its one outgoing connection is to api.github.com, for /v1/latest.
 UMask=0077
 NoNewPrivileges=yes
 ProtectSystem=strict

@@ -5,7 +5,7 @@ plugins {
 }
 
 // The release key never enters the repository: its keystore and password are Gradle properties
-// (kept in ~/.gradle/gradle.properties) or environment variables. See README, "Release signing".
+// (kept in ~/.gradle/gradle.properties) or environment variables. See DEVELOPING.md, "Release signing".
 fun releaseSigning(property: String, variable: String): String? =
     providers.gradleProperty(property).orElse(providers.environmentVariable(variable)).orNull
 
@@ -31,6 +31,11 @@ android {
 
         buildConfigField("String", "REPORTS_URL", "\"https://perankh.hrana.app/v1/reports\"")
         buildConfigField("String", "PRIVACY_URL", "\"https://perankh.hrana.app/privacy\"")
+        // Settings → About asks GitHub for the newest release, and the Per Ankh server (which keeps
+        // a copy of GitHub's answer) when GitHub cannot be reached. Either way it links to GitHub.
+        buildConfigField("String", "PROJECT_URL", "\"https://github.com/ekoori/PerAnkh\"")
+        buildConfigField("String", "LATEST_RELEASE_API", "\"https://api.github.com/repos/ekoori/PerAnkh/releases/latest\"")
+        buildConfigField("String", "LATEST_RELEASE_MIRROR", "\"https://perankh.hrana.app/v1/latest\"")
     }
 
     signingConfigs {
@@ -53,7 +58,7 @@ android {
                 // So the project still builds anywhere; but Android installs an update only over
                 // an app signed with the same key, so this APK cannot update a published release.
                 logger.warn(
-                    "Per Ankh: no release key (perAnkhKeystore is not set; see README, \"Release " +
+                    "Per Ankh: no release key (perAnkhKeystore is not set; see DEVELOPING.md, \"Release " +
                         "signing\"). The release APK is signed with the debug key and will not " +
                         "install over a published release."
                 )
