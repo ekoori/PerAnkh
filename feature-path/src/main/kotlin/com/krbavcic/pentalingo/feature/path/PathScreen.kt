@@ -22,6 +22,7 @@ import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -42,6 +43,7 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.krbavcic.pentalingo.core.ui.Glyphs
@@ -54,6 +56,7 @@ import com.krbavcic.pentalingo.core.ui.Rubric
 import com.krbavcic.pentalingo.core.ui.Type
 import com.krbavcic.pentalingo.engine.Knowledge
 import com.krbavcic.pentalingo.model.Course
+import com.krbavcic.pentalingo.model.CourseSection
 import com.krbavcic.pentalingo.model.CourseUnit
 import com.krbavcic.pentalingo.model.ItemKind
 import com.krbavcic.pentalingo.model.Lesson
@@ -76,11 +79,55 @@ fun lessonState(course: Course, progress: Progress, lesson: Lesson): LessonState
 fun lessonFraction(progress: Progress, lesson: Lesson): Float =
     if (lesson.teach.isEmpty()) 0f else lesson.teach.count(progress::isIntroduced).toFloat() / lesson.teach.size
 
+/** One row of the path below the header: a section heading, a sealed door, a unit banner or a lesson. */
+private sealed interface PathRow {
+    val key: String
+
+    data class Heading(val number: Int, val section: CourseSection) : PathRow {
+        override val key get() = "section-${section.id}"
+    }
+
+    data class Door(val number: Int, val section: CourseSection, val lessonsLeft: Int) : PathRow {
+        override val key get() = "door-${section.id}"
+    }
+
+    data class Banner(val number: Int, val unit: CourseUnit) : PathRow {
+        override val key get() = unit.id
+    }
+
+    data class Node(val lesson: Lesson, val unit: CourseUnit, val index: Int) : PathRow {
+        override val key get() = lesson.id
+    }
+}
+
+/**
+ * The path, row by row. Each open section is headed by its name; the first sealed section shows
+ * as a door, and nothing after it is shown at all. A course without sections is one open section.
+ */
+private fun pathRows(course: Course, progress: Progress, revealAll: Boolean): List<PathRow> = buildList {
+    val sections = course.sections.ifEmpty { listOf(CourseSection("all", "", "", "", course.units.map { it.id })) }
+    var unitNumber = 0
+    for ((s, section) in sections.withIndex()) {
+        if (!revealAll && course.isSealed(section, progress)) {
+            val left = sections.take(s).flatMap(course::unitsOf).flatMap { it.lessons }.count { !progress.isCompleted(it.id) }
+            add(PathRow.Door(s + 1, section, left))
+            break
+        }
+        if (course.sections.size > 1) add(PathRow.Heading(s + 1, section))
+        for (unit in course.unitsOf(section)) {
+            add(PathRow.Banner(++unitNumber, unit))
+            unit.lessons.forEachIndexed { i, lesson -> add(PathRow.Node(lesson, unit, i)) }
+        }
+    }
+}
+
 /**
  * The course as a path of medallions, one per lesson, through painted unit banners.
  *
  * Above it, what has been learned — counted in signs, words and readable texts, not points —
  * and, when memories are fading, the invitation to re-ink them.
+ *
+ * @param revealAll show sealed sections too (tester mode, where any lesson may be opened).
  */
 @Composable
 fun PathScreen(
@@ -91,24 +138,19 @@ fun PathScreen(
     onReview: () -> Unit,
     onSettings: () -> Unit,
     modifier: Modifier = Modifier,
+    revealAll: Boolean = false,
 ) {
     val knowledge = remember(progress, now / 60_000) { Knowledge(course, progress, now) }
     val listState = rememberLazyListState()
     val next = course.lessons.firstOrNull { !progress.isCompleted(it.id) }
+    val rows = remember(course, progress, revealAll) { pathRows(course, progress, revealAll) }
 
-    // Open on the learner's place in the course rather than at the top of unit one.
+    // Open on the learner's place in the course rather than at the top of unit one. The header
+    // and the review card come before the rows.
     LaunchedEffect(Unit) {
-        val target = next?.let { lesson ->
-            var index = 2
-            for (unit in course.units) {
-                index++
-                val i = unit.lessons.indexOf(lesson)
-                if (i >= 0) return@let index + i
-                index += unit.lessons.size
-            }
-            null
-        }
-        if (target != null && target > 4) listState.scrollToItem((target - 2).coerceAtLeast(0))
+        val row = rows.indexOfFirst { it is PathRow.Node && it.lesson == next }
+        val target = row + 2
+        if (row >= 0 && target > 4) listState.scrollToItem((target - 2).coerceAtLeast(0))
     }
 
     LazyColumn(
@@ -122,25 +164,93 @@ fun PathScreen(
         item {
             ReviewCard(knowledge, progress, onReview)
         }
-        course.units.forEachIndexed { u, unit ->
-            item(key = unit.id) {
-                UnitBanner(u + 1, unit, progress)
-            }
-            unit.lessons.forEachIndexed { i, lesson ->
-                item(key = lesson.id) {
-                    LessonNode(
-                        lesson = lesson,
-                        unit = unit,
-                        state = lessonState(course, progress, lesson),
-                        fraction = lessonFraction(progress, lesson),
-                        offsetIndex = i,
-                        reading = lesson.reading != null,
-                        onClick = { onOpenLesson(lesson) },
-                    )
-                }
+        items(rows, key = { it.key }) { row ->
+            when (row) {
+                is PathRow.Heading -> SectionHeading(row.number, row.section)
+                is PathRow.Door -> SealedDoor(row.number, row.section, row.lessonsLeft)
+                is PathRow.Banner -> UnitBanner(row.number, row.unit, progress)
+                is PathRow.Node -> LessonNode(
+                    lesson = row.lesson,
+                    unit = row.unit,
+                    state = lessonState(course, progress, row.lesson),
+                    fraction = lessonFraction(progress, row.lesson),
+                    offsetIndex = row.index,
+                    reading = row.lesson.reading != null,
+                    onClick = { onOpenLesson(row.lesson) },
+                )
             }
         }
         item { Spacer(Modifier.height(96.dp)) }
+    }
+}
+
+/** Where a section begins: its number, its name and what it holds. */
+@Composable
+private fun SectionHeading(number: Int, section: CourseSection) {
+    Column(
+        Modifier.fillMaxWidth().padding(start = 24.dp, end = 24.dp, top = 30.dp, bottom = 4.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(4.dp),
+    ) {
+        Rubric("Section $number")
+        Text(section.title, style = Type.title, textAlign = TextAlign.Center)
+        Text(section.promise, style = Type.bodySoft, textAlign = TextAlign.Center)
+    }
+}
+
+/** The arch of a tomb door, or of a stela. */
+private val DoorShape: Shape = RoundedCornerShape(topStart = 96.dp, topEnd = 96.dp, bottomStart = 10.dp, bottomEnd = 10.dp)
+
+/**
+ * The next section, sealed: its name and promise on a stone door with an unbroken clay seal, and
+ * how far there is still to go. What is inside stays a surprise until the seal breaks.
+ */
+@Composable
+private fun SealedDoor(number: Int, section: CourseSection, lessonsLeft: Int) {
+    Column(
+        Modifier
+            .fillMaxWidth()
+            .padding(start = 28.dp, end = 28.dp, top = 36.dp)
+            .clip(DoorShape)
+            .background(Brush.verticalGradient(listOf(Palette.sheetDeep, Palette.edge)))
+            .border(3.dp, Palette.inkSoft.copy(alpha = 0.45f), DoorShape)
+            .padding(horizontal = 22.dp, vertical = 28.dp)
+            .semantics(mergeDescendants = true) { contentDescription = "Section $number, ${section.title}, sealed" },
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(10.dp),
+    ) {
+        Rubric("Section $number", color = Palette.rubricDeep)
+        Text(section.title, style = Type.title, textAlign = TextAlign.Center)
+        SealStamp(section.seal)
+        Text(section.promise, style = Type.body, textAlign = TextAlign.Center)
+        Text(
+            if (lessonsLeft == 1) "The seal breaks when you finish the last lesson before it."
+            else "The seal breaks when you finish the $lessonsLeft lessons before it.",
+            style = Type.small,
+            textAlign = TextAlign.Center,
+        )
+    }
+}
+
+/** A clay seal stamped over the cords that tie a door shut, as on Tutankhamun’s shrines. */
+@Composable
+internal fun SealStamp(sign: String, modifier: Modifier = Modifier, size: Dp = 84.dp) {
+    Box(modifier, contentAlignment = Alignment.Center) {
+        Canvas(Modifier.width(size * 2.6f).height(size)) {
+            val mid = this.size.height / 2
+            drawLine(Palette.ochreDeep, Offset(0f, mid - 10f), Offset(this.size.width, mid + 10f), 7f)
+            drawLine(Palette.ochreDeep, Offset(0f, mid + 10f), Offset(this.size.width, mid - 10f), 7f)
+        }
+        Box(
+            Modifier
+                .size(size)
+                .clip(CircleShape)
+                .background(Brush.radialGradient(listOf(Palette.lerp(Palette.carnelian, Color.White, 0.2f), Palette.carnelian, Palette.rubricDeep)))
+                .border(3.dp, Palette.rubricDeep, CircleShape),
+            contentAlignment = Alignment.Center,
+        ) {
+            Glyphs(sign, quadrat = size * 0.5f, color = { Palette.sheetLight })
+        }
     }
 }
 

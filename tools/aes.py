@@ -55,18 +55,21 @@ STORIES = {
 }
 
 # Units proposed after the present course, in teaching order, as the lemmas each would teach
-# (grammar such as the negative n sḏm.n=f has no lemma of its own, so it is not counted here).
-# Measured cumulatively: each line is what that unit adds to the ones above it. The first three
-# proposed — little words, pronouns, telling a story — are now units 10 to 12 of the course.
+# (grammar such as the stative or ḥr + infinitive has no lemma of its own, so it is not counted
+# here). Measured cumulatively: each line is what that unit adds to the ones above it. Proposals
+# already built — little words, pronouns, telling a story, negation, the body — are units 10–14.
 UNITS = {
-    "Not and do not (n, m, tm, jmi̯)": ["850806", "64410", "854578", "25170", "851706"],
-    "Face, mouth, eye (the body; place, way, time, foreign land)": [
-        "107510", "92560", "28250", "122080", "854577", "854540", "42490", "854543", "114300"],
+    "I have come: the stative (sit, lie, wake, weep, fear, rejoice)": [
+        "105780", "150740", "95940", "94180", "138740", "102060"],
     "Beloved of the god (ḥzi̯, mꜣꜥ-ḫrw, n.tj, jr.j-pꜥ.t, dwꜣ, mrw.t)": [
         "109620", "66750", "400178", "89850", "94060", "854584", "72650"],
     "Lord of Abydos (the full offering formula)": [
         "103", "400976", "119180", "45580", "82090", "113110", "99940", "400114", "138670",
         "71170", "156950"],
+    "Gold and lapis (gold, silver, lapis, precious stone, red, green)": [
+        "81680", "112301", "120700", "34880", "550232", "600304"],
+    "A star fell (sun disk, star, island, sea, eternity)": ["33080", "131180", "21940", "43820", "86570"],
+    "Questions and commands (ptr, jšst, tm, jmi̯)": ["62920", "32050", "854578", "851706", "25170"],
 }
 
 

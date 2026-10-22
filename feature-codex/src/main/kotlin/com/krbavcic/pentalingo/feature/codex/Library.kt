@@ -57,8 +57,15 @@ import com.krbavcic.pentalingo.script.Translit
  * stand in front of and read.
  */
 @Composable
-fun LibraryScreen(knowledge: Knowledge, onOpen: (ReadingText) -> Unit, modifier: Modifier = Modifier) {
+fun LibraryScreen(
+    knowledge: Knowledge,
+    onOpen: (ReadingText) -> Unit,
+    modifier: Modifier = Modifier,
+    /** Texts of sections still sealed: not shown until their seal breaks. */
+    hidden: Set<String> = emptySet(),
+) {
     val course = knowledge.course
+    val texts = course.texts.filter { it.id !in hidden || it.id in knowledge.progress.textsRead }
     LazyColumn(
         modifier.fillMaxSize(),
         contentPadding = PaddingValues(start = 20.dp, end = 20.dp, bottom = 96.dp),
@@ -70,7 +77,7 @@ fun LibraryScreen(knowledge: Knowledge, onOpen: (ReadingText) -> Unit, modifier:
                 Text("Real texts, and how much of each you can read now.", style = Type.bodySoft)
             }
         }
-        items(course.texts, key = { it.id }) { text ->
+        items(texts, key = { it.id }) { text ->
             val r = knowledge.readability(text)
             val read = text.id in knowledge.progress.textsRead
             Column(

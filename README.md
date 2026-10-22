@@ -66,9 +66,12 @@ and its progress does not carry over.
   library shows real inscriptions with the words you know painted in. The codex fills with the
   colours of a tomb wall as you learn, and fades back to ink as memory fades, and says how much of
   a real page your words fill — word frequencies counted in the Thesaurus Linguae Aegyptiae's
-  Middle Egyptian sentences (the whole course reaches 57%). Amulets mark abilities (telling the
+  Middle Egyptian sentences (the whole course reaches 60%). Amulets mark abilities (telling the
   four h's apart, relearning what you forgot, reading the offering formula, knowing a quarter of
   every page), each with its own piece of Egyptian lore.
+- **Sections, sealed until you get there.** The course comes in sections. The next one waits at
+  the end of the path as a sealed door with its name and promise; finishing the section before it
+  breaks the seal, and what is inside is a surprise until then.
 - **Sounds Egyptian really had.** Pronunciation follows the Egyptological convention, generated
   from the transliteration by `core-script` `Pronounce.kt`: e between consonants, and ḥ, ꜥ, ḫ, ẖ, q
   kept distinct (ptḥ is "peteḥ", not "Ptah"). A sign on its own is said as its sound: ꜣ and ꜥ as
@@ -98,7 +101,7 @@ shared or pulled with `adb pull` from
 | `core-script` | Gardiner sign table (generated from the font), Manuel de Codage parser, quadrat layout, transliteration |
 | `core-model` | items, lessons, course, memory, progress, awards — pure Kotlin, serialisable |
 | `core-engine` | FSRS scheduler, exercise factory, answer checker, session planner, recording, awards |
-| `content` | the Middle Egyptian course: 12 units, 66 lessons, ~125 signs, 138 words, phrases, texts; word frequencies |
+| `content` | the Middle Egyptian course: 2 sections, 14 units, 75 lessons, ~130 signs, 158 words, phrases, texts; word frequencies |
 | `data` | `ProgressStore`: one JSON document in DataStore; `ReportStore`: tester reports |
 | `core-ui` | papyrus, palette, hieroglyph renderer, painted buttons, audio, sound effects |
 | `feature-path` / `feature-lesson` / `feature-codex` | the screens |

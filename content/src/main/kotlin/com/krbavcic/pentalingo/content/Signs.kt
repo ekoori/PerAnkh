@@ -357,6 +357,24 @@ internal val SIGNS: List<SignItem> = listOf(
     det("Z6", "man falling", "death, enemies",
         "A quick way of drawing a man struck down. It follows words for death and for enemies."),
 
+    // ---- not and don't; the body -----------------------------------------------------------------
+    logo("D37", "dj", "forearm with a loaf", "give",
+        "An arm holding out a loaf: another way to write dj, “give”, beside the loaf X8 alone.",
+        like = listOf("D36", "X8")),
+    logo("N31", "wꜣt", "road with bushes", "road, way",
+        "A road seen from above, with shrubs along its edges: wꜣt, “way”."),
+    multi("O50", "zp", "threshing floor", "time, occasion",
+        "A round threshing floor strewn with grain. It writes zp, “time”, as in “two times”."),
+    logo("N25", "ḫꜣst", "three hills", "foreign land, desert",
+        "Three sandy hills: the hill country beyond the Nile valley, and every foreign land.",
+        "Egypt itself was flat and black; the rest of the world was hills and red sand."),
+    multi("F13", "wp", "horns", "open; judge",
+        "A pair of cow’s horns. It writes wp, as in wpj, “to open” — and wpj, “to judge”, to part right from wrong."),
+    det("Z9", "crossed sticks", "breaking, crossing, dividing",
+        "Two sticks laid across each other: after words for opening, breaking and crossing."),
+    det("D52", "phallus", "male",
+        "The male member, after words for men and male animals. In m-bꜣḥ, “in the presence of”, it stands for bꜣḥ, the front of a man."),
+
     // ---- numerals ------------------------------------------------------------------------------
     numeral("Z1", "stroke", "wꜥ", "One stroke for each unit. After a sign, a single stroke also says “this sign means what it shows”."),
     numeral("V20", "cattle hobble", "mḏ", "A hobble for cattle: ten."),

@@ -9,6 +9,7 @@ import com.krbavcic.pentalingo.engine.Session
 import com.krbavcic.pentalingo.engine.Teach
 import com.krbavcic.pentalingo.engine.solution
 import com.krbavcic.pentalingo.model.ConceptItem
+import com.krbavcic.pentalingo.model.LessonRecord
 import com.krbavcic.pentalingo.model.PhraseItem
 import com.krbavcic.pentalingo.model.Progress
 import com.krbavcic.pentalingo.model.SignItem
@@ -18,6 +19,7 @@ import com.krbavcic.pentalingo.script.Mdc
 import com.krbavcic.pentalingo.script.Translit
 import kotlin.random.Random
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Assert.fail
@@ -131,6 +133,27 @@ class CourseTest {
             is PhraseItem -> item.tokens.forEach { check(item.id, it.translit) }
             else -> Unit
         }
+    }
+
+    @Test
+    fun `sections hold every unit once, in path order`() {
+        assertEquals(course.units.map { it.id }, course.sections.flatMap { it.units })
+        for (section in course.sections) Mdc.parseChecked(section.seal)
+    }
+
+    @Test
+    fun `a section stays sealed until everything before it is done`() {
+        val (first, second) = course.sections
+        val before = course.unitsOf(first).flatMap { it.lessons }
+        val done = LessonRecord(1, 1.0, t0, t0)
+        val almost = Progress(lessons = before.dropLast(1).associate { it.id to done })
+        assertFalse(course.isSealed(first, Progress()))
+        assertTrue(course.isSealed(second, almost))
+        val inside = course.unitsOf(second).flatMap { it.lessons }
+        assertTrue(course.sealedIds(almost).containsAll(inside.flatMap { it.teach } + inside.mapNotNull { it.reading }))
+        val finished = almost.copy(lessons = almost.lessons + (before.last().id to done))
+        assertFalse(course.isSealed(second, finished))
+        assertTrue(course.sealedIds(finished).none { id -> inside.any { id in it.teach } })
     }
 
     @Test

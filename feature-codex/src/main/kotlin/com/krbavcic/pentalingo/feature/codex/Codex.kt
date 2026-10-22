@@ -71,6 +71,8 @@ fun CodexScreen(
     onSign: (SignItem) -> Unit,
     onWord: (WordItem) -> Unit,
     modifier: Modifier = Modifier,
+    /** Items of sections still sealed: not listed until their seal breaks, unless already met. */
+    hidden: Set<String> = emptySet(),
 ) {
     var shelf by rememberSaveable { mutableStateOf(Shelf.SIGNS) }
     val course = knowledge.course
@@ -92,8 +94,8 @@ fun CodexScreen(
             }
         }
         when (shelf) {
-            Shelf.SIGNS -> SignShelf(knowledge, course, onSign)
-            Shelf.WORDS -> WordShelf(knowledge, course, onWord)
+            Shelf.SIGNS -> SignShelf(knowledge, course, hidden, onSign)
+            Shelf.WORDS -> WordShelf(knowledge, course, hidden, onWord)
         }
     }
 }
@@ -159,8 +161,10 @@ private fun groupOf(sign: SignItem): String = when (sign.role) {
 }
 
 @Composable
-private fun SignShelf(k: Knowledge, course: Course, onSign: (SignItem) -> Unit) {
-    val groups = remember(course) { course.signs.groupBy(::groupOf) }
+private fun SignShelf(k: Knowledge, course: Course, hidden: Set<String>, onSign: (SignItem) -> Unit) {
+    val groups = remember(course, hidden) {
+        course.signs.filter { it.id !in hidden || k.isIntroduced(it.id) }.groupBy(::groupOf)
+    }
     LazyVerticalGrid(
         columns = GridCells.Adaptive(minSize = 78.dp),
         modifier = Modifier.fillMaxSize(),
@@ -233,10 +237,10 @@ fun InkBar(recall: Float, modifier: Modifier = Modifier) {
 }
 
 @Composable
-private fun WordShelf(k: Knowledge, course: Course, onWord: (WordItem) -> Unit) {
-    val order = remember(course) {
+private fun WordShelf(k: Knowledge, course: Course, hidden: Set<String>, onWord: (WordItem) -> Unit) {
+    val order = remember(course, hidden) {
         val lessonIndex = course.lessons.flatMapIndexed { i, l -> l.teach.map { it to i } }.toMap()
-        course.words.sortedBy { lessonIndex[it.id] ?: Int.MAX_VALUE }
+        course.words.filter { it.id !in hidden || k.isIntroduced(it.id) }.sortedBy { lessonIndex[it.id] ?: Int.MAX_VALUE }
     }
     androidx.compose.foundation.lazy.LazyColumn(
         Modifier.fillMaxSize(),

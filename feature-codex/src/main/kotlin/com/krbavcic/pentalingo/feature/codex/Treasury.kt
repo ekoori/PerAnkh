@@ -40,6 +40,7 @@ import com.krbavcic.pentalingo.engine.Knowledge
 import com.krbavcic.pentalingo.model.Award
 import com.krbavcic.pentalingo.model.ItemKind
 import com.krbavcic.pentalingo.model.Memory
+import com.krbavcic.pentalingo.model.Requirement
 import kotlin.math.roundToInt
 
 /**
@@ -49,9 +50,19 @@ import kotlin.math.roundToInt
  * djed pillar and the scarab teach something about Egypt as well as marking progress.
  */
 @Composable
-fun TreasuryScreen(knowledge: Knowledge, onAward: (Award) -> Unit, modifier: Modifier = Modifier) {
+fun TreasuryScreen(
+    knowledge: Knowledge,
+    onAward: (Award) -> Unit,
+    modifier: Modifier = Modifier,
+    /** Items and texts of sections still sealed: their amulets and counts are held back. */
+    hidden: Set<String> = emptySet(),
+) {
     val course = knowledge.course
     val progress = knowledge.progress
+    val awards = course.awards.filter { award ->
+        val req = award.requirement
+        award.id in progress.awards || req !is Requirement.ReadText || req.textId !in hidden
+    }
     LazyVerticalGrid(
         GridCells.Fixed(2),
         modifier.fillMaxSize(),
@@ -62,10 +73,10 @@ fun TreasuryScreen(knowledge: Knowledge, onAward: (Award) -> Unit, modifier: Mod
         item(span = { GridItemSpan(maxLineSpan) }) {
             Column(Modifier.windowInsetsPadding(WindowInsets.statusBars).padding(top = 12.dp)) {
                 Text("Treasury", style = Type.display)
-                Text("${progress.awards.size} of ${course.awards.size} amulets", style = Type.bodySoft)
+                Text("${progress.awards.size} of ${awards.size} amulets", style = Type.bodySoft)
             }
         }
-        items(course.awards, key = { it.id }) { award ->
+        items(awards, key = { it.id }) { award ->
             val earned = award.id in progress.awards
             val at = Awards.progress(award, course, progress, knowledge.now)
             Column(
@@ -100,13 +111,13 @@ fun TreasuryScreen(knowledge: Knowledge, onAward: (Award) -> Unit, modifier: Mod
                 }
             }
         }
-        item(span = { GridItemSpan(maxLineSpan) }) { Ledger(knowledge) }
+        item(span = { GridItemSpan(maxLineSpan) }) { Ledger(knowledge, hidden) }
     }
 }
 
 /** The plain numbers, for those who want them. */
 @Composable
-private fun Ledger(k: Knowledge) {
+private fun Ledger(k: Knowledge, hidden: Set<String>) {
     val p = k.progress
     val signsKnown = k.knownCount(ItemKind.SIGN)
     val wordsKnown = k.knownCount(ItemKind.WORD)
@@ -123,8 +134,8 @@ private fun Ledger(k: Knowledge) {
         verticalArrangement = Arrangement.spacedBy(6.dp),
     ) {
         Rubric("The ledger")
-        Line("Signs known", "$signsKnown of ${k.course.signs.size}")
-        Line("Words known", "$wordsKnown of ${k.course.words.size}")
+        Line("Signs known", "$signsKnown of ${k.course.signs.count { it.id !in hidden || k.isIntroduced(it.id) }}")
+        Line("Words known", "$wordsKnown of ${k.course.words.count { it.id !in hidden || k.isIntroduced(it.id) }}")
         Line("Mastered (safe for three weeks)", "$mastered")
         Line("Fading now", "${k.fadingCount()}")
         Line("Days studied", "${p.studyDays.size}")

@@ -51,6 +51,8 @@ class TesterOptions(
     val onTester: (Boolean) -> Unit,
     val onOpenAnyLesson: (Boolean) -> Unit,
     val onAnswerButton: (Boolean) -> Unit,
+    /** Plays the moment a sealed section opens, without opening it; null if there is no second section. */
+    val onPreviewReveal: (() -> Unit)? = null,
 )
 
 @Composable
@@ -140,6 +142,7 @@ fun SettingsSheet(
                 "Answer button", "A “solve” chip that answers for you, to reach a later page quickly",
                 settings.answerButton, tester.onAnswerButton,
             )
+            tester.onPreviewReveal?.let { PaintButton("Preview the section reveal", it, Modifier.fillMaxWidth()) }
             val saved = "${reports.saved} ${if (reports.saved == 1) "report" else "reports"} on this phone"
             Text(if (reports.saved > 0 && reports.unsent == 0) "$saved · all sent" else saved, style = Type.heading)
             Text("Kept in ${reports.path}", style = Type.small)

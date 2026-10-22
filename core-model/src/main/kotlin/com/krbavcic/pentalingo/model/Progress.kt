@@ -35,6 +35,8 @@ data class Progress(
     /** Named tallies award requirements read, such as h-family discriminations. */
     val counters: Map<String, Int> = emptyMap(),
     val textsRead: Set<String> = emptySet(),
+    /** Sections whose seal the learner has seen broken, so the reveal is shown once. */
+    val revealed: Set<String> = emptySet(),
     val answered: Int = 0,
     val correct: Int = 0,
     val secondsStudied: Long = 0,

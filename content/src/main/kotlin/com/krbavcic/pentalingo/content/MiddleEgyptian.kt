@@ -2,6 +2,7 @@ package com.krbavcic.pentalingo.content
 
 import com.krbavcic.pentalingo.model.Award
 import com.krbavcic.pentalingo.model.Course
+import com.krbavcic.pentalingo.model.CourseSection
 import com.krbavcic.pentalingo.model.CourseUnit
 import com.krbavcic.pentalingo.model.ItemKind
 import com.krbavcic.pentalingo.model.Lesson
@@ -229,6 +230,56 @@ private val UNITS = listOf(
             Lesson("l66", "The storyteller’s test", "Then he said", "P6", checkpoint = true),
         ),
     ),
+    CourseUnit(
+        "u13", "Not and Don’t", "Saying no, and giving orders", UnitColor.LAPIS,
+        "Egyptian puts its no first and gives its orders bare: n, nn and m, and the verb on its own. A good man’s stela shows them at work, in the list of what a life did — and did not do.",
+        listOf(
+            Lesson("l67", "He did not hear", "n, and the back-to-front past", "D35",
+                teach = c("negation") + w("n2") + p("nsDmf", "nsDmnf") + w("msDj") + p("ptahmsDD"),
+                practice = w("nn", "sDm")),
+            Lesson("l68", "Listen! Don’t go!", "Orders, and m", "F21",
+                teach = c("imperative") + p("sDmnj", "jrmAat") + w("mneg") + p("mSm", "mDdst"),
+                practice = w("Smj", "dd", "mAat")),
+            Lesson("l69", "A good man’s stela", "Bread for the hungry", "D37",
+                teach = c("biography") + s("D37") + w("Hqr", "jb2", "jwyt") + p("good1", "good2", "good3"),
+                reading = "t:goodman", practice = w("t", "Hnqt", "rmT")),
+            Lesson("l70", "The test of no", "Not and don’t", "D35", checkpoint = true),
+        ),
+    ),
+    CourseUnit(
+        "u14", "Face, Mouth, Eye", "The body, and the words built on it", UnitColor.OCHRE,
+        "Many little words began as parts of the body: ḥr “face” became ḥr “on”, tp “head” became tp “upon”. Learn the body, a few places and paths — and hear a giant serpent speak.",
+        listOf(
+            Lesson("l71", "Face, mouth, eye", "ḥr, r and jrt", "D2",
+                teach = c("bodywords") + w("Hr2") + p("Hrf") + w("rA") + p("rAnz") + w("jrt") + p("jrtHrw"),
+                practice = w("Hr", "r", "Hrw")),
+            Lesson("l72", "Head, arm, belly", "tp, ꜥ and ẖt", "D1",
+                teach = w("tp2") + p("tpf") + w("a") + p("ak") + w("Xt") + p("HrXtj"),
+                practice = w("tp", "ma")),
+            Lesson("l73", "Place, way, time", "st, wꜣt, zp and ḫꜣst", "N31",
+                teach = w("st2") + p("stf") + s("N31") + w("wAt") + p("wAtnfrt") + s("O50") + w("zp") + s("N25") + w("xAst") + p("xAstnbt"),
+                practice = w("nfr", "nb2")),
+            Lesson("l74", "The serpent speaks", "Who brought you, little one?", "F13",
+                teach = s("F13", "Z9") + w("wpj") + s("D52") + w("mbAH", "nm", "nDs") + p("snake1", "snake2", "snake3"),
+                reading = "t:serpentspeaks", practice = w("jnj", "Tw", "aHan")),
+            Lesson("l75", "The test of the body", "Face, mouth, eye", "D2", checkpoint = true),
+        ),
+    ),
+)
+
+/**
+ * The course in sections. The second is sealed until the first is finished: a door on the path
+ * with its name and promise, opened with a little ceremony when the last lesson before it is done.
+ */
+private val SECTIONS = listOf(
+    CourseSection(
+        "s1", "The Scribe’s School", "From the alphabet to your first real inscriptions", "Y3",
+        listOf("u1", "u2", "u3", "u4", "u5", "u6", "u7", "u9", "u8"),
+    ),
+    CourseSection(
+        "s2", "The Storytellers", "How Egyptians told their stories — and the Shipwrecked Sailor, Ptahhotep and a good man’s stela in their own words", "S20",
+        listOf("u10", "u11", "u12", "u13", "u14"),
+    ),
 )
 
 private val TEXTS = listOf(
@@ -250,6 +301,12 @@ private val TEXTS = listOf(
     ReadingText("t:serpent", "The serpent’s promise", "The Shipwrecked Sailor, Papyrus Hermitage 1115",
         p("serpent1", "serpent2", "serpent3", "serpent4"),
         "Washed up alone on an island, the sailor meets a giant serpent with a golden body and eyebrows of lapis lazuli. It tells him a ship will come for him after four months, and that he will die at home."),
+    ReadingText("t:goodman", "A good man’s stela", "A Middle Kingdom stela from Upper Egypt",
+        p("good1", "good2", "good3"),
+        "Officials listed their good deeds on their stelae so that passers-by would read them aloud: the hungry fed, the thirsty given drink, the boatless ferried, and no wrong done to anyone."),
+    ReadingText("t:serpentspeaks", "The serpent speaks", "The Shipwrecked Sailor, Papyrus Hermitage 1115",
+        p("snake1", "snake2", "snake3"),
+        "Cast ashore, the sailor hears a noise like thunder. A serpent thirty cubits long, golden, with eyebrows of lapis lazuli, rears up before him — and speaks."),
 )
 
 private val UNILITERALS = s(
@@ -330,12 +387,16 @@ private val AWARDS = listOf(
         "Read the serpent’s promise",
         "The serpent called its home the Island of the Ka. It kept its word: the ship came, and the sailor sailed home laden with myrrh and ivory.",
         Requirement.ReadText("t:serpent")),
+    Award("a:goodname", "A Good Name", "rn nfr", "D21:N35",
+        "Read a good man’s stela",
+        "A good name, rn nfr, was what a life left behind: carved on a stela, read aloud by strangers, it kept its owner alive.",
+        Requirement.ReadText("t:goodman")),
 )
 
 /** The Middle Egyptian course. */
 val MIDDLE_EGYPTIAN: Course by lazy {
     Course(
         units = UNITS, items = SIGNS + WORDS + PHRASES + CONCEPTS, texts = TEXTS, awards = AWARDS,
-        frequency = FREQUENCY,
+        frequency = FREQUENCY, sections = SECTIONS,
     )
 }

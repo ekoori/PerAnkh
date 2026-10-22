@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.3.0 (not yet released)
+
+- Sections. Units 1–9 are Section 1, The Scribe’s School; units 10–14 are Section 2, The
+  Storytellers, which waits at the end of the path as a sealed door until Section 1 is finished.
+  The seal then breaks with a short ceremony, shown once, and the section’s units, readings, words
+  and amulets appear. Tester mode can preview the ceremony from Settings.
+- Unit 13, Not and Don’t: n “did not” and n … .n “cannot”, orders and m “don’t”, ending with a
+  good man’s stela (“I gave bread to the hungry and beer to the thirsty”).
+- Unit 14, Face, Mouth, Eye: body words and the prepositions built on them, place, way, time and
+  foreign land, ending with the serpent of the Shipwrecked Sailor: “Who brought you, little one?”
+- The course’s words now cover 60% of real Middle Egyptian text, up from 57%.
+
 ## 0.2.0 (2026-10-22)
 
 A new app as far as Android is concerned: the app id is now `app.hrana.perankh` and builds are

@@ -36,6 +36,26 @@ data class CourseUnit(
 )
 
 /**
+ * A stretch of the course, several units long.
+ *
+ * Every section after the first stays sealed until everything before it is done: the path shows
+ * its name and what it promises, as a sealed door, but not what is inside. When the last lesson
+ * before it is finished the seal breaks and its units appear. Finishing a section is a milestone,
+ * and what comes next is a discovery rather than a list waiting to be worked through.
+ *
+ * @property promise one line on the sealed door: what lies inside.
+ * @property seal the sign stamped on the door.
+ * @property units ids of the units it holds, in path order.
+ */
+data class CourseSection(
+    val id: String,
+    val title: String,
+    val promise: String,
+    val seal: String,
+    val units: List<String>,
+)
+
+/**
  * A real text, for the library.
  *
  * Texts are the point of the whole course: the measure of progress that matters is not how many
@@ -56,6 +76,7 @@ data class ReadingText(
  * @property frequency for each word, how many words in 10,000 of real running text are that
  *   word — counted in a corpus, so that progress can be told as "how much of a real page you can
  *   read" rather than as a number of items.
+ * @property sections how [units] are grouped; a course without sections is one, always open.
  */
 data class Course(
     val units: List<CourseUnit>,
@@ -63,6 +84,7 @@ data class Course(
     val texts: List<ReadingText>,
     val awards: List<Award>,
     val frequency: Map<String, Double> = emptyMap(),
+    val sections: List<CourseSection> = emptyList(),
 ) {
     private val byId: Map<String, Item> = items.associateBy { it.id }
 
@@ -87,4 +109,22 @@ data class Course(
 
     /** The lesson that first teaches an item. */
     fun lessonTeaching(itemId: String): Lesson? = lessons.firstOrNull { itemId in it.teach }
+
+    /** The units of a section, in path order. */
+    fun unitsOf(section: CourseSection): List<CourseUnit> = units.filter { it.id in section.units }
+
+    /** Whether a section is still sealed for this learner: some lesson in a section before it is not done. */
+    fun isSealed(section: CourseSection, progress: Progress): Boolean =
+        sections.takeWhile { it.id != section.id }
+            .any { before -> unitsOf(before).any { unit -> unit.lessons.any { !progress.isCompleted(it.id) } } }
+
+    /**
+     * Everything taught or read in sections still sealed for this learner — held back from the
+     * codex, the library and the treasury, so that what a section holds stays a surprise.
+     */
+    fun sealedIds(progress: Progress): Set<String> =
+        sections.filter { isSealed(it, progress) }
+            .flatMap(::unitsOf).flatMap { it.lessons }
+            .flatMap { it.teach + listOfNotNull(it.reading) }
+            .toSet()
 }

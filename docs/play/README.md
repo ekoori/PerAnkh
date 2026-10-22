@@ -25,7 +25,7 @@ Learn to read Middle Egyptian hieroglyphs: signs, sounds, words and real texts.
 > Per Ankh teaches you to read the hieroglyphs of ancient Egypt, the way Egyptologists learn
 > them: sign by sign, then words, grammar and real inscriptions.
 >
-> • 12 units and 66 lessons, from the 25 alphabet signs to royal cartouches, the offering formula,
+> • 14 units and 75 lessons, from the 25 alphabet signs to royal cartouches, the offering formula,
 > Ptahhotep’s maxims on listening and the giant serpent of the Shipwrecked Sailor.
 > • Every sign, word and phrase is spoken in the Egyptological pronunciation, with the sounds
 > English lacks kept distinct: ḥ, ʿayin, kh and q.

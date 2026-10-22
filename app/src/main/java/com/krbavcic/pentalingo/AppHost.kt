@@ -74,7 +74,9 @@ import com.krbavcic.pentalingo.feature.lesson.Summary
 import com.krbavcic.pentalingo.feature.lesson.SummaryScreen
 import com.krbavcic.pentalingo.feature.path.LessonSheet
 import com.krbavcic.pentalingo.feature.path.PathScreen
+import com.krbavcic.pentalingo.feature.path.RevealScreen
 import com.krbavcic.pentalingo.model.Award
+import com.krbavcic.pentalingo.model.CourseSection
 import com.krbavcic.pentalingo.model.Lesson
 import com.krbavcic.pentalingo.model.Progress
 import com.krbavcic.pentalingo.model.ReadingText
@@ -96,6 +98,8 @@ private sealed interface Screen {
     data class Playing(val session: Session, val lesson: Lesson?) : Screen
     data class Done(val summary: Summary) : Screen
     data class Reading(val text: ReadingText) : Screen
+    /** Tester mode: a section's reveal played on request, changing nothing. */
+    data class RevealPreview(val section: CourseSection) : Screen
 }
 
 private sealed interface Overlay {
@@ -142,6 +146,17 @@ fun AppHost() {
         return
     }
     val knowledge = remember(progress, now) { Knowledge(course, progress, now) }
+
+    // Sections after the first stay sealed until everything before them is done; their contents
+    // are held back everywhere. Testers who may open any lesson see everything.
+    val revealAll = settings.tester && settings.openAnyLesson
+    val hidden = remember(progress, revealAll) { if (revealAll) emptySet() else course.sealedIds(progress) }
+    // A section whose seal has broken opens with its own moment, once: whether it was just earned
+    // or arrived in an update after everything before it was done.
+    var revealedNow by remember { mutableStateOf(emptySet<String>()) }
+    val toReveal = course.sections.drop(1).firstOrNull {
+        it.id !in progress.revealed && it.id !in revealedNow && !course.isSealed(it, progress)
+    }
 
     // Anyone can report a problem with the flag on a page. The report is kept on the phone and sent
     // at once; if the server cannot be reached it waits, and goes out the next time the app starts
@@ -285,7 +300,19 @@ fun AppHost() {
                 }
                 return@CompositionLocalProvider
             }
-            Screen.Home -> Unit
+            is Screen.RevealPreview -> {
+                BackHandler { screen = Screen.Home }
+                RevealScreen(course, s.section, settings.sounds) { screen = Screen.Home }
+                return@CompositionLocalProvider
+            }
+            Screen.Home -> if (toReveal != null) {
+                RevealScreen(course, toReveal, settings.sounds) {
+                    revealedNow = revealedNow + toReveal.id
+                    scope.launch { store.update { it.copy(revealed = it.revealed + toReveal.id) } }
+                    tab = Tab.PATH
+                }
+                return@CompositionLocalProvider
+            }
         }
 
         Box(Modifier.fillMaxSize().papyrus()) {
@@ -297,14 +324,16 @@ fun AppHost() {
                             onOpenLesson = { overlay = Overlay.Preview(it) },
                             onReview = ::startReview,
                             onSettings = { overlay = Overlay.SettingsSheet },
+                            revealAll = revealAll,
                         )
                         Tab.CODEX -> CodexScreen(
                             knowledge,
                             onSign = { overlay = Overlay.SignInfo(it) },
                             onWord = { overlay = Overlay.WordInfo(it) },
+                            hidden = hidden,
                         )
-                        Tab.LIBRARY -> LibraryScreen(knowledge, onOpen = { screen = Screen.Reading(it) })
-                        Tab.TREASURY -> TreasuryScreen(knowledge, onAward = { overlay = Overlay.AwardInfo(it) })
+                        Tab.LIBRARY -> LibraryScreen(knowledge, onOpen = { screen = Screen.Reading(it) }, hidden = hidden)
+                        Tab.TREASURY -> TreasuryScreen(knowledge, onAward = { overlay = Overlay.AwardInfo(it) }, hidden = hidden)
                     }
                 }
                 TabBar(tab) { tab = it }
@@ -388,6 +417,12 @@ fun AppHost() {
                             onTester = { scope.launch { store.setTester(it) } },
                             onOpenAnyLesson = { scope.launch { store.setOpenAnyLesson(it) } },
                             onAnswerButton = { scope.launch { store.setAnswerButton(it) } },
+                            onPreviewReveal = course.sections.getOrNull(1)?.let { section ->
+                                {
+                                    overlay = null
+                                    screen = Screen.RevealPreview(section)
+                                }
+                            },
                         ),
                     )
                     is Overlay.Message -> MessageSheet(current.text)

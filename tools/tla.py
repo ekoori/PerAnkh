@@ -36,7 +36,8 @@ MIDDLE_FROM = -2150
 # 162930; zꜣ "son" 125510, not sꜣ "back" 125670). Each was checked against the German
 # translations of sentences using it. Spelling alone also catches homographs the course does not
 # teach: jt "barley" for jtj "father", ḥmt "copper" for ḥm.t "wife", mn "suffer", wn "open",
-# wḏꜣ "go", dp.t "taste" for dpt "ship"; those words are pinned too, as are words whose lemma
+# wḏꜣ "go", dp.t "taste" for dpt "ship", rʾ "goose" for r "mouth", jr.t "duty" for jrt "eye",
+# wꜣ.t "rope" for wꜣt "way", m "look!" for m "don't"; those words are pinned too, as are words whose lemma
 # has a part of speech or spelling the matcher cannot reach (jm "there" is an adverb, mk "look"
 # the particle m, sqdw "sailors" the lemma sqd). The two corpora give a few lemmas different ids:
 # rḏi̯ "give" is mostly 96700 and 550028 in corpus v18 but 851711 in AES (tools/aes.py), which
@@ -53,13 +54,19 @@ MANUAL: dict[str, list[str]] = {
     "w:xpr": ["116230", "858535", "854383"], "w:wn": ["46050", "400006"],
     "w:jm": ["24640"], "w:mk": ["64440"], "w:sqdw": ["146280"], "w:dpt": ["179040"],
     "w:ky": ["163760", "400645"], "w:wa": ["44150", "600041", "400101"],
+    "w:jb": ["23290"], "w:jb2": ["23360"], "w:n2": ["850806", "78890", "400261"], "w:mneg": ["64410"],
+    "w:nm": ["27410"], "w:rA": ["92560", "92580"], "w:jrt": ["28250", "28290"], "w:wAt": ["42490"],
+    "w:a": ["34360", "34320"], "w:st2": ["854540", "125100"], "w:tp2": ["854577", "170860", "170861"],
+    "w:zp": ["854543", "132300", "132310", "132320"], "w:Hr2": ["107510"],
 }
 # Lemmas a course word covers besides its own: the course teaches N35 n as "to, for, of", which
 # is both the preposition and the genitive n.ꞽ (79800 in corpus v18, 850787 in AES). jn "by" is
 # also taught as the jn that points out a doer, "it is the heart that…" (26670 in corpus v18;
-# AES's 851426 counts jn introducing a question too). wn "exist" is pinned above to wnn, of
-# which it is the short form.
-EXTRA: dict[str, list[str]] = {"w:n": ["79800", "850788", "850787"], "w:jn": ["26670", "851426"]}
+# AES's 851426 counts jn introducing a question too). zp "time" also covers zp 2, "twice", a
+# lemma of its own in AES. wn "exist" is pinned above to wnn, of which it is the short form.
+EXTRA: dict[str, list[str]] = {
+    "w:n": ["79800", "850788", "850787"], "w:jn": ["26670", "851426"], "w:zp": ["70011"],
+}
 
 # Which TLA parts of speech can stand for a course word of each kind.
 UPOS = {
