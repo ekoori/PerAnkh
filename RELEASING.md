@@ -18,13 +18,17 @@ Pre-release builds are `vX.Y.Z-beta.N` tags whose GitHub releases are marked "pr
 
 | Channel | Who | Build | When |
 |---|---|---|---|
-| Debug on the test phone | Igor | `gradlew :app:installDebug`, tester mode on | Every change |
-| Play **internal testing** | Up to 100 named testers | AAB, `gradlew :app:bundleRelease` | Each beta, minutes after upload |
+| Debug on the test phone | Igor | `gradlew :app:installGithubDebug`, tester mode on | Every change |
+| Play **internal testing** | Up to 100 named testers | AAB, `gradlew :app:bundlePlayRelease` | Each beta, minutes after upload |
 | Play **closed testing** | A tester group or list | Same AAB, promoted | Before each public release |
 | GitHub **pre-release** | Anyone, labelled not ready | Signed APK | Beta tags |
-| GitHub **release** | Everyone | Signed APK | From 0.2.0 |
+| GitHub **release** | Everyone | Signed APK, `gradlew :app:assembleGithubRelease` | From 0.2.0 |
 | Play **production** (staged 10% → 50% → 100%) | Everyone | AAB | From 1.0.0 |
 | F-Droid | Everyone, from source | Built by F-Droid | After 1.0, if wanted |
+
+Play gets the `play` flavour and GitHub the `github` one (DEVELOPING.md). They share the app id and
+the release key (Play's copy through Play App Signing), so a Play install and a GitHub install can
+update each other and keep progress.
 
 ## Plan
 
@@ -35,6 +39,8 @@ Pre-release builds are `vX.Y.Z-beta.N` tags whose GitHub releases are marked "pr
   (different key and id), which deletes their progress.
 - **0.3.0, GitHub release (2026-10-22).** Sections, units 13–14, the fixes from the first problem
   reports, and Settings → About, which from now on tells people when a newer release is out.
+- **0.3.1, the first Google Play build.** The `play` flavour, uploaded to internal testing under
+  LOVI Tech's Play developer account (created October 2026). The GitHub build is unchanged.
 - **0.3.x, closed testing.** Fix what testers report; re-record the three weak clips; finish the
   store listing. Two weeks in closed testing before production (a must for new *personal* Play
   accounts, which need 12 testers for 14 days; good practice for an organisation account too).
@@ -45,19 +51,23 @@ Pre-release builds are `vX.Y.Z-beta.N` tags whose GitHub releases are marked "pr
 
 ## Before the Play launch
 
-1. **Play developer account for LOVI Tech.** An organisation account needs a D-U-N-S number for
-   LOVI Tech, and verification takes days to weeks; start early.
+1. **Play developer account for LOVI Tech.** Created in October 2026, as an organisation
+   account: it needs LOVI Tech's D-U-N-S number, and must finish verification before it can
+   publish.
 2. **Android developer verification.** Since 30 September 2026, Android in Brazil, Indonesia,
    Singapore and Thailand installs apps only from verified developers, even outside Play, and this
-   goes worldwide in 2027. Register LOVI Tech in the Android Developer Console with the package
-   name `app.hrana.perankh` and the release key's certificate, or GitHub APKs will stop installing
-   for those users.
-3. **Signing.** Decide once, before the first Play upload:
-   - Let Play generate the app signing key (simplest), and Play installs and GitHub installs carry
-     different signatures: a user cannot move between them without reinstalling.
-   - Or upload the project's own release key to Play App Signing ("export and upload a key from a
-     Java keystore"), and keep a separate upload key: the same signature everywhere. Recommended,
-     since GitHub (and maybe F-Droid) builds are planned.
+   goes worldwide in 2027. Creating the app in Play Console registers `app.hrana.perankh` to LOVI
+   Tech's account, and Play App Signing with the release key (3.) proves the key. Then check on the
+   Play Console home page that the package is registered with the release key's certificate, which
+   is what keeps GitHub APKs installing for those users; Play Console also registers apps
+   distributed outside Play.
+3. **Signing.** Decided: the project's own release key, the same signature everywhere. New apps
+   get a Google-generated key by default, so before the first upload open Play app signing ("Test
+   and release" or "Protected with Play", depending on the Console's layout), choose *Change the
+   app signing key* and *Provide a copy of your app signing key*, and follow the PEPK steps shown
+   there with `~/.android/per-ankh-release.jks`, alias `per-ankh`. The bundle is signed with the
+   same key, which then also serves as the upload key. Never use *Upgrade key*: Android 13 and
+   later would then refuse GitHub APKs as updates of Play installs.
    The release key's certificate reads `CN=Igor Krbavcic`. It was kept for the first public
    release, 0.2.0, so it is now fixed: every later release, on GitHub and, through Play App
    Signing, on Play, must be signed with it, or installs cannot update.
@@ -73,18 +83,20 @@ Google made AnkiDroid remove its donation links from its Play build for exactly 
 - **Play build**: no external donation link. Either nothing, or "tips" as Play Billing in-app
   products (Google keeps 15%).
 
-That needs two product flavors (`play`, `github`), differing only there and in the About page's
-check for a newer version, which links to GitHub releases: Play does not allow an app to offer
-updates from elsewhere, so the `play` flavour hides it or links to the Play listing. Add the
-flavours with the donation feature, or before the first Play upload, whichever comes first.
+The two product flavours exist since 0.3.1, for the About page's check for a newer version: Play
+does not allow an app to offer updates from elsewhere, so the `play` flavour links to the Play
+listing instead. The donation link goes into the `github` flavour only.
 
 ## Release checklist
 
 1. `gradlew :core-script:test :core-engine:test :content:test :data:testDebugUnitTest` and `cd server && python -m unittest discover -s tests` pass.
 2. Set `appVersion`; add the CHANGELOG entry.
-3. Build: `gradlew :app:bundleRelease :app:assembleRelease`.
-4. Check the APK: `apksigner verify --print-certs` shows the release certificate, never
-   `CN=Android Debug`; `aapt2 dump badging` shows `targetSdkVersion:'36'` and the version.
+3. Build: `gradlew :app:bundlePlayRelease :app:assembleGithubRelease`. The bundle is
+   `app/build/outputs/bundle/playRelease/app-play-release.aab`, the APK
+   `app/build/outputs/apk/github/release/app-github-release.apk`.
+4. Check them: `apksigner verify --print-certs` on the APK and `keytool -printcert -jarfile` on the
+   bundle show the release certificate, never `CN=Android Debug`; `aapt2 dump badging` shows
+   `targetSdkVersion:'36'` and the version.
 5. Install on the test phone over the previous release (progress must survive); play a lesson,
    send a test report, then resolve it with `tools/reports.sh`.
 6. Upload the AAB to the Play track; tag `vX.Y.Z`; create the GitHub release with the APK and

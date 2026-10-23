@@ -20,11 +20,16 @@ next to it rather than over it.
 You need JDK 17 and the Android SDK with platform 36; Android Studio brings both.
 
 ```bash
-gradlew :app:installDebug          # a debug build, on the connected phone
-gradlew :app:assembleRelease       # a release APK; see "Release signing"
+gradlew :app:installGithubDebug    # a debug build, on the connected phone
+gradlew :app:assembleGithubRelease # the release APK for GitHub; see "Release signing"
+gradlew :app:bundlePlayRelease     # the release bundle for Google Play
 gradlew :core-script:test :core-engine:test :content:test :data:testDebugUnitTest
 cd server && python -m unittest discover -s tests
 ```
+
+The app has two flavours, `github` and `play`: the same app, with the same app id and key, except
+that the Play build's About page links to Google Play instead of looking for releases on GitHub
+(see "The newest release").
 
 Everything below `data` is plain JVM and tested without a device. The content tests walk the
 whole course with a perfect learner (every exercise must be answerable, and arranging answers are
@@ -107,9 +112,9 @@ a button, the current one a link to its notes. `data` `ReleaseCheck.kt`; the URL
 config fields in `app/build.gradle.kts`. The question carries only the app's version, and
 [PRIVACY.md](PRIVACY.md) says so.
 
-A Google Play build must not offer updates from outside Play (the Device and Network Abuse
-policy). When the `play` flavour arrives ([RELEASING.md](RELEASING.md), "Donations"), it hides
-this check or links to the Play listing instead.
+That is the `github` flavour. A Google Play build must not offer updates from outside Play (the
+Device and Network Abuse policy), so in the `play` flavour, where `BuildConfig.STORE_URL` is set,
+About never asks and links to Per Ankh on Google Play instead.
 
 ## Tools
 
@@ -153,7 +158,7 @@ perAnkhKeystorePassword=…
 or from the environment variables `PER_ANKH_KEYSTORE` and `PER_ANKH_KEYSTORE_PASSWORD`. Write the
 path with forward slashes: a backslash is an escape in a properties file. `perAnkhKeyPassword` /
 `PER_ANKH_KEY_PASSWORD` is needed only by a key whose password differs from its keystore's (JKS
-allows that; keytool's PKCS12 does not). Without `perAnkhKeystore`, `assembleRelease` still works
+allows that; keytool's PKCS12 does not). Without `perAnkhKeystore`, a release build still works
 but signs with the debug key, and Gradle warns that the APK will not install over a published
 release. The key was made with
 
@@ -161,12 +166,12 @@ release. The key was made with
 keytool -genkeypair -keystore per-ankh-release.jks -storetype PKCS12 -alias per-ankh -keyalg RSA -keysize 4096 -validity 10000 -dname "CN=Igor Krbavcic"
 ```
 
-Build with `gradlew :app:assembleRelease`, and before attaching
-`app/build/outputs/apk/release/app-release.apk` to a release check its signer with `apksigner`
-from the SDK's `build-tools` (anyone can check a downloaded APK the same way):
+Build with `gradlew :app:assembleGithubRelease`, and before attaching
+`app/build/outputs/apk/github/release/app-github-release.apk` to a release check its signer with
+`apksigner` from the SDK's `build-tools` (anyone can check a downloaded APK the same way):
 
 ```
-apksigner verify --print-certs app/build/outputs/apk/release/app-release.apk
+apksigner verify --print-certs app/build/outputs/apk/github/release/app-github-release.apk
 ```
 
 It must report `CN=Igor Krbavcic` with certificate SHA-256 digest

@@ -2,6 +2,52 @@
 
 Everything the Play Console asks for, ready to paste. Graphics are in this folder.
 
+## First upload, step by step
+
+Per Ankh is published from LOVI Tech's organisation account, created in October 2026. An
+organisation account does not need the 12 testers for 14 days that new personal accounts need
+before production.
+
+1. **Finish the account.** Play Console → Settings → Developer account: verify the contact and
+   developer email and phone with their codes, and complete identity and organisation
+   verification (D-U-N-S number, organisation website). Play shows an organisation's legal name,
+   address, developer email and developer phone on the store, so give a business phone number.
+2. **Create the app.** Home → *Create app*: the name below, default language, *App*, *Free*. If it
+   asks for the package name, it is `app.hrana.perankh`; creating the app registers that name to
+   LOVI Tech for Android developer verification.
+3. **Signing, before the first upload.** New apps get a Google-generated key unless this is
+   changed first. Open Play app signing (under *Test and release* → *App integrity*, or *Protected
+   with Play* → *Play Store distribution*), choose *Change the app signing key* → *Provide a copy
+   of your app signing key*, download the PEPK tool and encryption key that page offers, and run
+   the command it shows with the release keystore (`~/.android/per-ankh-release.jks`, the path
+   written out in full) and `--alias=per-ankh`; it asks for the keystore password. Upload the zip
+   it writes, then delete the zip. A separate upload key is optional; without one, the release key also signs uploads, which
+   is what the build does. The page must then show the app signing key certificate SHA-256
+   `F7:BA:04:DE:0F:40:EE:4A:C6:23:E0:C6:1E:CE:A7:CC:CB:F8:77:04:48:17:CB:13:43:94:45:AA:E9:D9:57:73`,
+   the same as the GitHub APKs. Never use *Upgrade key* (RELEASING.md, "Before the Play launch").
+4. **Store listing.** *Grow users* → *Store presence* → *Main store listing* and *Store settings*:
+   texts from "App details", graphics from "Graphics".
+5. **App content.** *Policy and programs* → *App content*: privacy policy, app access (everything
+   reachable without an account), ads (none), content rating, target audience, data safety,
+   advertising ID (not used), government, financial, health and news declarations, all from the
+   sections below.
+6. **Internal testing.** *Test and release* → *Testing* → *Internal testing*: add a testers list
+   with your own Google account, then *Create new release* and upload
+   `app/build/outputs/bundle/playRelease/app-play-release.aab` (`gradlew :app:bundlePlayRelease`),
+   release name `0.3.1`, notes from CHANGELOG.md. Roll it out, open the opt-in link on the test
+   phone and accept. Play must offer **Update** over the GitHub 0.3.0 already there: that proves
+   the signature matches, and progress stays. Settings → About then says "Google Play keeps Per
+   Ankh up to date".
+7. **Production.** When the plan in RELEASING.md says so: a production release from the same
+   bundle (or promoted from testing), countries, then *Publishing overview* → *Send changes for
+   review*. The first review of a new account's app can take several days.
+8. **After review.** On the Play Console home page, check that `app.hrana.perankh` shows as
+   registered for Android developer verification, with the certificate above. That is what keeps
+   the GitHub APK installing where Android requires verified developers (Brazil, Indonesia,
+   Singapore and Thailand since 30 September 2026; everywhere in 2027).
+
+Console menu names move between Play Console versions; the help pages name the current ones.
+
 ## App details
 
 | Field | Value |
@@ -42,7 +88,8 @@ Learn to read Middle Egyptian hieroglyphs: signs, sounds, words and real texts.
 
 ## Data safety form
 
-Answers for version 0.2.0. Update them before any version that adds accounts or sync.
+Answers for the Play build from 0.3.1 (the GitHub build's check for a newer version is not in it).
+Update them before any version that adds accounts or sync.
 
 - Does your app collect or share any of the required user data types? **Yes** (problem reports
   only).
@@ -80,8 +127,8 @@ each other; no location sharing; no purchases. Expected rating: Everyone / PEGI 
 | Asset | Requirement | File |
 |---|---|---|
 | App icon | 512×512 PNG, 32-bit | `icon-512.png` |
-| Feature graphic | 1024×500 PNG or JPG | `feature-graphic.png` |
-| Phone screenshots | 2–8, 16:9 or 9:16, 320–3840 px | `screenshots/*.png` (1052×2010) |
+| Feature graphic | 1024×500 PNG (no alpha) or JPG | `feature-graphic.png` |
+| Phone screenshots | 2–8, PNG (no alpha) or JPG, 320–3840 px; for Play's recommendations at least 4 at 9:16 and 1080×1920 or more | `screenshots/*.png` (1080×1920) |
 
 ## Policy notes
 
@@ -89,8 +136,9 @@ each other; no location sharing; no purchases. Expected rating: Everyone / PEGI 
 - Permissions: INTERNET only, for sending problem reports the user chooses to send and for the
   About page's check for a newer version.
 - No external payment links in the Play build (see RELEASING.md, "Donations").
-- No updates from outside Play: the About page links to new releases on GitHub, which a Play
-  build must not do (Device and Network Abuse policy). The `play` flavour hides that check or
-  links to the Play listing instead (DEVELOPING.md, "The newest release").
+- No updates from outside Play: in the GitHub build the About page links to new releases on
+  GitHub, which a Play build must not do (Device and Network Abuse policy). The `play` flavour
+  never looks for them and links to the Play listing instead (DEVELOPING.md, "The newest
+  release").
 - App access for review: everything is reachable without an account. The report flag is on every
   lesson page; tester tools are under Settings → Testing.

@@ -89,6 +89,11 @@ class AboutOptions(
     val latestUrl: String,
     val projectUrl: String,
     val privacyUrl: String,
+    /**
+     * The app's page on Google Play, in the build from Google Play, which Play keeps up to date; null
+     * in the build from GitHub, which looks up the newest release itself.
+     */
+    val storeUrl: String?,
 )
 
 private enum class Page(val label: String) { SETTINGS("Settings"), TESTING("Testing"), ABOUT("About") }
@@ -242,9 +247,12 @@ private fun TestingPage(settings: Settings, reports: ReportOptions, tester: Test
 
 @Composable
 private fun AboutPage(about: AboutOptions) {
-    // Each time the page opens without an answer, ask again.
+    val store = about.storeUrl
+    // Each time the page opens without an answer, ask again. A build from Google Play never asks.
     LaunchedEffect(Unit) {
-        if (about.latest is LatestRelease.NotChecked || about.latest is LatestRelease.Unreachable) about.onCheck()
+        if (store == null && (about.latest is LatestRelease.NotChecked || about.latest is LatestRelease.Unreachable)) {
+            about.onCheck()
+        }
     }
     Row(verticalAlignment = Alignment.CenterVertically) {
         // pr-ꜥnḫ, "House of Life": the house and the ankh.
@@ -254,7 +262,12 @@ private fun AboutPage(about: AboutOptions) {
             Text("Version ${about.build}", style = Type.small)
         }
     }
-    NewestRelease(about)
+    if (store != null) {
+        Text("Google Play keeps Per Ankh up to date.", style = Type.body)
+        Link("Per Ankh on Google Play") { about.onOpen(store) }
+    } else {
+        NewestRelease(about)
+    }
 
     Rubric("About the voice")
     Text(
@@ -282,12 +295,16 @@ private fun AboutPage(about: AboutOptions) {
     )
 
     Rubric("Privacy")
+    // Only the build from GitHub asks for the newest release.
+    val releaseQuestion = if (store != null) "" else {
+        " To see whether a newer version is out, this page asks GitHub, or our own server if GitHub " +
+            "cannot be reached; the question carries only the app’s version."
+    }
     Text(
         "Per Ankh works offline and collects nothing about you; your progress stays on this phone. " +
             "If you report a problem with the flag on a page, the report goes to the people who make " +
             "Per Ankh over an encrypted connection, with what was on screen. No name, account or " +
-            "device ID is sent. To see whether a newer version is out, this page asks GitHub, or our " +
-            "own server if GitHub cannot be reached; the question carries only the app’s version.",
+            "device ID is sent.$releaseQuestion",
         style = Type.small,
     )
     Link("Read the privacy policy") { about.onOpen(about.privacyUrl) }

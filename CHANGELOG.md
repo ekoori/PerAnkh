@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.3.1 (unreleased)
+
+- The first build for Google Play. Google Play keeps its copies up to date, so their About page
+  links to Per Ankh on Google Play instead of looking for releases on GitHub. Nothing else
+  changes.
+
 ## 0.3.0 (2026-10-22)
 
 - Sections. Units 1–9 are Section 1, The Scribe’s School; units 10–14 are Section 2, The

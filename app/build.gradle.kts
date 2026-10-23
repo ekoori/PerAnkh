@@ -13,7 +13,7 @@ val releaseKeystore = releaseSigning("perAnkhKeystore", "PER_ANKH_KEYSTORE")
 
 // The version, and a version code derived from it so it always rises: 1.2.3 is 10203. Release
 // steps are in RELEASING.md.
-val appVersion = "0.3.0"
+val appVersion = "0.3.1"
 val appVersionCode = appVersion.split(".").map(String::toInt)
     .let { (major, minor, patch) -> major * 10_000 + minor * 100 + patch }
 
@@ -31,11 +31,27 @@ android {
 
         buildConfigField("String", "REPORTS_URL", "\"https://perankh.hrana.app/v1/reports\"")
         buildConfigField("String", "PRIVACY_URL", "\"https://perankh.hrana.app/privacy\"")
-        // Settings → About asks GitHub for the newest release, and the Per Ankh server (which keeps
-        // a copy of GitHub's answer) when GitHub cannot be reached. Either way it links to GitHub.
+        // In the GitHub build, Settings → About asks GitHub for the newest release, and the Per Ankh
+        // server (which keeps a copy of GitHub's answer) when GitHub cannot be reached. Either way it
+        // links to GitHub.
         buildConfigField("String", "PROJECT_URL", "\"https://github.com/ekoori/PerAnkh\"")
         buildConfigField("String", "LATEST_RELEASE_API", "\"https://api.github.com/repos/ekoori/PerAnkh/releases/latest\"")
         buildConfigField("String", "LATEST_RELEASE_MIRROR", "\"https://perankh.hrana.app/v1/latest\"")
+    }
+
+    // Where people get the app. Google Play updates its copies itself and allows no other way (the
+    // Device and Network Abuse policy), so the Play build's About page links to its Play page and
+    // never looks for releases on GitHub. Same app id and key: RELEASING.md, "Where builds go".
+    flavorDimensions += "store"
+    productFlavors {
+        create("play") {
+            dimension = "store"
+            buildConfigField("String", "STORE_URL", "\"https://play.google.com/store/apps/details?id=app.hrana.perankh\"")
+        }
+        create("github") {
+            dimension = "store"
+            buildConfigField("String", "STORE_URL", "null")
+        }
     }
 
     signingConfigs {

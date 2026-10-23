@@ -456,6 +456,7 @@ fun AppHost() {
                             latestUrl = "${BuildConfig.PROJECT_URL}/releases/latest",
                             projectUrl = BuildConfig.PROJECT_URL,
                             privacyUrl = BuildConfig.PRIVACY_URL,
+                            storeUrl = BuildConfig.STORE_URL,
                         ),
                     )
                     is Overlay.Message -> MessageSheet(current.text)
