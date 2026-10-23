@@ -1,10 +1,10 @@
 # Changelog
 
-## 0.3.2 (unreleased)
+## 0.3.2 (2026-10-24)
 
-- The first build for Google Play. Google Play keeps its copies up to date, so their About page
-  links to Per Ankh on Google Play instead of looking for releases on GitHub. Nothing else
-  changes.
+- The first version on Google Play. Google Play keeps its copies up to date, so their About page
+  links to Per Ankh on Google Play instead of looking for releases on GitHub. The copy from GitHub
+  works as before. Nothing else changes, and there is no 0.3.1.
 
 ## 0.3.0 (2026-10-22)
 

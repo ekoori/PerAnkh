@@ -39,12 +39,14 @@ update each other and keep progress.
   (different key and id), which deletes their progress.
 - **0.3.0, GitHub release (2026-10-22).** Sections, units 13–14, the fixes from the first problem
   reports, and Settings → About, which from now on tells people when a newer release is out.
-- **0.3.2, the first Google Play build.** The `play` flavour, for open testing under LOVI Tech's
-  Play developer account (created October 2026). The GitHub build is unchanged. There is no 0.3.1:
-  its version code went to a Play upload that was deleted, and Play never takes a code twice.
-- **0.3.x, closed testing.** Fix what testers report; re-record the three weak clips; finish the
-  store listing. Two weeks in closed testing before production (a must for new *personal* Play
-  accounts, which need 12 testers for 14 days; good practice for an organisation account too).
+- **0.3.2, the first Google Play build, and a GitHub release (2026-10-24).** The `play` flavour,
+  for open testing under LOVI Tech's Play developer account (created October 2026); on GitHub
+  the same version, unchanged there. There is no 0.3.1: its version code went to a Play upload
+  that was deleted, and Play never takes a code twice.
+- **0.3.x, open testing.** Anyone can join the test from the Play listing. Fix what testers
+  report; re-record the weak clips. A couple of weeks of testing before production (new
+  *personal* Play accounts would need 12 testers for 14 days in closed testing; LOVI Tech's
+  organisation account does not).
 - **1.0.0, public.** Play production (staged rollout) and a GitHub release with the same signed
   APK.
 - **1.x.** Donations; later, optional accounts and progress sync (`server/README.md`), each with
