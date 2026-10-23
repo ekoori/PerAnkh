@@ -77,14 +77,15 @@ Learn to read Middle Egyptian hieroglyphs: signs, sounds, words and real texts.
 > English lacks kept distinct: ḥ, ʿayin, kh and q.
 > • Memory, not streaks: each item comes back when you are about to forget it, never on a rota
 > and never when you obviously still know it.
-> • Mistakes are explained, near misses are recognised, and "sound it out" exercises give you
+> • Mistakes are explained, near misses are recognised, and “sound it out” exercises give you
 > words you were never taught.
 > • See how much of a real page you can read: the words you know are counted against thousands
 > of sentences of real Middle Egyptian.
 > • Amulets for real abilities, each with a piece of Egyptian lore.
 >
 > No ads, no account, no tracking. Works offline. Open source under the MIT licence.
-> The name, pr-ꜥnḫ, means "House of Life": the temple school where scribes were trained.
+>
+> The name, pr-ꜥnḫ, means “House of Life”: the temple school where scribes were trained.
 
 ## Data safety form
 
