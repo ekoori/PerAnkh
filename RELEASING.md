@@ -39,8 +39,9 @@ update each other and keep progress.
   (different key and id), which deletes their progress.
 - **0.3.0, GitHub release (2026-10-22).** Sections, units 13–14, the fixes from the first problem
   reports, and Settings → About, which from now on tells people when a newer release is out.
-- **0.3.1, the first Google Play build.** The `play` flavour, uploaded to internal testing under
-  LOVI Tech's Play developer account (created October 2026). The GitHub build is unchanged.
+- **0.3.2, the first Google Play build.** The `play` flavour, for open testing under LOVI Tech's
+  Play developer account (created October 2026). The GitHub build is unchanged. There is no 0.3.1:
+  its version code went to a Play upload that was deleted, and Play never takes a code twice.
 - **0.3.x, closed testing.** Fix what testers report; re-record the three weak clips; finish the
   store listing. Two weeks in closed testing before production (a must for new *personal* Play
   accounts, which need 12 testers for 14 days; good practice for an organisation account too).
@@ -83,7 +84,7 @@ Google made AnkiDroid remove its donation links from its Play build for exactly 
 - **Play build**: no external donation link. Either nothing, or "tips" as Play Billing in-app
   products (Google keeps 15%).
 
-The two product flavours exist since 0.3.1, for the About page's check for a newer version: Play
+The two product flavours exist since 0.3.2, for the About page's check for a newer version: Play
 does not allow an app to offer updates from elsewhere, so the `play` flavour links to the Play
 listing instead. The donation link goes into the `github` flavour only.
 
@@ -99,8 +100,9 @@ listing instead. The donation link goes into the `github` flavour only.
    `targetSdkVersion:'36'` and the version.
 5. Install on the test phone over the previous release (progress must survive); play a lesson,
    send a test report, then resolve it with `tools/reports.sh`.
-6. Upload the AAB to the Play track; tag `vX.Y.Z`; create the GitHub release with the APK and
-   its SHA-256 (a full release; only `-beta.N` tags are pre-releases).
+6. Upload the AAB to the Play track (Play never accepts a version code twice, even once its upload
+   is deleted: replacing a bundle takes a new patch version); tag `vX.Y.Z`; create the GitHub
+   release with the APK and its SHA-256 (a full release; only `-beta.N` tags are pre-releases).
 7. Resolve the reports fixed in this version: `tools/reports.sh resolve ID --in X.Y.Z`.
 8. On a phone with the previous release, Settings → About offers the new version, and within half
    an hour so does `https://perankh.hrana.app/v1/latest`, the copy for phones that cannot reach

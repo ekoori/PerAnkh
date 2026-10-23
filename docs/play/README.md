@@ -34,7 +34,7 @@ before production.
 6. **Internal testing.** *Test and release* → *Testing* → *Internal testing*: add a testers list
    with your own Google account, then *Create new release* and upload
    `app/build/outputs/bundle/playRelease/app-play-release.aab` (`gradlew :app:bundlePlayRelease`),
-   release name `0.3.1`, notes from CHANGELOG.md. Roll it out, open the opt-in link on the test
+   release name `0.3.2`, notes from CHANGELOG.md. Roll it out, open the opt-in link on the test
    phone and accept. Play must offer **Update** over the GitHub 0.3.0 already there: that proves
    the signature matches, and progress stays. Settings → About then says "Google Play keeps Per
    Ankh up to date".
@@ -89,7 +89,7 @@ Learn to read Middle Egyptian hieroglyphs: signs, sounds, words and real texts.
 
 ## Data safety form
 
-Answers for the Play build from 0.3.1 (the GitHub build's check for a newer version is not in it).
+Answers for the Play build from 0.3.2 (the GitHub build's check for a newer version is not in it).
 Update them before any version that adds accounts or sync.
 
 - Does your app collect or share any of the required user data types? **Yes** (problem reports

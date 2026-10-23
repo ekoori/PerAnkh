@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.3.1 (unreleased)
+## 0.3.2 (unreleased)
 
 - The first build for Google Play. Google Play keeps its copies up to date, so their About page
   links to Per Ankh on Google Play instead of looking for releases on GitHub. Nothing else
