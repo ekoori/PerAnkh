@@ -32,6 +32,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.krbavcic.pentalingo.core.ui.Glyphs
+import com.krbavcic.pentalingo.core.ui.PageMargin
 import com.krbavcic.pentalingo.core.ui.Palette
 import com.krbavcic.pentalingo.core.ui.Rubric
 import com.krbavcic.pentalingo.core.ui.Type
@@ -63,55 +64,57 @@ fun TreasuryScreen(
         val req = award.requirement
         award.id in progress.awards || req !is Requirement.ReadText || req.textId !in hidden
     }
-    LazyVerticalGrid(
-        GridCells.Fixed(2),
-        modifier.fillMaxSize(),
-        contentPadding = PaddingValues(start = 18.dp, end = 18.dp, bottom = 96.dp),
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
-    ) {
-        item(span = { GridItemSpan(maxLineSpan) }) {
-            Column(Modifier.windowInsetsPadding(WindowInsets.statusBars).padding(top = 12.dp)) {
-                Text("Treasury", style = Type.display)
-                Text("${progress.awards.size} of ${awards.size} amulets", style = Type.bodySoft)
+    PageMargin(modifier.fillMaxSize()) { margin ->
+        LazyVerticalGrid(
+            GridCells.Fixed(2),
+            Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(start = 18.dp + margin, end = 18.dp + margin, bottom = 96.dp),
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            item(span = { GridItemSpan(maxLineSpan) }) {
+                Column(Modifier.windowInsetsPadding(WindowInsets.statusBars).padding(top = 12.dp)) {
+                    Text("Treasury", style = Type.display)
+                    Text("${progress.awards.size} of ${awards.size} amulets", style = Type.bodySoft)
+                }
             }
-        }
-        items(awards, key = { it.id }) { award ->
-            val earned = award.id in progress.awards
-            val at = Awards.progress(award, course, progress, knowledge.now)
-            Column(
-                Modifier
-                    .clip(RoundedCornerShape(18.dp))
-                    .background(if (earned) Palette.goldLight.copy(alpha = 0.35f) else Palette.sheetLight.copy(alpha = 0.6f))
-                    .border(2.dp, if (earned) Palette.gold else Palette.edge.copy(alpha = 0.4f), RoundedCornerShape(18.dp))
-                    .clickable { onAward(award) }
-                    .padding(12.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(6.dp),
-            ) {
-                Box(
+            items(awards, key = { it.id }) { award ->
+                val earned = award.id in progress.awards
+                val at = Awards.progress(award, course, progress, knowledge.now)
+                Column(
                     Modifier
-                        .size(70.dp)
-                        .clip(CircleShape)
-                        .background(
-                            if (earned) Brush.radialGradient(listOf(Palette.goldLight, Palette.gold))
-                            else Brush.radialGradient(listOf(Palette.sheetLight, Palette.sheetDeep)),
-                        )
-                        .border(3.dp, if (earned) Palette.goldDeep else Palette.edge.copy(alpha = 0.5f), CircleShape),
-                    contentAlignment = Alignment.Center,
+                        .clip(RoundedCornerShape(18.dp))
+                        .background(if (earned) Palette.goldLight.copy(alpha = 0.35f) else Palette.sheetLight.copy(alpha = 0.6f))
+                        .border(2.dp, if (earned) Palette.gold else Palette.edge.copy(alpha = 0.4f), RoundedCornerShape(18.dp))
+                        .clickable { onAward(award) }
+                        .padding(12.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(6.dp),
                 ) {
-                    Glyphs(award.sign, quadrat = 38.dp, color = { if (earned) Palette.ink else Palette.inkFaint })
-                }
-                Text(award.title, style = Type.heading, textAlign = TextAlign.Center)
-                if (earned) {
-                    Text("Earned", style = Type.small.copy(color = Palette.goldDeep))
-                } else {
-                    Text(award.howTo, style = Type.small, textAlign = TextAlign.Center)
-                    if (at.target > 1) Measured(at.fraction, "${at.current.coerceAtMost(at.target)} / ${at.target}")
+                    Box(
+                        Modifier
+                            .size(70.dp)
+                            .clip(CircleShape)
+                            .background(
+                                if (earned) Brush.radialGradient(listOf(Palette.goldLight, Palette.gold))
+                                else Brush.radialGradient(listOf(Palette.sheetLight, Palette.sheetDeep)),
+                            )
+                            .border(3.dp, if (earned) Palette.goldDeep else Palette.edge.copy(alpha = 0.5f), CircleShape),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Glyphs(award.sign, quadrat = 38.dp, color = { if (earned) Palette.ink else Palette.inkFaint })
+                    }
+                    Text(award.title, style = Type.heading, textAlign = TextAlign.Center)
+                    if (earned) {
+                        Text("Earned", style = Type.small.copy(color = Palette.goldDeep))
+                    } else {
+                        Text(award.howTo, style = Type.small, textAlign = TextAlign.Center)
+                        if (at.target > 1) Measured(at.fraction, "${at.current.coerceAtMost(at.target)} / ${at.target}")
+                    }
                 }
             }
+            item(span = { GridItemSpan(maxLineSpan) }) { Ledger(knowledge, hidden) }
         }
-        item(span = { GridItemSpan(maxLineSpan) }) { Ledger(knowledge, hidden) }
     }
 }
 

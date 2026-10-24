@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -41,12 +42,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import com.krbavcic.pentalingo.core.ui.GoldBar
 import com.krbavcic.pentalingo.core.ui.IconKind
+import com.krbavcic.pentalingo.core.ui.PageWidth
 import com.krbavcic.pentalingo.core.ui.PaintButton
 import com.krbavcic.pentalingo.core.ui.ReportFlag
 import com.krbavcic.pentalingo.core.ui.Palette
 import com.krbavcic.pentalingo.core.ui.RoundIconButton
 import com.krbavcic.pentalingo.core.ui.Scrim
 import com.krbavcic.pentalingo.core.ui.Type
+import com.krbavcic.pentalingo.core.ui.page
 import com.krbavcic.pentalingo.core.ui.papyrus
 import com.krbavcic.pentalingo.core.ui.rememberHaptics
 import com.krbavcic.pentalingo.core.ui.rememberSfx
@@ -148,7 +151,7 @@ fun LessonScreen(
     Box(modifier.fillMaxSize().papyrus()) {
         Column(Modifier.fillMaxSize().windowInsetsPadding(WindowInsets.safeDrawing)) {
             Row(
-                Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 10.dp),
+                Modifier.page().padding(horizontal = 12.dp, vertical = 10.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 RoundIconButton(
@@ -187,6 +190,7 @@ fun LessonScreen(
                             .weight(1f)
                             .fillMaxWidth()
                             .verticalScroll(rememberScrollState())
+                            .page()
                             .padding(horizontal = 20.dp, vertical = 8.dp),
                     ) {
                         ExerciseBody(
@@ -266,7 +270,7 @@ private fun BottomBar(
     onContinue: () -> Unit,
 ) {
     val teaching = exercise is Teach || exercise is ReadText
-    Box(Modifier.fillMaxWidth()) {
+    Box(Modifier.page()) {
         when {
             teaching -> PaintButton("Continue", onContinue, Modifier.fillMaxWidth().padding(16.dp))
             verdict == null -> if (exercise !is Pairs) PaintButton(
@@ -322,6 +326,7 @@ private fun LeaveDialog(onStay: () -> Unit, onLeave: () -> Unit, modifier: Modif
     Column(
         modifier
             .padding(28.dp)
+            .widthIn(max = PageWidth)
             .clip(RoundedCornerShape(20.dp))
             .background(Palette.sheetLight)
             .padding(22.dp),

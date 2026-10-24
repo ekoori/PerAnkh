@@ -7,10 +7,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.windowInsetsPadding
@@ -32,7 +30,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.layout
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.krbavcic.pentalingo.core.ui.Glyphs
 import com.krbavcic.pentalingo.core.ui.PaintButton
@@ -43,8 +43,9 @@ import com.krbavcic.pentalingo.data.Release
 import com.krbavcic.pentalingo.data.Settings
 import com.krbavcic.pentalingo.data.compareVersions
 import com.krbavcic.pentalingo.model.UnitColor
+import kotlin.math.roundToInt
 
-/** Problem reports kept on this phone: how many, how many are still waiting to go out. */
+/** Problem reports kept on this device: how many, how many are still waiting to go out. */
 class ReportOptions(
     val saved: Int,
     val unsent: Int,
@@ -113,8 +114,7 @@ fun SettingsSheet(
         Modifier
             .fillMaxWidth()
             // One height for every page, so the tabs stay where the finger left them.
-            .fillMaxHeight(0.8f)
-            .heightIn(max = 660.dp)
+            .sheetHeight(max = 660.dp)
             .clip(RoundedCornerShape(topStart = 26.dp, topEnd = 26.dp))
             .background(Palette.sheetLight)
             .windowInsetsPadding(WindowInsets.navigationBars),
@@ -136,6 +136,17 @@ fun SettingsSheet(
             }
         }
     }
+}
+
+/**
+ * Four fifths of the screen's height, and no more than [max]. (A fillMaxHeight followed by
+ * heightIn(max) is not capped: the fill fixes the height first, so a tablet got a sheet of mostly
+ * empty papyrus.)
+ */
+private fun Modifier.sheetHeight(max: Dp): Modifier = layout { measurable, constraints ->
+    val height = (constraints.maxHeight * 0.8f).roundToInt().coerceAtMost(max.roundToPx())
+    val placeable = measurable.measure(constraints.copy(minHeight = height, maxHeight = height))
+    layout(placeable.width, placeable.height) { placeable.place(0, 0) }
 }
 
 /** The pages' names, picked the way the app's own tabs are. */
@@ -211,7 +222,7 @@ private fun SettingsPage(
 private fun TestingPage(settings: Settings, reports: ReportOptions, tester: TesterOptions) {
     var confirmClear by remember { mutableStateOf(false) }
     Toggle(
-        "Tester mode", "Tools for testing the course: open locked lessons, an answer button, and the reports kept on this phone",
+        "Tester mode", "Tools for testing the course: open locked lessons, an answer button, and the reports kept on this device",
         settings.tester, tester.onTester,
     )
     if (!settings.tester) return
@@ -221,7 +232,7 @@ private fun TestingPage(settings: Settings, reports: ReportOptions, tester: Test
         settings.answerButton, tester.onAnswerButton,
     )
     tester.onPreviewReveal?.let { PaintButton("Preview the section reveal", it, Modifier.fillMaxWidth()) }
-    val saved = "${reports.saved} ${if (reports.saved == 1) "report" else "reports"} on this phone"
+    val saved = "${reports.saved} ${if (reports.saved == 1) "report" else "reports"} on this device"
     Text(if (reports.saved > 0 && reports.unsent == 0) "$saved · all sent" else saved, style = Type.heading)
     Text("Kept in ${reports.path}", style = Type.small)
     if (reports.saved > 0) {
@@ -233,7 +244,7 @@ private fun TestingPage(settings: Settings, reports: ReportOptions, tester: Test
             )
         } else {
             Text(
-                "Delete the ${reports.saved} reports on this phone? Ones already sent stay on the server.",
+                "Delete the ${reports.saved} reports on this device? Ones already sent stay on the server.",
                 style = Type.body,
             )
             PaintButton(
@@ -301,7 +312,7 @@ private fun AboutPage(about: AboutOptions) {
             "cannot be reached; the question carries only the app’s version."
     }
     Text(
-        "Per Ankh works offline and collects nothing about you; your progress stays on this phone. " +
+        "Per Ankh works offline and collects nothing about you; your progress stays on this device. " +
             "If you report a problem with the flag on a page, the report goes to the people who make " +
             "Per Ankh over an encrypted connection, with what was on screen. No name, account or " +
             "device ID is sent.$releaseQuestion",

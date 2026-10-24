@@ -1,5 +1,17 @@
 # Changelog
 
+## Unreleased
+
+- Tablets. On a tablet Per Ankh turns with the device, and each page keeps to a column in the
+  middle of the screen instead of stretching across it; sheets and dialogs keep to the same width.
+  Phones stay upright, as before.
+- A lesson in progress is no longer lost when the screen turns or the window changes size (on
+  Android 16 tablets turn every app, whatever it asks).
+- On a short screen, such as a tablet on its side, the codex's heading scrolls away with the signs
+  instead of leaving them a single row.
+- The Settings sheet no longer fills most of a tall screen.
+- The app says "this device" rather than "this phone".
+
 ## 0.3.2 (2026-10-24)
 
 - The first version on Google Play. Google Play keeps its copies up to date, so their About page

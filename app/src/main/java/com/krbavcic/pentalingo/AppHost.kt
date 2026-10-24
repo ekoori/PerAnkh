@@ -23,6 +23,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
@@ -47,10 +48,12 @@ import androidx.compose.ui.unit.dp
 import com.krbavcic.pentalingo.content.MIDDLE_EGYPTIAN
 import com.krbavcic.pentalingo.core.ui.Glyphs
 import com.krbavcic.pentalingo.core.ui.LocalReporter
+import com.krbavcic.pentalingo.core.ui.PageWidth
 import com.krbavcic.pentalingo.core.ui.Palette
 import com.krbavcic.pentalingo.core.ui.Reporter
 import com.krbavcic.pentalingo.core.ui.Scrim
 import com.krbavcic.pentalingo.core.ui.Type
+import com.krbavcic.pentalingo.core.ui.page
 import com.krbavcic.pentalingo.core.ui.papyrus
 import com.krbavcic.pentalingo.core.ui.rememberVoice
 import com.krbavcic.pentalingo.data.ProgressStore
@@ -227,7 +230,7 @@ fun AppHost() {
         try {
             context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
         } catch (e: ActivityNotFoundException) {
-            overlay = Overlay.Message("No app on this phone can open web pages. The page is $url")
+            overlay = Overlay.Message("No app on this device can open web pages. The page is $url")
         }
     }
 
@@ -366,11 +369,12 @@ fun AppHost() {
                 BackHandler { overlay = null }
                 Scrim { overlay = null }
             }
+            // On a tablet a sheet is as wide as the page above it, not the whole screen.
             AnimatedVisibility(
                 visible = current != null,
                 enter = slideInVertically { it } + fadeIn(),
                 exit = slideOutVertically { it } + fadeOut(),
-                modifier = Modifier.align(Alignment.BottomCenter),
+                modifier = Modifier.align(Alignment.BottomCenter).widthIn(max = PageWidth),
             ) {
                 when (current) {
                     is Overlay.Preview -> LessonSheet(
@@ -469,31 +473,35 @@ fun AppHost() {
 
 @Composable
 private fun TabBar(selected: Tab, onSelect: (Tab) -> Unit) {
-    Row(
+    // The bar runs the width of the screen; on a tablet its tabs keep to the page's column.
+    Box(
         Modifier
             .fillMaxWidth()
             .background(Palette.sheetLight)
             .border(1.dp, Palette.edge.copy(alpha = 0.5f))
-            .windowInsetsPadding(WindowInsets.navigationBars)
-            .padding(horizontal = 8.dp, vertical = 6.dp),
-        horizontalArrangement = Arrangement.SpaceEvenly,
+            .windowInsetsPadding(WindowInsets.navigationBars),
     ) {
-        for (tab in Tab.entries) {
-            val on = tab == selected
-            Column(
-                Modifier
-                    .weight(1f)
-                    .clip(RoundedCornerShape(14.dp))
-                    .background(if (on) Palette.lapis.copy(alpha = 0.12f) else Palette.sheetLight)
-                    .clickable(role = Role.Tab) { onSelect(tab) }
-                    .padding(vertical = 6.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                // A fixed slot: lone signs are scaled as specimens, so their boxes differ in height.
-                Box(Modifier.height(30.dp), contentAlignment = Alignment.Center) {
-                    Glyphs(tab.sign, quadrat = 30.dp, color = { if (on) Palette.lapis else Palette.inkFaint })
+        Row(
+            Modifier.page().padding(horizontal = 8.dp, vertical = 6.dp),
+            horizontalArrangement = Arrangement.SpaceEvenly,
+        ) {
+            for (tab in Tab.entries) {
+                val on = tab == selected
+                Column(
+                    Modifier
+                        .weight(1f)
+                        .clip(RoundedCornerShape(14.dp))
+                        .background(if (on) Palette.lapis.copy(alpha = 0.12f) else Palette.sheetLight)
+                        .clickable(role = Role.Tab) { onSelect(tab) }
+                        .padding(vertical = 6.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    // A fixed slot: lone signs are scaled as specimens, so their boxes differ in height.
+                    Box(Modifier.height(30.dp), contentAlignment = Alignment.Center) {
+                        Glyphs(tab.sign, quadrat = 30.dp, color = { if (on) Palette.lapis else Palette.inkFaint })
+                    }
+                    Text(tab.label, style = Type.small.copy(color = if (on) Palette.lapisDeep else Palette.inkSoft))
                 }
-                Text(tab.label, style = Type.small.copy(color = if (on) Palette.lapisDeep else Palette.inkSoft))
             }
         }
     }

@@ -9,6 +9,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -48,6 +49,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.krbavcic.pentalingo.core.ui.Glyphs
 import com.krbavcic.pentalingo.core.ui.IconKind
+import com.krbavcic.pentalingo.core.ui.PageMargin
 import com.krbavcic.pentalingo.core.ui.PaintButton
 import com.krbavcic.pentalingo.core.ui.Palette
 import com.krbavcic.pentalingo.core.ui.ProgressRing
@@ -153,34 +155,37 @@ fun PathScreen(
         if (row >= 0 && target > 4) listState.scrollToItem((target - 2).coerceAtLeast(0))
     }
 
-    LazyColumn(
-        modifier.fillMaxSize(),
-        state = listState,
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        item {
-            Header(knowledge, progress, onSettings)
-        }
-        item {
-            ReviewCard(knowledge, progress, onReview)
-        }
-        items(rows, key = { it.key }) { row ->
-            when (row) {
-                is PathRow.Heading -> SectionHeading(row.number, row.section)
-                is PathRow.Door -> SealedDoor(row.number, row.section, row.lessonsLeft)
-                is PathRow.Banner -> UnitBanner(row.number, row.unit, progress)
-                is PathRow.Node -> LessonNode(
-                    lesson = row.lesson,
-                    unit = row.unit,
-                    state = lessonState(course, progress, row.lesson),
-                    fraction = lessonFraction(progress, row.lesson),
-                    offsetIndex = row.index,
-                    reading = row.lesson.reading != null,
-                    onClick = { onOpenLesson(row.lesson) },
-                )
+    PageMargin(modifier.fillMaxSize()) { margin ->
+        LazyColumn(
+            Modifier.fillMaxSize(),
+            state = listState,
+            contentPadding = PaddingValues(horizontal = margin),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            item {
+                Header(knowledge, progress, onSettings)
             }
+            item {
+                ReviewCard(knowledge, progress, onReview)
+            }
+            items(rows, key = { it.key }) { row ->
+                when (row) {
+                    is PathRow.Heading -> SectionHeading(row.number, row.section)
+                    is PathRow.Door -> SealedDoor(row.number, row.section, row.lessonsLeft)
+                    is PathRow.Banner -> UnitBanner(row.number, row.unit, progress)
+                    is PathRow.Node -> LessonNode(
+                        lesson = row.lesson,
+                        unit = row.unit,
+                        state = lessonState(course, progress, row.lesson),
+                        fraction = lessonFraction(progress, row.lesson),
+                        offsetIndex = row.index,
+                        reading = row.lesson.reading != null,
+                        onClick = { onOpenLesson(row.lesson) },
+                    )
+                }
+            }
+            item { Spacer(Modifier.height(96.dp)) }
         }
-        item { Spacer(Modifier.height(96.dp)) }
     }
 }
 

@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -95,6 +96,7 @@ private fun ReportDialog(
         Column(
             Modifier
                 .padding(horizontal = 18.dp)
+                .widthIn(max = PageWidth)
                 .imePadding()
                 .heightIn(max = 640.dp)
                 .clip(RoundedCornerShape(20.dp))

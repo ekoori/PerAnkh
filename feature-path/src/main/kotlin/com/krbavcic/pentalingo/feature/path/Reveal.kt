@@ -44,6 +44,7 @@ import com.krbavcic.pentalingo.core.ui.PaintButton
 import com.krbavcic.pentalingo.core.ui.Palette
 import com.krbavcic.pentalingo.core.ui.Rubric
 import com.krbavcic.pentalingo.core.ui.Type
+import com.krbavcic.pentalingo.core.ui.page
 import com.krbavcic.pentalingo.core.ui.papyrus
 import com.krbavcic.pentalingo.core.ui.rememberSfx
 import com.krbavcic.pentalingo.model.Course
@@ -75,6 +76,7 @@ fun RevealScreen(course: Course, section: CourseSection, soundEffects: Boolean, 
                 .fillMaxSize()
                 .windowInsetsPadding(WindowInsets.safeDrawing)
                 .verticalScroll(rememberScrollState())
+                .page()
                 .padding(horizontal = 22.dp, vertical = 20.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(14.dp),

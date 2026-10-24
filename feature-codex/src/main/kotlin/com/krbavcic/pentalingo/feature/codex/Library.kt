@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import com.krbavcic.pentalingo.core.ui.Chip
 import com.krbavcic.pentalingo.core.ui.Glyphs
 import com.krbavcic.pentalingo.core.ui.IconKind
+import com.krbavcic.pentalingo.core.ui.PageMargin
 import com.krbavcic.pentalingo.core.ui.Palette
 import com.krbavcic.pentalingo.core.ui.ReportFlag
 import com.krbavcic.pentalingo.core.ui.RoundIconButton
@@ -45,6 +46,7 @@ import com.krbavcic.pentalingo.core.ui.Type
 import com.krbavcic.pentalingo.core.ui.Voice
 import com.krbavcic.pentalingo.core.ui.describeItem
 import com.krbavcic.pentalingo.core.ui.lineOf
+import com.krbavcic.pentalingo.core.ui.page
 import com.krbavcic.pentalingo.engine.Knowledge
 import com.krbavcic.pentalingo.model.PhraseItem
 import com.krbavcic.pentalingo.model.ReadingText
@@ -66,44 +68,46 @@ fun LibraryScreen(
 ) {
     val course = knowledge.course
     val texts = course.texts.filter { it.id !in hidden || it.id in knowledge.progress.textsRead }
-    LazyColumn(
-        modifier.fillMaxSize(),
-        contentPadding = PaddingValues(start = 20.dp, end = 20.dp, bottom = 96.dp),
-        verticalArrangement = Arrangement.spacedBy(14.dp),
-    ) {
-        item {
-            Column(Modifier.windowInsetsPadding(WindowInsets.statusBars).padding(top = 12.dp)) {
-                Text("Library", style = Type.display)
-                Text("Real texts, and how much of each you can read now.", style = Type.bodySoft)
+    PageMargin(modifier.fillMaxSize()) { margin ->
+        LazyColumn(
+            Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(start = 20.dp + margin, end = 20.dp + margin, bottom = 96.dp),
+            verticalArrangement = Arrangement.spacedBy(14.dp),
+        ) {
+            item {
+                Column(Modifier.windowInsetsPadding(WindowInsets.statusBars).padding(top = 12.dp)) {
+                    Text("Library", style = Type.display)
+                    Text("Real texts, and how much of each you can read now.", style = Type.bodySoft)
+                }
             }
-        }
-        items(texts, key = { it.id }) { text ->
-            val r = knowledge.readability(text)
-            val read = text.id in knowledge.progress.textsRead
-            Column(
-                Modifier
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(20.dp))
-                    .background(Palette.sheetLight.copy(alpha = 0.8f))
-                    .border(2.dp, if (r.complete) Palette.gold else Palette.edge.copy(alpha = 0.6f), RoundedCornerShape(20.dp))
-                    .clickable { onOpen(text) }
-                    .padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(10.dp),
-            ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Column(Modifier.weight(1f)) {
-                        Text(text.title, style = Type.title)
-                        Text(text.source, style = Type.small)
+            items(texts, key = { it.id }) { text ->
+                val r = knowledge.readability(text)
+                val read = text.id in knowledge.progress.textsRead
+                Column(
+                    Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(20.dp))
+                        .background(Palette.sheetLight.copy(alpha = 0.8f))
+                        .border(2.dp, if (r.complete) Palette.gold else Palette.edge.copy(alpha = 0.6f), RoundedCornerShape(20.dp))
+                        .clickable { onOpen(text) }
+                        .padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(10.dp),
+                ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Column(Modifier.weight(1f)) {
+                            Text(text.title, style = Type.title)
+                            Text(text.source, style = Type.small)
+                        }
+                        if (read) Chip("Read", color = Palette.gold, textColor = Palette.ink)
                     }
-                    if (read) Chip("Read", color = Palette.gold, textColor = Palette.ink)
+                    val first = course[text.lines.first()] as? PhraseItem
+                    first?.let { line ->
+                        Glyphs(lineOf(line.tokens.map { it.mdc }), quadrat = 30.dp, color = { s ->
+                            course.signFor(s.glyph.code)?.let { signColor(knowledge, it) } ?: Palette.ink
+                        })
+                    }
+                    Measured(r.fraction, "You can read ${r.readableWords} of ${r.words} words · ${r.knownSigns} of ${r.signs} signs")
                 }
-                val first = course[text.lines.first()] as? PhraseItem
-                first?.let { line ->
-                    Glyphs(lineOf(line.tokens.map { it.mdc }), quadrat = 30.dp, color = { s ->
-                        course.signFor(s.glyph.code)?.let { signColor(knowledge, it) } ?: Palette.ink
-                    })
-                }
-                Measured(r.fraction, "You can read ${r.readableWords} of ${r.words} words · ${r.knownSigns} of ${r.signs} signs")
             }
         }
     }
@@ -122,6 +126,7 @@ fun ReaderScreen(knowledge: Knowledge, text: ReadingText, voice: Voice, onBack: 
             .fillMaxSize()
             .windowInsetsPadding(WindowInsets.safeDrawing)
             .verticalScroll(rememberScrollState())
+            .page()
             .padding(20.dp),
         verticalArrangement = Arrangement.spacedBy(14.dp),
     ) {

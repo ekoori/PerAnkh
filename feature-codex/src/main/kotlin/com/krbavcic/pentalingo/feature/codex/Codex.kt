@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -36,9 +37,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.krbavcic.pentalingo.core.ui.GoldBar
 import com.krbavcic.pentalingo.core.ui.Glyphs
+import com.krbavcic.pentalingo.core.ui.PageMargin
 import com.krbavcic.pentalingo.core.ui.Palette
 import com.krbavcic.pentalingo.core.ui.Rubric
 import com.krbavcic.pentalingo.core.ui.Tile
@@ -76,26 +79,51 @@ fun CodexScreen(
 ) {
     var shelf by rememberSaveable { mutableStateOf(Shelf.SIGNS) }
     val course = knowledge.course
-    Column(modifier.fillMaxSize()) {
-        Column(
-            Modifier.fillMaxWidth().windowInsetsPadding(WindowInsets.statusBars).padding(start = 20.dp, end = 20.dp, top = 12.dp),
-            verticalArrangement = Arrangement.spacedBy(10.dp),
-        ) {
-            Text("Codex", style = Type.display)
-            Text(
-                "Ink while you are learning a sign; its paint once you remember it on another day. " +
-                    "Paint fades as memory does — review brings it back.",
-                style = Type.small,
-            )
-            if (course.frequency.isNotEmpty()) CoverageLine(knowledge)
-            Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                ShelfTab("Signs", shelf == Shelf.SIGNS, Modifier.weight(1f)) { shelf = Shelf.SIGNS }
-                ShelfTab("Words", shelf == Shelf.WORDS, Modifier.weight(1f)) { shelf = Shelf.WORDS }
+    PageMargin(modifier.fillMaxSize()) { margin ->
+        // Where there is height to spare, the header stays above the shelf with its Signs and Words
+        // tabs. On a short screen (a tablet on its side) it would leave the signs a single row, so
+        // it scrolls away with the shelf instead.
+        val pinned = maxHeight >= 600.dp
+        val listHeader: (@Composable () -> Unit)? = if (pinned) null else {
+            {
+                CodexHeader(
+                    knowledge, shelf, { shelf = it },
+                    Modifier.windowInsetsPadding(WindowInsets.statusBars).padding(start = 4.dp, end = 4.dp, top = 12.dp, bottom = 6.dp),
+                )
             }
         }
-        when (shelf) {
-            Shelf.SIGNS -> SignShelf(knowledge, course, hidden, onSign)
-            Shelf.WORDS -> WordShelf(knowledge, course, hidden, onWord)
+        Column(Modifier.fillMaxSize()) {
+            if (pinned) {
+                CodexHeader(
+                    knowledge, shelf, { shelf = it },
+                    Modifier
+                        .fillMaxWidth()
+                        .windowInsetsPadding(WindowInsets.statusBars)
+                        .padding(start = 20.dp + margin, end = 20.dp + margin, top = 12.dp),
+                )
+            }
+            when (shelf) {
+                Shelf.SIGNS -> SignShelf(knowledge, course, hidden, margin, listHeader, onSign)
+                Shelf.WORDS -> WordShelf(knowledge, course, hidden, margin, listHeader, onWord)
+            }
+        }
+    }
+}
+
+/** The codex's name, what its colours mean, how much of a real page can be read, and the shelves. */
+@Composable
+private fun CodexHeader(knowledge: Knowledge, shelf: Shelf, onShelf: (Shelf) -> Unit, modifier: Modifier) {
+    Column(modifier, verticalArrangement = Arrangement.spacedBy(10.dp)) {
+        Text("Codex", style = Type.display)
+        Text(
+            "Ink while you are learning a sign; its paint once you remember it on another day. " +
+                "Paint fades as memory does — review brings it back.",
+            style = Type.small,
+        )
+        if (knowledge.course.frequency.isNotEmpty()) CoverageLine(knowledge)
+        Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+            ShelfTab("Signs", shelf == Shelf.SIGNS, Modifier.weight(1f)) { onShelf(Shelf.SIGNS) }
+            ShelfTab("Words", shelf == Shelf.WORDS, Modifier.weight(1f)) { onShelf(Shelf.WORDS) }
         }
     }
 }
@@ -161,17 +189,27 @@ private fun groupOf(sign: SignItem): String = when (sign.role) {
 }
 
 @Composable
-private fun SignShelf(k: Knowledge, course: Course, hidden: Set<String>, onSign: (SignItem) -> Unit) {
+private fun SignShelf(
+    k: Knowledge,
+    course: Course,
+    hidden: Set<String>,
+    margin: Dp,
+    header: (@Composable () -> Unit)?,
+    onSign: (SignItem) -> Unit,
+) {
     val groups = remember(course, hidden) {
         course.signs.filter { it.id !in hidden || k.isIntroduced(it.id) }.groupBy(::groupOf)
     }
     LazyVerticalGrid(
         columns = GridCells.Adaptive(minSize = 78.dp),
         modifier = Modifier.fillMaxSize(),
-        contentPadding = androidx.compose.foundation.layout.PaddingValues(16.dp),
+        contentPadding = PaddingValues(
+            start = 16.dp + margin, end = 16.dp + margin, top = if (header == null) 16.dp else 0.dp, bottom = 16.dp,
+        ),
         horizontalArrangement = Arrangement.spacedBy(10.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp),
     ) {
+        if (header != null) item(span = { GridItemSpan(maxLineSpan) }) { header() }
         for ((title, signs) in groups) {
             item(span = { GridItemSpan(maxLineSpan) }) {
                 val known = signs.count { k.isKnown(it.id) }
@@ -237,16 +275,26 @@ fun InkBar(recall: Float, modifier: Modifier = Modifier) {
 }
 
 @Composable
-private fun WordShelf(k: Knowledge, course: Course, hidden: Set<String>, onWord: (WordItem) -> Unit) {
+private fun WordShelf(
+    k: Knowledge,
+    course: Course,
+    hidden: Set<String>,
+    margin: Dp,
+    header: (@Composable () -> Unit)?,
+    onWord: (WordItem) -> Unit,
+) {
     val order = remember(course, hidden) {
         val lessonIndex = course.lessons.flatMapIndexed { i, l -> l.teach.map { it to i } }.toMap()
         course.words.filter { it.id !in hidden || k.isIntroduced(it.id) }.sortedBy { lessonIndex[it.id] ?: Int.MAX_VALUE }
     }
     androidx.compose.foundation.lazy.LazyColumn(
         Modifier.fillMaxSize(),
-        contentPadding = androidx.compose.foundation.layout.PaddingValues(16.dp),
+        contentPadding = PaddingValues(
+            start = 16.dp + margin, end = 16.dp + margin, top = if (header == null) 16.dp else 0.dp, bottom = 16.dp,
+        ),
         verticalArrangement = Arrangement.spacedBy(10.dp),
     ) {
+        if (header != null) item { header() }
         item {
             val known = order.count { k.isKnown(it.id) }
             Text("$known of ${order.size} words known", style = Type.small)
