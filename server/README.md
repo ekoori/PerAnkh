@@ -87,6 +87,12 @@ tools/reports.sh export > open.json         # JSON for investigating locally
 tools/reports.sh stats
 ```
 
+To read or filter them in a spreadsheet, `python -X utf8 tools/reports_xlsx.py` writes the whole
+database as an Excel workbook in `tools/out/reports/`, which git ignores: every table and column,
+timestamps as UTC dates, each report's context one field per row, and the schema. The database is
+read on the server by `tools/reports_snapshot.py`, sent over SSH: read-only, in one transaction,
+with nothing to deploy.
+
 ## Deploying
 
 ```bash

@@ -6,6 +6,8 @@
 #   tools/reports.sh resolve 3f2a9c --in 0.2.1 --note "re-recorded the clip"
 #   tools/reports.sh export > open.json    # JSON, to investigate locally
 #
+# Every table as an Excel workbook: python -X utf8 tools/reports_xlsx.py (a tool of its own).
+#
 # The server's SSH login comes from PERANKH_HOST=user@host, or that one line in server/.host
 # (kept out of git).
 set -euo pipefail

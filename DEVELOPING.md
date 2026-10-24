@@ -133,6 +133,11 @@ About never asks and links to Per Ankh on Google Play instead.
   `~/dev/11labs/.env`), read by path and never stored here.
 - `tools/reports.sh` — triages problem reports on the server over SSH: `list`, `show`, `resolve`,
   `export` (see [server/README.md](server/README.md)).
+- `tools/reports_xlsx.py` — the whole report database as an Excel workbook in `tools/out/reports/`:
+  every table and column, timestamps as UTC dates, each report's context one field per row, the
+  schema. `tools/reports_snapshot.py` reads the database on the server, sent over SSH (read-only,
+  nothing to deploy); the workbook is written with the standard library, formulas with their
+  results filled in.
 - `tools/tla.py` — counts lemma frequencies in the Thesaurus Linguae Aegyptiae's Earlier Egyptian
   corpus (download it to `tools/out/tla/`; run with `python -I`), reports how much of real Middle
   Egyptian the course's words cover and which frequent words it lacks, and with `--write`
