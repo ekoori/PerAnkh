@@ -130,6 +130,11 @@ each other; no location sharing; no purchases. Expected rating: Everyone / PEGI 
 | App icon | 512×512 PNG, 32-bit | `icon-512.png` |
 | Feature graphic | 1024×500 PNG (no alpha) or JPG | `feature-graphic.png` |
 | Phone screenshots | 2–8, PNG (no alpha) or JPG, 320–3840 px; for Play's recommendations at least 4 at 9:16 and 1080×1920 or more | `screenshots/*.png` (1080×1920) |
+| Tablet screenshots (7-inch and 10-inch) | 4–8 for each size, PNG (no alpha) or JPG, 16:9 or 9:16, 1,080–7,680 px a side | `screenshots-tablet/*.png` (1350×2400), the same set for both sizes |
+
+The tablet set was taken on a Galaxy Tab S7 FE held upright at its default screen zoom, then cut
+to 9:16 by removing the status and navigation bars and trimming the papyrus margins, without
+scaling. It shows the same moments as the phone set.
 
 ## Policy notes
 
