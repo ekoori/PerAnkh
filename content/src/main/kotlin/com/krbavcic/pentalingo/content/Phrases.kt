@@ -360,7 +360,7 @@ internal val PHRASES: List<PhraseItem> = listOf(
     phrase("good2", "I did no evil to people: it is what the god hates.",
         listOf("I did no evil", "to people:", "it is", "what the god hates."),
         t("D35", "n", "not", "n2"), t("D4-A1", "jrj=j", "I did", "jrj"), t("E9-G43-M17-X1-G37", "jwyt", "evil", "jwyt"),
-        t("D21", "r", "against", "r"), t("D21:G17-V13-A1*B1:Z2", "rmṯ", "people", "rmT"),
+        t("D21", "r", "against", "r"), t("D21:V13-A1*B1:Z2", "rmṯ", "people", "rmT"),
         t("F31-I10-I10-X1", "msḏḏt", "what … hates", "msDj"), t("R8-A40", "nṯr", "the god", "nTr"),
         t("Q3-G43", "pw", "it is", "pw"),
         literal = "not did-I evil against people; what-hates god it-is",

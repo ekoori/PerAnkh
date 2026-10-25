@@ -60,7 +60,7 @@ internal val CONCEPTS: List<ConceptItem> = listOf(
         "That it is plural",
         listOf("The number three", "That it is feminine", "That it is a name"),
         "Three is the Egyptian way of writing “many”.",
-        mdc = "D21:G17-V13-A1*B1:Z2"),
+        mdc = "D21:V13-A1*B1:Z2"),
     concept("anubis", "The jackal at the cemetery",
         "Jackals prowled the desert edge where the dead were buried. The Egyptians made the jackal the cemetery’s guardian: Anubis, god of embalming, who wrapped the body of Osiris. Embalmer-priests may have worn his mask at work.",
         "What was Anubis the god of?",
