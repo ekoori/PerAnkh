@@ -11,6 +11,8 @@
   instead of leaving them a single row.
 - The Settings sheet no longer fills most of a tall screen.
 - The app says "this device" rather than "this phone".
+- rmṯ "people" is written as Middle Kingdom scribes wrote it, without the owl: the m is read but
+  not written.
 
 ## 0.3.2 (2026-10-24)
 
