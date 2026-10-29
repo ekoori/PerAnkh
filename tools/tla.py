@@ -78,6 +78,22 @@ MANUAL: dict[str, list[str]] = {
     "w:spAt": ["132420", "854544"], "w:jmjrA": ["25550", "855661"], "w:rf": ["28170"],
     "w:Dws": ["183050"], "w:qr": ["860315"], "w:HAy": ["101050"], "w:Mrtj": ["702231"],
     "w:xprkAra": ["400021"], "w:jnjjtf": ["400012", "707683"],
+    # Section 4, the Book of the Dead. Look-alikes: jrj "belonging to" and jrj "do" (28550); jmj
+    # "who is in" and jmj "give!" (25170); ꜥt "limb" and ꜥt "room" (34540); ḥm "servant" and ḥm
+    # "majesty" (104690); mwt "weight" and mwt "mother" (69040); jꜣwt "office" and jꜣwt "old
+    # age"; ḫt "fire" and ḫt "wood" (121200); ẖꜣt "marsh" and ẖꜣt "corpse" (122220); prt "the
+    # season" and prt "seed". The rest are spelled differently in the TLA or missing from it, and
+    # are pinned to their AES lemmas.
+    "w:jrj2": ["850583", "851428"], "w:jmj": ["25130"], "w:at": ["34550", "854495"], "w:Hn": ["105900"],
+    "w:kAt": ["163010"], "w:kA3": ["162850"], "w:nw2": ["80840"], "w:Hm": ["104680"], "w:jAwt2": ["20430"],
+    "w:mnt": ["69770"], "w:mwt3": ["69060"], "w:xAt": ["122270"], "w:xt3": ["113020"], "w:bnw": ["55590"],
+    "w:prt2": ["60300"], "w:Dw": ["182840", "182900"], "w:jndHr": ["854522"], "w:rqw": ["96340"],
+    "w:Snyt": ["155980"], "w:sxnS": ["142700"], "w:Swbtj": ["153120"], "w:j": ["20030"], "w:smH": ["135570"],
+    "w:jmntt": ["26180"], "w:jAbtt": ["20590"], "w:zAwt": ["126390"], "w:sam": ["128840"],
+    "w:wnDwt": ["47190"], "w:xAbt": ["122480"], "w:jwtt": ["550302"], "w:nmH": ["84350"],
+    "w:sHqr": ["141100"], "w:srmj": ["139510"], "w:sfx": ["133790"], "w:dAdA": ["855348"],
+    "w:dbH": ["178770"], "w:snmH": ["137520"], "w:nxn": ["87250"], "w:HAm": ["101400"], "w:abw": ["36740"],
+    "w:Hrntt": ["108040"], "w:Abd": ["93"], "w:arqy": ["39740"],
 }
 # Lemmas a course word covers besides its own: the course teaches N35 n as "to, for, of", which
 # is both the preposition and the genitive n.ꞽ (79800 in corpus v18, 850787 in AES). jn "by" is

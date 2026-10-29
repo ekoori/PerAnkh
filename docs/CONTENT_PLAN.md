@@ -86,7 +86,7 @@ parts. Afterwards the course's words cover 64.2% of the TLA's Middle Egyptian te
 AES's Middle Kingdom literature. The 167 new clips (about 2,650 characters of first takes) wait
 for the voice budget.
 
-### Section 4: Going Forth by Day
+### Section 4: Going Forth by Day (built: units 20–25, not yet released or voiced)
 
 The Book of the Dead: short, dramatic, complete spells, and the negation of unit 13 put to work.
 
@@ -98,6 +98,29 @@ The Book of the Dead: short, dramatic, complete spells, and the negation of unit
 | The 42 gods (optional) | Spell 125, the second declaration (SPXNENYKDJFE3BAOXGWMPXY22E) | 48 | 69 | 29 | — |
 
 Translations are Burkhard Backes's German (TLA); spellings are chosen as in rule 5.
+
+Built as units 20–25, 44 lessons (l112–l155): 111 words, 44 signs, 8 cards and 86 lines, with
+awards for each spell. Changes from the table:
+
+- **Order.** 30B (unit 20, 16 lines), then spell 6 (unit 21, 13 lines), then spell 125 over four
+  units (22–25, 57 lines), not two: measured after Section 3, spell 6 needs fewer new words than
+  125, and 125's 73 new words are too many for two units. "The Hall of the Two Truths" grows in
+  place, each unit ending with a reading of what has been learned. The 42 gods are left out.
+- **Spellings.** Most words take their commonest Middle Kingdom spelling in AES, with attested
+  variants preferred where they avoid a sign used nowhere else. Words AES has no usable
+  hieroglyphs for (šwbtj, mꜣꜥtj, wnḏwt, sḫnš, srmj, nmḥ, snmḥ, ẖꜣbt, nk, dꜣdꜣ, mwt "weight") are
+  spelled sound by sound from the course's signs, with the determinative of a related word.
+- **The owner.** Where each papyrus put its owner's name, the lines write mn, "so-and-so", as
+  model copies did; translations give N.
+- **Numbers.** "42" and "month 2" are read as Coptic preserves them (ḥmw snwj, ꜣbd snwj), so the
+  voice has something to say; "zp 4" spells out its repetitions, as zp 2 does.
+- Where Backes's copy leaves out a word other copies have (125: "I have not ordered killing", "I
+  have not taken milk"), the line keeps it and its note says so.
+
+Afterwards the course's words cover 66.4% of the TLA's Middle Egyptian text and 67.0% of AES's
+Middle Kingdom literature. With Section 3 there are 386 clips to record (about 6,400 characters
+of first takes). The worst case is about 32,000 characters, more than a month's budget leaves
+beside the reserve, so they go in two runs.
 
 ### Section 5: The Shipwrecked Sailor
 

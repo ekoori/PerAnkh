@@ -47,6 +47,10 @@ class CourseTest {
         assertTrue("duplicate ids $dupes", dupes.isEmpty())
         val lessonDupes = course.lessons.groupBy { it.id }.filter { it.value.size > 1 }.keys
         assertTrue("duplicate lessons $lessonDupes", lessonDupes.isEmpty())
+        val textDupes = course.texts.groupBy { it.id }.filter { it.value.size > 1 }.keys
+        assertTrue("duplicate texts $textDupes", textDupes.isEmpty())
+        val awardDupes = course.awards.groupBy { it.id }.filter { it.value.size > 1 }.keys
+        assertTrue("duplicate awards $awardDupes", awardDupes.isEmpty())
     }
 
     @Test

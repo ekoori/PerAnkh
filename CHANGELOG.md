@@ -27,7 +27,16 @@
   king who made him a courtier. New grammar: relative forms ("what the king praises"), wishes
   ("may they say") and how a stela names its owner. 77 words, 37 signs, 4 grammar cards and 59
   lines, and two new awards. The new words and lines are not voiced yet.
-- The course's words now cover 64.2% of real Middle Egyptian text.
+- Section 4, Going Forth by Day: units 20–25 read three Book of the Dead spells in full. The heart
+  scarab spell (30B) begs the heart not to testify against its owner. The shabti spell (6) makes
+  the little figure answer "Here I am!". Spell 125 takes the dead man into the Hall of the Two
+  Truths, where he greets the gods and declares, wrong by wrong, what he has not done, until "I
+  am pure, I am pure, I am pure, I am pure!". New grammar: jr "if" with the passive, and the s
+  that makes a verb cause something ("to make weep"). 111 words, 44 signs, 8 cards and 86 lines,
+  and three new awards. Not voiced yet.
+- Two awards no longer share an id with older ones, and the course tests now check that texts
+  and awards have unique ids.
+- The course's words now cover 66.4% of real Middle Egyptian text.
 
 ## 0.3.2 (2026-10-24)
 
