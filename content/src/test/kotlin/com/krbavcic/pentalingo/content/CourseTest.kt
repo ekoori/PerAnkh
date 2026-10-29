@@ -162,6 +162,14 @@ class CourseTest {
     }
 
     @Test
+    fun `a work's chapters each have their own place in the story`() {
+        for ((work, chapters) in course.texts.filter { it.work != null }.groupBy { it.work!! }) {
+            assertTrue("$work: chapters are counted from 1", chapters.all { it.chapter >= 1 })
+            assertEquals("$work: two chapters share a number", chapters.size, chapters.map { it.chapter }.distinct().size)
+        }
+    }
+
+    @Test
     fun `texts are made of phrases`() {
         for (text in course.texts) for (line in text.lines) {
             assertTrue("${text.id}: $line is not a phrase", course[line] is PhraseItem)
@@ -227,9 +235,6 @@ class CourseTest {
                 val learned = progress.memories.keys + session.result().introduced
                 for (ex in log.map { it.first }.filterIsInstance<ReadText>()) {
                     assertTrue("${lesson.id} shows lines of ${ex.textId} not yet learned", learned.containsAll(ex.lines))
-                    if (ex.lines != course.text(ex.textId)!!.lines) {
-                        assertEquals("${lesson.id} shows a line of ${ex.textId} twice", ex.lines.distinct(), ex.lines)
-                    }
                     lastShown[ex.textId] = ex.lines
                 }
                 tested += log.filter { it.first !is Teach }.flatMap { it.first.credits + it.first.itemId }
@@ -262,6 +267,28 @@ class CourseTest {
             }
         }
         assertEquals(listOf("p:snake1", "p:snake2", "p:snake3"), shown)
+    }
+
+    @Test
+    fun `a reading keeps every line in its place as its text grows`() {
+        val learned = mutableSetOf<String>()
+        val shown = mutableMapOf<String, MutableList<List<Int>>>()
+        for (lesson in course.lessons) {
+            learned += lesson.teach
+            val text = course.text(lesson.reading ?: continue)!!
+            val now = course.excerpt(text, learned::contains)
+            assertTrue("${lesson.id} shows none of ${text.id}", now.isNotEmpty())
+            val before = shown.getOrPut(text.id) { mutableListOf() }
+            assertTrue("${lesson.id} moves or drops lines of ${text.id} read before", before.all(now::containsAll))
+            before += now
+        }
+        fun upTo(text: String, line: String) = (0..course.text(text)!!.lines.lastIndexOf(line)).toList()
+        // Unit 15 reads the serpent's speech whole, its questions twice over, before unit 30 adds
+        // the sailor's answer after it.
+        assertEquals(upTo("t:serpentspeaks", "p:snake3"), shown.getValue("t:serpentspeaks")[1])
+        // Chapter 5 is read in three parts; lines it repeats from before wait for the parts they stand in.
+        assertEquals(upTo("t:punt", "p:pu130b"), shown.getValue("t:punt")[0])
+        assertEquals(upTo("t:punt", "p:pu149"), shown.getValue("t:punt")[1])
     }
 
     @Test

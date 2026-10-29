@@ -14,6 +14,8 @@ __pycache__/
 # Tool output and downloads: speech exported for the voice tool, the corpora, and report
 # workbooks (testers' reports, which stay out of this public repository).
 /tools/out/
+# A save in progress (tools/voice.py writes a file beside its target, then swaps it in).
+/tools/*.tmp
 # Signing keys stay out of the repository (README, "Release signing").
 *.jks
 *.keystore

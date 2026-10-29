@@ -61,8 +61,11 @@ fun TreasuryScreen(
     val course = knowledge.course
     val progress = knowledge.progress
     val awards = course.awards.filter { award ->
-        val req = award.requirement
-        award.id in progress.awards || req !is Requirement.ReadText || req.textId !in hidden
+        award.id in progress.awards || when (val req = award.requirement) {
+            is Requirement.ReadText -> req.textId !in hidden
+            is Requirement.ReadWork -> course.chapters(req.work).none { it.id in hidden }
+            else -> true
+        }
     }
     PageMargin(modifier.fillMaxSize()) { margin ->
         LazyVerticalGrid(

@@ -59,7 +59,7 @@ up. "The serpent speaks" now runs from Sailor 59 to 71: the serpent asks its que
 two lines appear twice, as in the papyrus. Before unit 15 the reading still shows its three
 original lines, once each.
 
-### Section 3: Lord of Abydos (built: units 16–19, not yet released or voiced)
+### Section 3: Lord of Abydos (built: units 16–19, not yet released)
 
 Stelae from Abydos and Upper Egypt, complete. Formulaic and concrete: the gentlest way into long
 texts.
@@ -83,10 +83,10 @@ Changes from the table: Antef's first sentence is too damaged to teach and is le
 district is read as wꜥrt "district" and rdjt ḥtpwt "giving offerings" (with a new sign, D56)
 rather than taught as one long place name; titles such as ḫrp rḫw nswt are taught through their
 parts. Afterwards the course's words cover 64.2% of the TLA's Middle Egyptian text and 64.8% of
-AES's Middle Kingdom literature. The 167 new clips (about 2,650 characters of first takes) wait
-for the voice budget.
+AES's Middle Kingdom literature. The 167 new clips (about 2,650 characters of first takes) were
+recorded with Section 4's.
 
-### Section 4: Going Forth by Day (built: units 20–25, not yet released or voiced)
+### Section 4: Going Forth by Day (built: units 20–25, not yet released)
 
 The Book of the Dead: short, dramatic, complete spells, and the negation of unit 13 put to work.
 
@@ -118,11 +118,10 @@ awards for each spell. Changes from the table:
   have not taken milk"), the line keeps it and its note says so.
 
 Afterwards the course's words cover 66.4% of the TLA's Middle Egyptian text and 67.0% of AES's
-Middle Kingdom literature. With Section 3 there are 386 clips to record (about 6,400 characters
-of first takes). The worst case is about 32,000 characters, more than a month's budget leaves
-beside the reserve, so they go in two runs.
+Middle Kingdom literature. Sections 3 and 4 together had 386 clips to record (about 6,400
+characters of first takes, 32,000 in the worst case), recorded on 30 October.
 
-### Section 5: The Shipwrecked Sailor
+### Section 5: The Shipwrecked Sailor (built: units 26–34, not yet released)
 
 The whole story in five chapters. Today's three Sailor texts become chapters 1, 3 and 5 and grow
 in place; chapters 2 and 4 are new.
@@ -137,6 +136,32 @@ in place; chapters 2 and 4 are new.
 
 188 new words and 3 names; afterwards the whole story is readable. The backlog's "Gold and lapis",
 "A star fell" and "Questions and commands" units are chapters 2, 4 and 3.
+
+Built as units 26–34, 68 lessons (l156–l223): 155 words (4 of them names), 38 signs, 6 cards
+(sḏm.jn=f, the sea, n sḏm.t=f "before it came", a story told twice, a tale within a tale, Punt)
+and 172 lines, with an award for reading the whole work. Changes from the table:
+
+- **Chapters** follow the story's own breaks: 1 home from the south (sentences 0–24, unit 26), 2
+  voyage, storm, island (25–58, units 27–29), 3 the serpent speaks (59–88, unit 30), 4 the
+  serpent's promise and the star that fell (89–114, unit 31), 5 the ruler of Punt and home
+  (115–164, units 32–34). Each chapter is a reading of the work "The Shipwrecked Sailor", and the
+  Library shows them together.
+- **Repeats.** Where the papyrus says a line again, the same line comes back: the sailor's
+  retelling in chapter 3 reuses thirteen lines of chapter 2, and chapter 5 brings back "Then he
+  said to me" three times, "and he said to me", the serpent's "you will fill your embrace with
+  your children" and its own "before the council of the whole land". A reading shows such a line
+  only inside a stretch of lines taught for that text (`Course.excerpt`), so an excerpt read
+  before the text grew keeps every line in its place.
+- **Spellings** are the papyrus's own, normalised; a sign found nowhere else in the course gives
+  way to the word's common Middle Kingdom spelling. Doubtful readings and the restored words of
+  the last speech are noted on their lines.
+- **The colophon** names the copyist: Amenaa, son of Ameny.
+
+Afterwards the course's words cover 70.2% of the TLA's Middle Egyptian text and 70.5% of AES's
+Middle Kingdom literature. The Sailor itself is 98.4% covered; the rest is numerals, which the
+course teaches as signs. The 348 new clips were recorded on 30 October for about 15,400
+characters. 44 of them do not pass the automatic speech check, most of them lines that open with
+ꜥḥꜥ.n, whose ꜥ the check hears as a glottal stop; they should be checked by ear.
 
 ### Section 6: The Teachings
 
@@ -176,9 +201,9 @@ retakes of the 22 October re-recording (1.6 times the first takes):
 | Section 6 | 5,100 | 8,200 |
 | All | about 27,000 | about 43,000 |
 
-The Starter plan gives 42,893 characters a month and `tools/voice.py` keeps 12,000 in reserve,
-which leaves about 31,000: the whole plan is about a month and a half of voice, spread over its
-releases.
+The Starter plan gives 42,893 characters a month, so the whole plan is about a month of voice.
+`tools/voice.py` keeps no reserve: when the account runs dry, more credit is bought (the owner's
+decision, 30 October), and a run cut short keeps what it recorded for the next to finish.
 
 ## Work the plan needs besides content
 
@@ -187,9 +212,19 @@ releases.
    course tests all accept a second reading lesson for the same text.
 2. **Works and chapters in the Library.** Group a work's chapters under one heading in story
    order, with its total readability, and an amulet for reading a whole work.
+   *Done 30 October:* a `ReadingText` can name its `work` and `chapter`; the Library shows a
+   work's chapters together under its name with the readability of the whole, and
+   `Requirement.ReadWork` is earned when every chapter is read with all its lines learned.
 3. **Review load.** About 400 more lines in spaced review will lengthen daily reviews. Measure it
    with the careless-learner walk before Section 5. If it is too much, review a chapter's lines
    together, or less often than words and signs.
+   *Measured 30 October, with Sections 1–4 built:* a careless learner doing one lesson sitting a
+   day, then reviewing until nothing is due, has on average 20 items due a day in Section 1, 31
+   in Section 2, 44 in Section 3 and 48 in Section 4: about 35, 52, 73 and 78 review exercises
+   (two to four review sessions). Ninety days after the last lesson it settles at about 32 due
+   and 57 exercises a day. Lines are under a tenth of what comes due (four a day in Sections 3
+   and 4); words and signs make the load, so reviewing lines less often would barely change it.
+   Line scheduling is left as it is.
 4. **An authoring tool.** A `tools/texts.py` that turns an AES passage into draft phrases (tokens
    with lemma ids matched to course words, normalised spellings, the German gloss) and lists the
    new words and signs. It should also pick the attested spellings for the Book of the Dead.

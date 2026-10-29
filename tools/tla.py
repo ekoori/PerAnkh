@@ -94,6 +94,30 @@ MANUAL: dict[str, list[str]] = {
     "w:sHqr": ["141100"], "w:srmj": ["139510"], "w:sfx": ["133790"], "w:dAdA": ["855348"],
     "w:dbH": ["178770"], "w:snmH": ["137520"], "w:nxn": ["87250"], "w:HAm": ["101400"], "w:abw": ["36740"],
     "w:Hrntt": ["108040"], "w:Abd": ["93"], "w:arqy": ["39740"],
+    # Section 5, the Shipwrecked Sailor. Look-alikes: ḥknw "praise" (110860) and the oil (110870);
+    # ḥꜥw "body" and ḥꜥw "ships" (101990); jtj "sovereign" (32930) and jtj "father"; ḫt "wood"
+    # (121200) and ḫt "fire"; sbꜣ "star" (131180) and sbꜣ "gate"; ky "baboon" (163830) and ky
+    # "other"; ꜣbw "elephant" (80) and ꜣbw "ceasing"; ḏꜣ "fire drill" (181490) and ḏꜣ "fishbone";
+    # ḫrw "voice" and ḫrw "the fallen"; sšr "overlay" (145460) and sšr "milk"; ꜥrq "rear up"
+    # (39600) and ꜥrq "finish"; mr "painful" and mr "bind"; šwj "free of" and šwj "dry"; šdj
+    # "take" and šdj "recite"; bjꜣ "mining country" (54510) and bjꜣ "firmament"; qnj "embrace"
+    # and qnj "amount to"; mḥ "cubit" (73330) and mḥ "fill"; dwꜣ "praise" and dwꜣ "rise early".
+    # The rest are spelled differently in the TLA (mjn.t for mnjt, ꜥš for jꜣš, gjf for gwf, mmj
+    # for mꜥmꜥ, nḥḏ.t for nḏḥyt, jbr for jbj, šsꜣ(.w) for sšꜣ, qrr for qrj) or are missing from it, and
+    # are pinned to their AES lemmas. ḥḏ-tꜣ "daybreak" is two lemmas in both corpora: unpinned.
+    "w:Hknw": ["110860"], "w:Hknw2": ["110870"], "w:Haw": ["101950", "854529"], "w:Haw2": ["101990"],
+    "w:jtj": ["32930"], "w:xt4": ["121200"], "w:sbA3": ["131180"], "w:ky2": ["163830"], "w:Abw": ["80"],
+    "w:DA": ["181490"], "w:xrw": ["120010"], "w:zxr": ["145460", "854550"], "w:arq": ["39600", "854499"],
+    "w:mr": ["851222", "71790"], "w:Swj": ["152670"], "w:Sdj": ["158710", "854561"], "w:bjA": ["54510"],
+    "w:qnj": ["161170", "161180"], "w:mH2": ["73330"], "w:dwA": ["177930", "854584"],
+    "w:Ds": ["185370", "854591"], "w:stp": ["148170"], "w:xnt": ["119350"],
+    "w:dwAw": ["600406", "178000", "400078"], "w:xnms": ["118260"], "w:rd": ["96600"], "w:kfj": ["164200"],
+    "w:nbw": ["81680"], "w:bAw": ["53300"], "w:jzwt": ["31080"], "w:jAS": ["40890"], "w:zbt": ["131030"],
+    "w:qAj": ["158990", "159110"], "w:mnjt": ["70140"], "w:HAtt": ["100450"], "w:Swyt": ["152880"],
+    "w:jArrt": ["20830"], "w:Sps": ["400546", "153940"], "w:ssA": ["143800"], "w:qrj": ["161770"],
+    "w:sSA": ["157030", "157090"], "w:jbj": ["23780"], "w:antjw": ["39010"], "w:mama": ["69540"], "w:nDHyt": ["86750"],
+    "w:gwf": ["166670"], "w:xbswt": ["115920"], "w:rxnt": ["92280"], "w:mxd": ["65350"], "w:dmA": ["850991"],
+    "w:makA": ["850573"], "w:gspr": ["168360"],
 }
 # Lemmas a course word covers besides its own: the course teaches N35 n as "to, for, of", which
 # is both the preposition and the genitive n.ꞽ (79800 in corpus v18, 850787 in AES). jn "by" is
@@ -101,9 +125,20 @@ MANUAL: dict[str, list[str]] = {
 # AES's 851426 counts jn introducing a question too). zp "time" also covers zp 2, "twice", a
 # lemma of its own in AES. wn "exist" is pinned above to wnn, of which it is the short form.
 # mꜣꜥ-ḫrw is taught with its feminine, mꜣꜥt-ḫrw, which the corpora lemmatise apart.
+# The Shipwrecked Sailor teaches compound prepositions through their parts (m-ẖnw "inside" as
+# ẖnw, m-ḥrj-jb as ḥrj-jb, r-gs as gs, m-qꜣb-n as m-qꜣb, ḫft-ḥr as ḫft, r-mjtt-jrj as mjtt) and
+# forms AES lemmatises apart: ntt and ntjw as ntj, snw "siblings" as sn, msw "children" as ms,
+# wḥmyt "repeating" as wḥm, nfrt "good things" as nfr, ꜥꜣ "greatness" and wrr "be great" as ꜥꜣ
+# and wr, the auxiliary wn, n=j-jmj "mine", =fj after a dual, mdw "speech" as mdwj. AES also
+# spells wdf, rš and qn "be brave" wdfi̯, ršu̯ and qni̯, and reads zẖꜣw "writing" as zš.
 EXTRA: dict[str, list[str]] = {
-    "w:n": ["79800", "850788", "850787"], "w:jn": ["26670", "851426"], "w:zp": ["70011"],
+    "w:n": ["79800", "850788", "850787", "400984", "25160"], "w:jn": ["26670", "851426"], "w:zp": ["70011"],
     "w:mAaxrw": ["400178"],
+    "w:Xnw": ["65370", "857318"], "w:Hrjjb": ["65190"], "w:gs": ["851526", "854572"], "w:mqAb": ["862797"],
+    "w:xft": ["116790"], "w:mjtj": ["600407", "67961"], "w:ntj": ["89760", "89890"], "w:sn": ["136310"],
+    "w:msj": ["74750"], "w:wHm": ["48530"], "w:nfr": ["83680"], "w:aA": ["34770"], "w:wr": ["47270", "47320"],
+    "w:wn": ["550129"], "w:suff": ["10060"], "w:mdwj": ["78150"], "w:wdf": ["51620"], "w:rS": ["96210"],
+    "w:qn": ["854565"], "w:jqr": ["850289"], "w:zXAw": ["144270"],
 }
 
 # Which TLA parts of speech can stand for a course word of each kind.

@@ -68,6 +68,15 @@ fun LibraryScreen(
 ) {
     val course = knowledge.course
     val texts = course.texts.filter { it.id !in hidden || it.id in knowledge.progress.textsRead }
+    // A long work's chapters stand together under its name, in story order, where its first chapter would be.
+    val entries = buildList {
+        val works = mutableSetOf<String>()
+        for (text in texts) {
+            val work = text.work
+            if (work == null) add(listOf(text))
+            else if (works.add(work)) add(texts.filter { it.work == work }.sortedBy { it.chapter })
+        }
+    }
     PageMargin(modifier.fillMaxSize()) { margin ->
         LazyColumn(
             Modifier.fillMaxSize(),
@@ -80,37 +89,66 @@ fun LibraryScreen(
                     Text("Real texts, and how much of each you can read now.", style = Type.bodySoft)
                 }
             }
-            items(texts, key = { it.id }) { text ->
-                val r = knowledge.readability(text)
-                // Read in full: a text that has grown since it was read waits for its new lines.
-                val read = text.id in knowledge.progress.textsRead && text.lines.all(knowledge::isIntroduced)
-                Column(
-                    Modifier
-                        .fillMaxWidth()
-                        .clip(RoundedCornerShape(20.dp))
-                        .background(Palette.sheetLight.copy(alpha = 0.8f))
-                        .border(2.dp, if (r.complete) Palette.gold else Palette.edge.copy(alpha = 0.6f), RoundedCornerShape(20.dp))
-                        .clickable { onOpen(text) }
-                        .padding(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(10.dp),
-                ) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Column(Modifier.weight(1f)) {
-                            Text(text.title, style = Type.title)
-                            Text(text.source, style = Type.small)
-                        }
-                        if (read) Chip("Read", color = Palette.gold, textColor = Palette.ink)
-                    }
-                    val first = course[text.lines.first()] as? PhraseItem
-                    first?.let { line ->
-                        Glyphs(lineOf(line.tokens.map { it.mdc }), quadrat = 30.dp, color = { s ->
-                            course.signFor(s.glyph.code)?.let { signColor(knowledge, it) } ?: Palette.ink
-                        })
-                    }
-                    Measured(r.fraction, "You can read ${r.readableWords} of ${r.words} words · ${r.knownSigns} of ${r.signs} signs")
-                }
+            items(entries, key = { group -> group.first().work?.let { "work:$it" } ?: group.first().id }) { group ->
+                val work = group.first().work
+                if (work == null) TextCard(knowledge, group.first(), onOpen)
+                else WorkCard(knowledge, work, group, onOpen)
             }
         }
+    }
+}
+
+/** A long work: its name, how much of the whole can be read, and its chapters. */
+@Composable
+private fun WorkCard(knowledge: Knowledge, work: String, chapters: List<ReadingText>, onOpen: (ReadingText) -> Unit) {
+    val all = chapters.map(knowledge::readability)
+    val words = all.sumOf { it.words }
+    val readable = all.sumOf { it.readableWords }
+    val read = chapters.all { it.id in knowledge.progress.textsRead && it.lines.all(knowledge::isIntroduced) }
+    Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Column(Modifier.weight(1f)) {
+                Text(work, style = Type.title)
+                Text(if (chapters.size == 1) "1 chapter so far" else "${chapters.size} chapters", style = Type.small)
+            }
+            if (read) Chip("Read", color = Palette.gold, textColor = Palette.ink)
+        }
+        Measured(if (words == 0) 0f else readable.toFloat() / words, "You can read $readable of $words words of the whole work")
+        for (text in chapters) TextCard(knowledge, text, onOpen, label = "Chapter ${text.chapter}")
+    }
+}
+
+@Composable
+private fun TextCard(knowledge: Knowledge, text: ReadingText, onOpen: (ReadingText) -> Unit, label: String? = null) {
+    val course = knowledge.course
+    val r = knowledge.readability(text)
+    // Read in full: a text that has grown since it was read waits for its new lines.
+    val read = text.id in knowledge.progress.textsRead && text.lines.all(knowledge::isIntroduced)
+    Column(
+        Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(20.dp))
+            .background(Palette.sheetLight.copy(alpha = 0.8f))
+            .border(2.dp, if (r.complete) Palette.gold else Palette.edge.copy(alpha = 0.6f), RoundedCornerShape(20.dp))
+            .clickable { onOpen(text) }
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(10.dp),
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Column(Modifier.weight(1f)) {
+                label?.let { Text(it, style = Type.small) }
+                Text(text.title, style = Type.title)
+                Text(text.source, style = Type.small)
+            }
+            if (read) Chip("Read", color = Palette.gold, textColor = Palette.ink)
+        }
+        val first = course[text.lines.first()] as? PhraseItem
+        first?.let { line ->
+            Glyphs(lineOf(line.tokens.map { it.mdc }), quadrat = 30.dp, color = { s ->
+                course.signFor(s.glyph.code)?.let { signColor(knowledge, it) } ?: Palette.ink
+            })
+        }
+        Measured(r.fraction, "You can read ${r.readableWords} of ${r.words} words · ${r.knownSigns} of ${r.signs} signs")
     }
 }
 
@@ -147,6 +185,7 @@ fun ReaderScreen(knowledge: Knowledge, text: ReadingText, voice: Voice, onBack: 
                 out
             })
         }
+        text.work?.let { Text("$it · chapter ${text.chapter}", style = Type.small) }
         Text(text.title, style = Type.display)
         Text(text.source, style = Type.small)
         val wholeTextRead = text.id in knowledge.progress.textsRead

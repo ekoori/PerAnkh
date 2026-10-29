@@ -26,17 +26,29 @@
   into the whole stela of Antef, chamberlain of Senusret I, from his appeal to passers-by to the
   king who made him a courtier. New grammar: relative forms ("what the king praises"), wishes
   ("may they say") and how a stela names its owner. 77 words, 37 signs, 4 grammar cards and 59
-  lines, and two new awards. The new words and lines are not voiced yet.
+  lines, and two new awards, all voiced.
 - Section 4, Going Forth by Day: units 20–25 read three Book of the Dead spells in full. The heart
   scarab spell (30B) begs the heart not to testify against its owner. The shabti spell (6) makes
   the little figure answer "Here I am!". Spell 125 takes the dead man into the Hall of the Two
   Truths, where he greets the gods and declares, wrong by wrong, what he has not done, until "I
   am pure, I am pure, I am pure, I am pure!". New grammar: jr "if" with the passive, and the s
   that makes a verb cause something ("to make weep"). 111 words, 44 signs, 8 cards and 86 lines,
-  and three new awards. Not voiced yet.
+  and three new awards, all voiced.
 - Two awards no longer share an id with older ones, and the course tests now check that texts
   and awards have unique ids.
-- The course's words now cover 66.4% of real Middle Egyptian text.
+- Section 5, The Shipwrecked Sailor: units 26–34 read the whole story, every line, in five
+  chapters. A follower cheers his gloomy master home from the south and tells his own tale: the
+  voyage, the storm and the wave that left him alone on an island; the serpent of gold and lapis
+  lazuli that asks him twice who brought him there; the star that fell; and the ruler of Punt,
+  who sends him home laden with myrrh and ivory. The scribe who copied the papyrus signs it at the
+  end. "The Shipwrecked Sailor", "The serpent speaks" and "The serpent's promise" grow into
+  chapters 1, 3 and 4, and where the papyrus says a line again, the same line comes back. New
+  grammar: sḏm.jn=f, "then he said", and n sḏm.t=f, "before it came"; four more cards on the sea,
+  Punt, a story told twice and a tale within a tale. 155 words, 38 signs, 6 cards and 172 lines,
+  and an award for reading the whole work, all voiced.
+- The Library shows a long work's chapters together, under the work's name and in story order,
+  with how much of the whole you can read.
+- The course's words now cover 70.2% of real Middle Egyptian text.
 
 ## 0.3.2 (2026-10-24)
 

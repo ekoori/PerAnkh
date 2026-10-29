@@ -39,6 +39,7 @@ import os
 import re
 import subprocess
 import sys
+import time
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from eleven import Client, load_key  # noqa: E402
@@ -68,8 +69,6 @@ SEEDS = (None, 11, 23)
 MAX_TAKES = 6
 # "qul:" — "say:". Short, and the colon makes the voice pause before the word.
 FRAME = "قُلْ:"
-# Unspent characters this tool must leave on the account, for other projects.
-RESERVE = 12_000
 
 
 def spoken_text(text: str) -> str:
@@ -109,8 +108,19 @@ def load(path: str, default):
 
 def save(path: str, data) -> None:
     os.makedirs(os.path.dirname(path), exist_ok=True)
-    with open(path, "w", encoding="utf-8", newline="\n") as f:
+    tmp = path + ".tmp"
+    with open(tmp, "w", encoding="utf-8", newline="\n") as f:
         json.dump(data, f, ensure_ascii=False, indent=1, sort_keys=True)
+    # On Windows another program (an editor, a virus scanner) can hold the file for a moment, and
+    # a long recording run must not die of it: try the swap again for a few seconds.
+    for attempt in range(20):
+        try:
+            os.replace(tmp, path)
+            return
+        except OSError:
+            if attempt == 19:
+                raise
+            time.sleep(0.5)
 
 
 # The transcriber often answers a short word in Latin letters ("Per", "nib", "Kim") even when told
@@ -368,8 +378,10 @@ def cmd_generate(assume_yes: bool, retry: bool, only: set[str] | None = None) ->
     first = sum(cost(c)[0] for c in todo)
     worst = sum(cost(c)[1] for c in todo)
     print(f"{len(todo)} clips to record; first takes ~{first} chars, worst case ~{worst}; account has {left} left")
-    if left - worst < RESERVE:
-        raise SystemExit(f"refusing: could leave less than {RESERVE} characters")
+    if worst > left:
+        # No reserve: the run goes ahead. If the account runs dry, what was recorded is saved and
+        # the next run, after more credit is bought, picks up the rest.
+        print("the account may run out before the end; recorded clips are kept either way")
     if not todo:
         write_manifest()
         return

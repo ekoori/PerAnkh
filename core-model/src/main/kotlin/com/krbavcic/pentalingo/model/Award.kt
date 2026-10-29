@@ -22,6 +22,9 @@ sealed interface Requirement {
 
     data class ReadText(val textId: String) : Requirement
 
+    /** Every chapter of a [ReadingText.work] read, each with all its lines learned. */
+    data class ReadWork(val work: String) : Requirement
+
     data class StudyDays(val count: Int) : Requirement
 
     /** Items once forgotten and later relearned to at least [Memory.KNOWN_DAYS] * 3. */

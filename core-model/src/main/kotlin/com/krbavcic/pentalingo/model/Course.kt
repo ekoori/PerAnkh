@@ -70,6 +70,10 @@ data class ReadingText(
     val source: String,
     val lines: List<String>,
     val note: String,
+    /** The long work this text is a chapter of, such as a story read over many units. */
+    val work: String? = null,
+    /** Its place in [work], counting from 1, so chapters can be shown in story order. */
+    val chapter: Int = 0,
 )
 
 /**
@@ -100,6 +104,9 @@ data class Course(
 
     fun text(id: String): ReadingText? = texts.firstOrNull { it.id == id }
 
+    /** The chapters of a long work, in story order. */
+    fun chapters(work: String): List<ReadingText> = texts.filter { it.work == work }.sortedBy { it.chapter }
+
     val signs: List<SignItem> get() = items.filterIsInstance<SignItem>()
 
     val words: List<WordItem> get() = items.filterIsInstance<WordItem>()
@@ -109,6 +116,28 @@ data class Course(
 
     /** The lesson that first teaches an item. */
     fun lessonTeaching(itemId: String): Lesson? = lessons.firstOrNull { itemId in it.teach }
+
+    /**
+     * The lines of [text] to show someone who has [learned] only some of them, as indexes: every
+     * run of learned lines that holds a line of the text's own — taught by a unit that reads it,
+     * and standing in it once. A line the text repeats, or borrows from another text, shows only
+     * inside such a run, so an excerpt read before the text grew, at either end, keeps its lines
+     * where they were.
+     */
+    fun excerpt(text: ReadingText, learned: (String) -> Boolean): List<Int> {
+        val lines = text.lines
+        if (lines.all(learned)) return lines.indices.toList()
+        fun own(line: String): Boolean = lines.count { it == line } == 1 &&
+            lessonTeaching(line)?.let { unitOf(it.id) }?.lessons.orEmpty().any { it.reading == text.id }
+        val shown = mutableListOf<Int>()
+        var from = 0
+        while (from < lines.size) {
+            val run = (from until lines.size).takeWhile { learned(lines[it]) }
+            if (run.any { own(lines[it]) }) shown += run
+            from += run.size + 1
+        }
+        return shown
+    }
 
     /** The units of a section, in path order. */
     fun unitsOf(section: CourseSection): List<CourseUnit> = units.filter { it.id in section.units }
