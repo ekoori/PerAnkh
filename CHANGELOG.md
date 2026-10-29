@@ -20,7 +20,14 @@
   listens.
 - A reading that grows is read again, whole, at the end of the lesson that completes it. Until
   its new lines are learned the Library no longer marks it Read.
-- The course's words now cover 60.8% of real Middle Egyptian text.
+- Section 3, Lord of Abydos: units 16–19 read three Middle Kingdom stelae, every line. The herald
+  Ky asks Osiris for offerings and lists the wrongs he never did. The general Imeny praises Osiris
+  at his festivals and asks to walk with the god's followers forever. "A good man's stela" grows
+  into the whole stela of Antef, chamberlain of Senusret I, from his appeal to passers-by to the
+  king who made him a courtier. New grammar: relative forms ("what the king praises"), wishes
+  ("may they say") and how a stela names its owner. 77 words, 37 signs, 4 grammar cards and 59
+  lines, and two new awards. The new words and lines are not voiced yet.
+- The course's words now cover 64.2% of real Middle Egyptian text.
 
 ## 0.3.2 (2026-10-24)
 

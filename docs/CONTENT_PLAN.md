@@ -59,7 +59,7 @@ up. "The serpent speaks" now runs from Sailor 59 to 71: the serpent asks its que
 two lines appear twice, as in the papyrus. Before unit 15 the reading still shows its three
 original lines, once each.
 
-### Section 3: Lord of Abydos
+### Section 3: Lord of Abydos (built: units 16–19, not yet released or voiced)
 
 Stelae from Abydos and Upper Egypt, complete. Formulaic and concrete: the gentlest way into long
 texts.
@@ -73,6 +73,18 @@ texts.
 The backlog's "Lord of Abydos" and "Beloved of the god" units are this section. 123 Middle
 Kingdom texts carry an offering formula (69 with hieroglyphs, 45 with English translations), so
 more stelae can follow cheaply once it is done.
+
+Built as units 16–19, 29 lessons (l83–l111): 77 words (14 of them names), 37 signs, 4 grammar
+cards (Abydos, relative forms, mꜣꜥ-ḫrw and how a stela names its owner, wishes with jḫ and
+sḏm=f) and 59 lines, with two awards for reading Ky and Imeny. Ky's stela reads in 17 lines and
+Imeny's in 24, reusing the offering formula's lines where the stone repeats them. "A good man's
+stela" grows to 33 lines: unit 18 adds Antef's appeal before its first line, unit 19 the rest.
+Changes from the table: Antef's first sentence is too damaged to teach and is left out; Imeny's
+district is read as wꜥrt "district" and rdjt ḥtpwt "giving offerings" (with a new sign, D56)
+rather than taught as one long place name; titles such as ḫrp rḫw nswt are taught through their
+parts. Afterwards the course's words cover 64.2% of the TLA's Middle Egyptian text and 64.8% of
+AES's Middle Kingdom literature. The 167 new clips (about 2,650 characters of first takes) wait
+for the voice budget.
 
 ### Section 4: Going Forth by Day
 

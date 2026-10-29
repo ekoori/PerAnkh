@@ -63,14 +63,31 @@ MANUAL: dict[str, list[str]] = {
     # is also lemmatised as a noun, "the one who is" (400647).
     "w:jw2": ["21940"], "w:xm": ["116910"], "w:tm": ["171990", "854578"], "w:jAwt": ["20390"],
     "w:ntj": ["89850", "400647"],
+    # Section 3. Look-alikes: the name Ky and ky "other" (400645); jꜣw "praise" and jꜣw "old man";
+    # jwj "be boatless" (22260) and jwj "come"; sbꜣ "gate", "pupil" and "star" (131180); ḏt
+    # "estate" and ḏt "eternity"; zwꜣ "cut off" (129730) for swꜣ "pass by"; mjtj "copy" (67940);
+    # wꜥrt "leg" (44740) and "flight" (44730), where the course means "district", which this
+    # corpus lacks: pinned to the AES place name. The rest are spelled differently in the TLA
+    # (ḥꜣb for ḥb, mz for ms, ꞽm.ꞽ-rʾ, the enclitic ꞽr for rf) or are names.
+    "w:Kay": ["400526"], "w:jAw": ["20360"], "w:jAw2": ["20380"], "w:jwj2": ["22260", "856211"],
+    "w:jwj": ["21930", "851688"], "w:sbA": ["131200"], "w:sbA2": ["131230"], "w:Dt2": ["181420"],
+    "w:swA": ["129740"], "w:mjtj": ["67930"], "w:gs": ["168250", "92390"], "w:wart": ["859963"],
+    "w:mAa": ["66460", "500218"], "w:zni": ["854546"], "w:qn": ["160940"], "w:Dar": ["182760", "854589"],
+    "w:Hwj": ["102730", "854530"], "w:nw": ["80730", "851519"], "w:xt2": ["121230", "400152"],
+    "w:Drw": ["184990", "92500"], "w:Tz": ["177200", "854581"], "w:Hb": ["103300"], "w:ms2": ["74700"],
+    "w:spAt": ["132420", "854544"], "w:jmjrA": ["25550", "855661"], "w:rf": ["28170"],
+    "w:Dws": ["183050"], "w:qr": ["860315"], "w:HAy": ["101050"], "w:Mrtj": ["702231"],
+    "w:xprkAra": ["400021"], "w:jnjjtf": ["400012", "707683"],
 }
 # Lemmas a course word covers besides its own: the course teaches N35 n as "to, for, of", which
 # is both the preposition and the genitive n.ꞽ (79800 in corpus v18, 850787 in AES). jn "by" is
 # also taught as the jn that points out a doer, "it is the heart that…" (26670 in corpus v18;
 # AES's 851426 counts jn introducing a question too). zp "time" also covers zp 2, "twice", a
 # lemma of its own in AES. wn "exist" is pinned above to wnn, of which it is the short form.
+# mꜣꜥ-ḫrw is taught with its feminine, mꜣꜥt-ḫrw, which the corpora lemmatise apart.
 EXTRA: dict[str, list[str]] = {
     "w:n": ["79800", "850788", "850787"], "w:jn": ["26670", "851426"], "w:zp": ["70011"],
+    "w:mAaxrw": ["400178"],
 }
 
 # Which TLA parts of speech can stand for a course word of each kind.
