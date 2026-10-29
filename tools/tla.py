@@ -58,6 +58,11 @@ MANUAL: dict[str, list[str]] = {
     "w:nm": ["27410"], "w:rA": ["92560", "92580"], "w:jrt": ["28250", "28290"], "w:wAt": ["42490"],
     "w:a": ["34360", "34320"], "w:st2": ["854540", "125100"], "w:tp2": ["854577", "170860", "170861"],
     "w:zp": ["854543", "132300", "132310", "132320"], "w:Hr2": ["107510"],
+    # Unit 15. Each has a look-alike: jw "wrong" (21990), ḫm "be parched" (116860), tm "cease"
+    # (171980), jꜣwt "office" (20430). tm "not to" is 171990 in corpus v18 and 854578 in AES; ntj
+    # is also lemmatised as a noun, "the one who is" (400647).
+    "w:jw2": ["21940"], "w:xm": ["116910"], "w:tm": ["171990", "854578"], "w:jAwt": ["20390"],
+    "w:ntj": ["89850", "400647"],
 }
 # Lemmas a course word covers besides its own: the course teaches N35 n as "to, for, of", which
 # is both the preposition and the genitive n.ꞽ (79800 in corpus v18, 850787 in AES). jn "by" is

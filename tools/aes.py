@@ -57,7 +57,8 @@ STORIES = {
 # Units proposed after the present course, in teaching order, as the lemmas each would teach
 # (grammar such as the stative or ḥr + infinitive has no lemma of its own, so it is not counted
 # here). Measured cumulatively: each line is what that unit adds to the ones above it. Proposals
-# already built — little words, pronouns, telling a story, negation, the body — are units 10–14.
+# already built — little words, pronouns, telling a story, negation, the body — are units 10–14;
+# unit 15 began the stative. docs/CONTENT_PLAN.md places the rest.
 UNITS = {
     "I have come: the stative (sit, lie, wake, weep, fear, rejoice)": [
         "105780", "150740", "95940", "94180", "138740", "102060"],

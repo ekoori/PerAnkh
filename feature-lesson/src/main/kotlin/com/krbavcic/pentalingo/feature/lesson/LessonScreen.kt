@@ -251,7 +251,7 @@ private fun ExerciseBody(
     val hint = SignHint(course, enabled = exercise.hintable && verdict == null, onHint)
     when (exercise) {
         is Teach -> TeachCard(course.require(exercise.itemId), course, voice, autoplay, exercise.firstTime)
-        is ReadText -> ReadTextCard(course, exercise.textId, voice)
+        is ReadText -> ReadTextCard(course, exercise.textId, exercise.lines, voice)
         is MultipleChoice -> ChoiceExercise(exercise, verdict, voice, onTap, onPending, hint)
         is Arrange -> ArrangeExercise(exercise, verdict, voice, onTap, onPending, hint)
         is Spell -> SpellExercise(exercise, course, verdict, voice, onTap, onPending)

@@ -217,7 +217,15 @@ class Session private constructor(
             }
             Origin.PAIRS -> factory.pairs(pairCandidates())
             Origin.STRETCH -> if (struggling) null else (item as? WordItem)?.let(factory::soundOut)
-            Origin.READ -> ReadText(p.itemId, p.textId ?: return null).also { textRead = p.textId }
+            Origin.READ -> {
+                val text = course.text(p.textId ?: return null) ?: return null
+                val learned = { id: String -> start.isIntroduced(id) || id in taughtNow }
+                // Until a text is learned whole, a line it repeats shows only where it last stands:
+                // the earlier excerpt, before the text grew in front of it.
+                val lines = if (text.lines.all(learned)) text.lines
+                else text.lines.filterIndexed { i, id -> learned(id) && text.lines.lastIndexOf(id) == i }
+                ReadText(p.itemId, text.id, lines).also { textRead = text.id }
+            }
         }
     }
 

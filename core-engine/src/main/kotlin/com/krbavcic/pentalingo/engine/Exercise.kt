@@ -90,8 +90,11 @@ data class Teach(override val itemId: String, val firstTime: Boolean) : Exercise
     override val instruction get() = if (firstTime) "New" else "Remember this?"
 }
 
-/** The finale card of a reading lesson: the whole text, now readable. */
-data class ReadText(override val itemId: String, val textId: String) : Exercise {
+/**
+ * The finale card of a reading lesson: the text as far as it has been learned. A text can grow,
+ * its later lines taught in a later unit that reads it again, so [lines] are those learned by now.
+ */
+data class ReadText(override val itemId: String, val textId: String, val lines: List<String>) : Exercise {
     override val kind get() = ExerciseKind.TEACH
     override val instruction get() = "Read it"
     override val credits get() = emptyList<String>()

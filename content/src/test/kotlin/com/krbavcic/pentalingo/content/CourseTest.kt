@@ -4,6 +4,7 @@ import com.krbavcic.pentalingo.engine.Answer
 import com.krbavcic.pentalingo.engine.ExerciseKind
 import com.krbavcic.pentalingo.engine.MultipleChoice
 import com.krbavcic.pentalingo.engine.Outcome
+import com.krbavcic.pentalingo.engine.ReadText
 import com.krbavcic.pentalingo.engine.Recording
 import com.krbavcic.pentalingo.engine.Session
 import com.krbavcic.pentalingo.engine.Teach
@@ -165,6 +166,21 @@ class CourseTest {
     }
 
     @Test
+    fun `a text grows only forward, and its last reading has every line`() {
+        val order = course.lessons.flatMapIndexed { i, l -> l.teach.map { it to i } }.toMap()
+        for (text in course.texts) {
+            val readings = course.lessons.indices.filter { course.lessons[it].reading == text.id }
+            assertTrue("${text.id} is never read", readings.isNotEmpty())
+            for (line in text.lines) {
+                assertTrue("${text.id}: $line is taught after the last lesson that reads it", order.getValue(line) <= readings.max())
+            }
+            for (i in readings) {
+                assertTrue("${course.lessons[i].id} reads ${text.id} before any of it is taught", text.lines.any { order.getValue(it) <= i })
+            }
+        }
+    }
+
+    @Test
     fun `everything that speaks has something to say, and a way to check it was said`() {
         val all = clips(course)
         assertTrue(all.size > 150)
@@ -194,6 +210,8 @@ class CourseTest {
     fun `a perfect learner walks the whole course`() {
         var progress = Progress()
         var now = t0
+        // What each text's latest reading showed: a text that grows must end up shown whole.
+        val lastShown = mutableMapOf<String, List<String>>()
         for (lesson in course.lessons) {
             val tested = mutableSetOf<String>()
             var sittings = 0
@@ -202,6 +220,14 @@ class CourseTest {
                 val session = Session.forLesson(course, progress, lesson, now, seed = lesson.id.hashCode().toLong() + sittings, clock = { now })
                 val log = play(session) { it.solution() }
                 for ((ex, outcome) in log) assertEquals("${lesson.id} ${ex.kind} ${ex.itemId}", Outcome.CORRECT, outcome)
+                val learned = progress.memories.keys + session.result().introduced
+                for (ex in log.map { it.first }.filterIsInstance<ReadText>()) {
+                    assertTrue("${lesson.id} shows lines of ${ex.textId} not yet learned", learned.containsAll(ex.lines))
+                    if (ex.lines != course.text(ex.textId)!!.lines) {
+                        assertEquals("${lesson.id} shows a line of ${ex.textId} twice", ex.lines.distinct(), ex.lines)
+                    }
+                    lastShown[ex.textId] = ex.lines
+                }
                 tested += log.filter { it.first !is Teach }.flatMap { it.first.credits + it.first.itemId }
                 assertTrue("${lesson.id} sitting is too long: ${log.size}", log.size <= 32)
                 progress = Recording.apply(course, progress, session.result()).progress
@@ -211,6 +237,27 @@ class CourseTest {
         }
         assertEquals(course.lessons.size, progress.lessons.size)
         assertEquals(course.texts.map { it.id }.toSet(), progress.textsRead)
+        for (text in course.texts) assertEquals("${text.id} is never shown whole", text.lines, lastShown[text.id])
+    }
+
+    @Test
+    fun `an excerpt read before its text grew still reads as it did`() {
+        // Unit 14 reads the serpent's second question; unit 15 adds the scene before it, where the
+        // same lines also stand. A learner at unit 14 must see the three lines once, in order.
+        val l74 = course.lesson("l74")!!
+        var progress = Progress()
+        var now = t0
+        var shown: List<String>? = null
+        for (lesson in course.lessons.takeWhile { it != l74 } + l74) {
+            while (!progress.isCompleted(lesson.id)) {
+                val session = Session.forLesson(course, progress, lesson, now, seed = 3, clock = { now })
+                play(session) { it.solution() }.map { it.first }.filterIsInstance<ReadText>()
+                    .firstOrNull { it.textId == "t:serpentspeaks" }?.let { shown = it.lines }
+                progress = Recording.apply(course, progress, session.result()).progress
+                now += day
+            }
+        }
+        assertEquals(listOf("p:snake1", "p:snake2", "p:snake3"), shown)
     }
 
     @Test

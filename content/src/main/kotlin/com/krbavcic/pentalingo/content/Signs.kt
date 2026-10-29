@@ -375,6 +375,24 @@ internal val SIGNS: List<SignItem> = listOf(
     det("D52", "phallus", "male",
         "The male member, after words for men and male animals. In m-bꜣḥ, “in the presence of”, it stands for bꜣḥ, the front of a man."),
 
+    // ---- I have come: the serpent’s threat, Ptahhotep in full ----------------------------------------
+    logo("N18", "jw", "strip of sand", "island",
+        "A strip of sand in the water: jw, “island”. The Shipwrecked Sailor’s is never named — only jw pn, “this island”.",
+        like = listOf("N16")),
+    det("Q7", "brazier with a flame", "fire, heat, burning",
+        "A bowl on a stand with a flame rising from it. It follows words for fire, cooking and what fire leaves behind."),
+    multi("M29", "nḏm", "seed pod", "sweet, pleasant",
+        "The pod of the carob tree, which is sweet: nḏm, “sweet, pleasant”."),
+    multi("V29", "wꜣḥ", "swab of fibre", "put down; endure",
+        "A wisp of fibre on a handle, for swabbing a deck. It writes wꜣḥ, “to set down” — and “to last”."),
+    det("A19", "old man with a stick", "old age",
+        "A bent man leaning on his stick: after words for old age and the elderly.", listOf("A1")),
+    multi("U15", "tm", "sledge", "not to (in tm)",
+        "A sledge for dragging loads. It writes tm, the verb “not to”."),
+    det("D19", "nose, eye and cheek", "nose, smelling, gladness",
+        "The middle of a face in profile: after words for the nose — and for joy, which Egyptians breathed in.",
+        listOf("D2")),
+
     // ---- numerals ------------------------------------------------------------------------------
     numeral("Z1", "stroke", "wꜥ", "One stroke for each unit. After a sign, a single stroke also says “this sign means what it shows”."),
     numeral("V20", "cattle hobble", "mḏ", "A hobble for cattle: ten."),

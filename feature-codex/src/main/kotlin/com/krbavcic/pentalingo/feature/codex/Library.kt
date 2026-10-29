@@ -82,7 +82,8 @@ fun LibraryScreen(
             }
             items(texts, key = { it.id }) { text ->
                 val r = knowledge.readability(text)
-                val read = text.id in knowledge.progress.textsRead
+                // Read in full: a text that has grown since it was read waits for its new lines.
+                val read = text.id in knowledge.progress.textsRead && text.lines.all(knowledge::isIntroduced)
                 Column(
                     Modifier
                         .fillMaxWidth()

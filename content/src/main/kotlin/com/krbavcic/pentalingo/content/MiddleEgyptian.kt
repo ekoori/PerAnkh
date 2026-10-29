@@ -265,6 +265,31 @@ private val UNITS = listOf(
             Lesson("l75", "The test of the body", "Face, mouth, eye", "D2", checkpoint = true),
         ),
     ),
+    CourseUnit(
+        "u15", "I Have Come", "The stative, and two texts in full", UnitColor.TURQUOISE,
+        "A verb can describe a state as well as an action: jj.kw, “I have come”; wḏꜣ.kw, “I was unharmed”. With it you can read the serpent’s whole threat to the shipwrecked sailor — and the whole of Ptahhotep’s praise of hearing.",
+        listOf(
+            Lesson("l76", "I have come", "Saying how things stand", "M18",
+                teach = c("stative") + p("jjkw", "swwDA"),
+                practice = w("jwj", "wDA", "sw")),
+            Lesson("l77", "This island", "If you are slow…", "N18",
+                teach = s("N18") + w("jw2", "wdf") + p("snake4", "snake5", "snake6", "snake7"),
+                practice = w("jr", "jnj", "Tw")),
+            Lesson("l78", "Ashes", "One who is not seen", "Q7",
+                teach = s("Q7") + w("ssf", "ntj") + p("snake8", "snake9"),
+                practice = w("rx", "xpr", "mAA")),
+            Lesson("l79", "I do not hear it", "ḥr and a verb: what is going on", "D2",
+                teach = c("hrsdm") + p("jwjHrsDm") + w("xm") + p("snake10", "snake11"),
+                practice = w("mdwj", "mbAH", "wj")),
+            Lesson("l80", "The serpent speaks", "Carried off, unharmed", "F13",
+                teach = s("M29") + w("snDm") + s("V29") + w("wAH", "dmj") + p("snake12", "snake13", "snake14", "snake15"),
+                reading = "t:serpentspeaks", practice = w("jTj", "st2", "wDA")),
+            Lesson("l81", "A son who listens", "Ptahhotep on hearing, in full", "A19",
+                teach = s("A19") + w("jAwt", "sxpr") + s("U15") + w("tm") + s("D19") + w("rS") + p("ptah7", "ptah8", "ptah9"),
+                reading = "t:ptahhotep", practice = w("sDm", "jb", "sA")),
+            Lesson("l82", "The test of states", "I have come", "M18", checkpoint = true),
+        ),
+    ),
 )
 
 /**
@@ -278,7 +303,7 @@ private val SECTIONS = listOf(
     ),
     CourseSection(
         "s2", "The Storytellers", "How Egyptians told their stories — and the Shipwrecked Sailor, Ptahhotep and a good man’s stela in their own words", "S20",
-        listOf("u10", "u11", "u12", "u13", "u14"),
+        listOf("u10", "u11", "u12", "u13", "u14", "u15"),
     ),
 )
 
@@ -295,18 +320,22 @@ private val TEXTS = listOf(
     ReadingText("t:sailor", "The Shipwrecked Sailor", "Opening line, Papyrus Hermitage 1115, St Petersburg",
         p("sailor1"),
         "A follower consoles his master after a failed expedition by telling of his own shipwreck on an island ruled by a giant serpent."),
+    // Grows in place: unit 10 teaches six of its lines, unit 13 one, unit 15 the rest.
     ReadingText("t:ptahhotep", "Ptahhotep on hearing", "The Teaching of Ptahhotep, from its closing lines, Papyrus Prisse",
-        p("ptah1", "ptah2", "ptah3", "ptah4", "ptah5", "ptah6"),
-        "At the end of his teaching the old vizier praises sḏm: hearing, which is also obeying. The god loves the one who listens, and the heart decides whether a man will."),
+        p("ptah1", "ptah7", "ptah2", "ptahmsDD", "ptah8", "ptah3", "ptah4", "ptah5", "ptah6", "ptah9"),
+        "At the end of his teaching the old vizier praises sḏm: hearing, which is also obeying. The god loves the one who listens and hates the one who will not, the heart decides which a man will be, and the son who listens lives to old age."),
     ReadingText("t:serpent", "The serpent’s promise", "The Shipwrecked Sailor, Papyrus Hermitage 1115",
         p("serpent1", "serpent2", "serpent3", "serpent4"),
         "Washed up alone on an island, the sailor meets a giant serpent with a golden body and eyebrows of lapis lazuli. It tells him a ship will come for him after four months, and that he will die at home."),
     ReadingText("t:goodman", "A good man’s stela", "A Middle Kingdom stela from Upper Egypt",
         p("good1", "good2", "good3"),
         "Officials listed their good deeds on their stelae so that passers-by would read them aloud: the hungry fed, the thirsty given drink, the boatless ferried, and no wrong done to anyone."),
+    // Grows in place: unit 14 teaches its last three lines, unit 15 the scene before them. The
+    // serpent asks twice, so two lines come back, as they do in the papyrus.
     ReadingText("t:serpentspeaks", "The serpent speaks", "The Shipwrecked Sailor, Papyrus Hermitage 1115",
-        p("snake1", "snake2", "snake3"),
-        "Cast ashore, the sailor hears a noise like thunder. A serpent thirty cubits long, golden, with eyebrows of lapis lazuli, rears up before him — and speaks."),
+        p("snake1", "snake4", "snake3", "snake5", "snake6", "snake7", "snake8", "snake9", "snake10", "snake11",
+            "snake12", "snake13", "snake14", "snake15", "snake1", "snake2", "snake3"),
+        "Cast ashore, the sailor hears a noise like thunder. A serpent thirty cubits long, golden, with eyebrows of lapis lazuli, rears up before him and threatens to burn him to ashes. Too frightened to answer, he is carried off in its mouth, set down unharmed — and asked again."),
 )
 
 private val UNILITERALS = s(

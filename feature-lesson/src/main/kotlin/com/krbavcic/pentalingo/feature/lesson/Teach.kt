@@ -233,9 +233,9 @@ private fun ConceptCard(concept: ConceptItem) {
     Text(Translit.display(concept.body), style = Type.body.copy(fontSize = 17.sp, lineHeight = 26.sp))
 }
 
-/** The finale of a reading lesson: a whole real text, with every word tappable. */
+/** The finale of a reading lesson: a real text, as far as it has been learned, with every word tappable. */
 @Composable
-fun ReadTextCard(course: Course, textId: String, voice: Voice) {
+fun ReadTextCard(course: Course, textId: String, lines: List<String>, voice: Voice) {
     val text = course.text(textId) ?: return
     // Which word was last tapped, as (line, word): it stays lit while its sound plays.
     var tapped by remember { mutableStateOf<Pair<String, Int>?>(null) }
@@ -243,7 +243,7 @@ fun ReadTextCard(course: Course, textId: String, voice: Voice) {
         Rubric("You can read this")
         Text(text.title, style = Type.display)
         Text(text.source, style = Type.small)
-        for (lineId in text.lines) {
+        for (lineId in lines) {
             val phrase = course[lineId] as? PhraseItem ?: continue
             Column(
                 Modifier

@@ -13,6 +13,14 @@
 - The app says "this device" rather than "this phone".
 - rmṯ "people" is written as Middle Kingdom scribes wrote it, without the owl: the m is read but
   not written.
+- Unit 15, I Have Come: the stative ("I have come", "I was unharmed") and ḥr with a verb ("I am
+  listening"). Two readings grow to their full passages. "The serpent speaks" now has the
+  serpent's whole threat: ashes, a sailor too frightened to hear, and a ride in the serpent's
+  mouth. "Ptahhotep on hearing" reads to the end of its praise, with old age for the son who
+  listens.
+- A reading that grows is read again, whole, at the end of the lesson that completes it. Until
+  its new lines are learned the Library no longer marks it Read.
+- The course's words now cover 60.8% of real Middle Egyptian text.
 
 ## 0.3.2 (2026-10-24)
 

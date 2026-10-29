@@ -295,4 +295,38 @@ internal val WORDS: List<WordItem> = listOf(
         note = "A question word: nm jn ṯw, “who brought you?”."),
     word("nDs", "nḏs", "N35-I10-S29-G37-A1", "little one", Pos.NOUN, listOf("little man", "commoner", "small one"),
         note = "A nobody, a little man: what the giant serpent calls the sailor.", det = "A1"),
+
+    // ---- the serpent’s threat -------------------------------------------------------------------
+    word("jw2", "jw", "N18:N23*Z1", "island", Pos.NOUN, listOf("the island", "isle"),
+        note = "Spelled like jw, the word that starts a statement, but written with the strip of sand. The sailor’s island is only ever jw pn, “this island”."),
+    word("wdf", "wdf", "G43-D46-I9-D54", "to delay", Pos.VERB, listOf("delay", "be slow", "hesitate", "linger"),
+        note = "Walking legs on a word for not getting on: jr wdf=k, “if you are slow…”, warns the serpent.", det = "D54"),
+    word("ssf", "ssf", "S29-S29-I9-Q7", "ashes", Pos.NOUN, listOf("ash", "cinders"),
+        note = "The brazier marks it as something fire leaves behind.", det = "Q7"),
+    word("ntj", "ntj", "N35-X1-Z4", "who, which", Pos.PRONOUN, listOf("who", "which", "that", "one who"),
+        note = "Joins a description to a noun: m ntj n mꜣ.tw=f, “as one who is not seen”. After a feminine noun it is ntt."),
+    word("xm", "ḫm", "Aa1-G17-D35", "not to know", Pos.VERB, listOf("not know", "be ignorant", "be unaware"),
+        note = "The arms of negation end the word: knowing nothing. ḫm.n=j wj, “I do not know myself”, says the terrified sailor.",
+        det = "D35"),
+
+    // ---- carried off, unharmed ------------------------------------------------------------------
+    word("snDm", "snḏm", "S29-M29-G17-Y1", "to rest", Pos.VERB, listOf("rest", "sit", "be at ease", "make pleasant"),
+        note = "s + nḏm, “sweet”: to make yourself comfortable. st nt snḏm, “a place of resting”, is the serpent’s lair.",
+        det = "Y1"),
+    word("wAH", "wꜣḥ", "V29-V28-Y1", "to put down", Pos.VERB, listOf("put down", "set down", "lay", "place", "endure", "last"),
+        note = "To set something down — and so to stay where it is set: wꜣḥ is also “to endure”, as names and offerings do.",
+        det = "Y1"),
+    word("dmj", "dmj", "D46-W19-M17-Y1", "to touch", Pos.VERB, listOf("touch", "be touched", "reach"),
+        note = "nn dmj.t=j, “without my being touched”: the serpent carries him like an egg.", det = "Y1"),
+
+    // ---- Ptahhotep in full ----------------------------------------------------------------------
+    word("jAwt", "jꜣwt", "M17-G1-G43-X1-A19", "old age", Pos.NOUN, listOf("age", "being old"),
+        note = "The bent old man with his stick ends the word. A long life was the reward Ptahhotep promised the son who listens.",
+        det = "A19"),
+    word("sxpr", "sḫpr", "S29-L1-D21", "to bring about", Pos.VERB, listOf("create", "make", "cause", "make into", "bring into being"),
+        note = "s + ḫpr, “become”: to make something become. An s in front makes a verb causative — snḏm, “make pleasant”, works the same way."),
+    word("tm", "tm", "U15-G17", "not to", Pos.VERB, listOf("not", "do not", "fail to"),
+        note = "The verb that says no where n cannot stand: m tm sḏm, “as one who does not listen”. The sledge spells tm, the owl confirms the m."),
+    word("rS", "rš", "D21-N37-D19-A2", "to rejoice", Pos.VERB, listOf("rejoice", "be glad", "be happy", "glad", "happy"),
+        note = "rš.wj, “how glad!”: the same ending -wj that makes nfr.wj, “how good!”.", det = "A2"),
 )
