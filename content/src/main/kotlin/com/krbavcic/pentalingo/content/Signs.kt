@@ -677,6 +677,28 @@ internal val SIGNS: List<SignItem> = listOf(
     det("O31", "door", "doors; opening",
         "A door leaf: after words for doors, and wn, “to open”."),
 
+    // ---- Westcar: the lost fish pendant -------------------------------------------------------------
+    det("K3", "mullet", "fish; a fish pendant",
+        "A mullet: after nḫꜣw, the fish-shaped pendant girls wore in their hair, perhaps against drowning."),
+    det("A15", "man falling", "falling; overthrow",
+        "A man falling headlong: after ḫr, “to fall”."),
+    det("W15", "water jar with water pouring out", "coolness; pouring",
+        "A jar with water spilling from it: after qbb, “to be cool”."),
+    multi("O11", "ꜥḥ", "battlemented palace", "palace (ꜥḥ)",
+        "A walled enclosure with battlements: ꜥḥ, “palace”."),
+    multi("T25", "ḏbꜣ", "float of reeds", "ḏbꜣ",
+        "A float of reeds lashed together: ḏbꜣ, as in ḏbꜣ, “to replace”."),
+    det("O39", "block of stone", "stone; sherds",
+        "A block of stone: after words for stone and potsherds."),
+    multi("Aa20", "ꜥpr", "bag of cloth", "ꜥpr",
+        "A bag tied at the neck: ꜥpr, “to equip”."),
+    det("G49", "birds in a pool", "marshes, bird pools",
+        "Ducks on a pond: after zš, “marsh”."),
+    multi("U13", "hb", "plough", "hb",
+        "A plough: hb, as in hbnj, “ebony”."),
+    det("E1", "bull", "cattle",
+        "A bull: after words for cattle."),
+
     // ---- numerals ------------------------------------------------------------------------------
     numeral("Z1", "stroke", "wꜥ", "One stroke for each unit. After a sign, a single stroke also says “this sign means what it shows”."),
     numeral("V20", "cattle hobble", "mḏ", "A hobble for cattle: ten."),

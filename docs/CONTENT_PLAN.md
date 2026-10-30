@@ -191,10 +191,33 @@ Middle Kingdom literature. Papyrus Prisse is 85.5% covered, and the epilogue all
 numeral 110. The 163 new clips were recorded on 30 October for about 7,200 characters; 23 do not
 pass the automatic speech check and should be checked by ear.
 
+### Section 7: The Magicians (built: units 39–42, not yet released)
+
+Papyrus Westcar, the lost fish pendant (AES J4EXGHLCL5DR7JHSPDWTVEKMDY). Planned as sentences
+110–140, 31 lines and 20 new words; built as the whole of Bauefre's tale, sentences 85–157, so the
+story has its beginning and end: Sneferu's boredom, the boating party, the pendant, the king's
+retelling, the magic, the reward and Khufu's offering. Units 39–42, 35 lessons (l261–l295): 62
+words (3 of them names), 10 signs, 2 cards (the tales at Khufu's court; the new article pꜣ and
+pꜣy=s) and 76 lines, with an award for reading the whole tale.
+
+- **Damage.** Sentences 87–88 are too damaged to teach and are left out; words the papyrus has
+  lost elsewhere are restored as AES restores them, spelled as the course spells them, and noted
+  on their lines.
+- **Repeats.** The king retells the story to Djadjaemankh almost word for word, and "Then His
+  Majesty said:" comes four times: eleven places reuse a line already taught.
+- **Spellings** follow the papyrus where its signs are taught, or a variant that avoids a sign
+  used nowhere else (M3 for the wood of ebony and sqb, N18 for the loaf of šns, the man with a
+  stick for the arm with one); ten new signs, among them K3 for the fish pendant.
+- **Code.** Its lines are in `WestcarPhrases.kt`, joined to the others like Section 6's.
+
+Afterwards the course's words cover 73.6% of the TLA's Middle Egyptian text and 74.4% of AES's
+Middle Kingdom literature; Westcar is 84.2% covered. The 144 new clips were recorded on 30 October
+for about 15,000 characters, more than planned because 44 of them, most opening with ꜥḥꜥ.n or
+holding the long names, used all their retakes without passing the automatic speech check; they
+should be checked by ear.
+
 ### Later
 
-- **Westcar, the lost fish amulet** (sentences 110–140): 31 lines, 20 new words once the above
-  is taught. Westcar has hieroglyphs for only 73–86% of its words, so some must be restored.
 - **The Eloquent Peasant and Sinuhe**: after everything above, 78% of their words are known.
   Long projects of their own.
 - **Royal names**: more kings (Senusret, Hatshepsut, Ramesses II). Writing, not corpus work.

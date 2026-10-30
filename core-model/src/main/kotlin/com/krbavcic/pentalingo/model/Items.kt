@@ -141,6 +141,8 @@ data class ConceptItem(
     val mdc: String? = null,
     /** Draw the illustration right-to-left. */
     val mirrored: Boolean = false,
+    /** The illustration read aloud, as a transliteration, when it is Egyptian to be heard. */
+    val said: String? = null,
 ) : Item {
     override val kind get() = ItemKind.CONCEPT
 }

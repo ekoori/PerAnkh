@@ -494,7 +494,8 @@ internal fun PairsExercise(ex: Pairs, verdict: Verdict?, voice: Voice, onTap: ()
                     left == i -> TileState.SELECTED
                     else -> TileState.IDLE
                 }
-                Tile(state, if (i in matched || verdict != null) null else ({ onTap(); left = i; attempt(i, right) }),
+                // A matched pair can be heard again, during the exercise and after it.
+                Tile(state, if (i in matched || verdict != null) ({ voice.play(c.itemId) }) else ({ onTap(); left = i; attempt(i, right) }),
                     Modifier.fillMaxWidth().height(76.dp)) {
                     TileFaceSmall(c, glyphSize = 52.dp)
                 }
@@ -502,14 +503,15 @@ internal fun PairsExercise(ex: Pairs, verdict: Verdict?, voice: Voice, onTap: ()
         }
         Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(10.dp)) {
             ex.right.forEachIndexed { j, c ->
-                val done = ex.match.withIndex().any { (l, r) -> r == j && l in matched }
+                val partner = ex.match.indexOf(j)
+                val done = partner in matched
                 val state = when {
                     done -> TileState.CORRECT
                     wrongFlash?.second == j -> TileState.WRONG
                     right == j -> TileState.SELECTED
                     else -> TileState.IDLE
                 }
-                Tile(state, if (done || verdict != null) null else ({ onTap(); right = j; attempt(left, j) }),
+                Tile(state, if (done || verdict != null) ({ ex.left.getOrNull(partner)?.let { voice.play(it.itemId) } }) else ({ onTap(); right = j; attempt(left, j) }),
                     Modifier.fillMaxWidth().height(76.dp)) {
                     TileFaceSmall(c)
                 }

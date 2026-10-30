@@ -81,6 +81,10 @@ class Checker(private val course: Course) {
 
         val given = answer.faces.map(::norm)
         if (ex.answers.any { it.map(::norm) == given }) return Verdict(Outcome.CORRECT, solution, ex.explain)
+        // A line read on its own needs no "and" to join it to the line before.
+        if (ex.answers.any { it.size > 1 && norm(it[0]) in JOINERS && it.drop(1).map(::norm) == given }) {
+            return Verdict(Outcome.CORRECT, solution, ex.explain)
+        }
         // Every right tile, nothing extra, wrong order: they understood the words but not the
         // sentence. Worth saying so, and worth a near miss rather than a fail.
         val best = ex.answers.first().map(::norm)
@@ -91,6 +95,11 @@ class Checker(private val course: Course) {
     }
 
     private fun norm(s: String) = s.trim().lowercase().trimEnd('.', ',', '!', '?')
+
+    private companion object {
+        /** Words that only join a line to the one before it, so may be left off a line on its own. */
+        val JOINERS = setOf("and", "but", "so", "or")
+    }
 
     private fun spell(ex: Spell, answer: Answer.Signs): Verdict {
         val given = answer.codes

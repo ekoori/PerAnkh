@@ -55,6 +55,17 @@ class CheckerTest {
     }
 
     @Test
+    fun `a line on its own may leave off the and that joins it to the line before`() {
+        val ex = Arrange(
+            "p:mpt", ExerciseKind.ARRANGE_TRANSLATION, "", Display(), emptyList(),
+            answers = listOf(listOf("and", "you will die", "in", "your town")), solution = Display(text = "and you will die in your town"),
+        )
+        assertEquals(Outcome.CORRECT, checker.check(ex, Answer.Tiles(listOf("you will die", "in", "your town"))).outcome)
+        assertEquals(Outcome.CORRECT, checker.check(ex, Answer.Tiles(listOf("and", "you will die", "in", "your town"))).outcome)
+        assertEquals(Outcome.WRONG, checker.check(ex, Answer.Tiles(listOf("you will die", "your town"))).outcome)
+    }
+
+    @Test
     fun `hieroglyph tiles answer with their hieroglyphs, not their transliterations`() {
         // The lesson screen once answered with the transliteration under each tile, so every
         // hieroglyph-arranging question was marked wrong however it was answered.

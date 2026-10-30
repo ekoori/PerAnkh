@@ -130,6 +130,21 @@ MANUAL: dict[str, list[str]] = {
     "w:aSA": ["41020", "41050"], "w:aD2": ["41940"], "w:tpj": ["171460", "171450", "550180"],
     "w:gr": ["167730", "167740", "167790"], "w:qn2": ["600621"], "w:Tzj": ["177210"], "w:sxr": ["142800"],
     "w:sDmj": ["150680", "150700"],
+    # Westcar's fish pendant. Look-alikes: bꜣw "barge" (53310) and bꜣw "power"; ds "jug" (180600)
+    # and ds "flint"; mꜣꜥ "offering" (66780) and mꜣꜥ "temple of the head"; zš "marsh" (144360) and
+    # zš "threshold"; wsr "oar" (49620) and wsr "be strong"; ꜥt "room" (34540) and ꜥt "limb"; ḫr
+    # "fall" (119610) and ḫr "before"; wḏꜣ "go" (52130) and wḏꜣ "sound"; m-ḫnt "upstream" and mḫnt
+    # "ferry"; ḏbꜣ "replace" and ḏbꜣ "clothe". The rest are names, spelled differently in the TLA,
+    # or missing from it, and are pinned to their AES lemmas.
+    "w:bAwfra": ["711857"], "w:DAdAmanx": ["709664"], "w:at2": ["34540", "854495"], "w:Xrjhbt": ["850117"],
+    "w:mDAt": ["144470"], "w:jst": ["851440"], "w:dbn": ["178560", "854585"], "w:HjHj": ["101930"], "w:zj": ["127740"],
+    "w:wDA2": ["52130"], "w:S": ["151010", "854557"], "w:bAw2": ["53310"], "w:mxnt": ["500089", "850635"],
+    "w:zS": ["144360"], "w:wsr": ["49620"], "w:xmat": ["117130"], "w:sqb": ["853628"], "w:bnt": ["55550"],
+    "w:Hnskt": ["107220", "107050"], "w:jAdt": ["21190"], "w:Stjw": ["158220"], "w:Ht": ["111000"], "w:xr2": ["119610"],
+    "w:pAy": ["550021", "550046"], "w:pA": ["851446"], "w:rmn": ["854523"], "w:DbA": ["854590", "183350"],
+    "w:Hnw": ["106280"], "w:pAqt": ["59350", "59360"], "w:Hnwt": ["106350"], "w:jAt": ["20090"], "w:wdb": ["52620"],
+    "w:wrS": ["48130"], "w:mAaw": ["66780"], "w:ds": ["180600"], "w:pAD": ["59470"], "w:Sns": ["156230"],
+    "w:Dwjw": ["183020"],
 }
 # Lemmas a course word covers besides its own: the course teaches N35 n as "to, for, of", which
 # is both the preposition and the genitive n.ꞽ (79800 in corpus v18, 850787 in AES). jn "by" is
@@ -148,7 +163,7 @@ EXTRA: dict[str, list[str]] = {
     "w:mAaxrw": ["400178"],
     "w:Xnw": ["65370", "857318"], "w:Hrjjb": ["65190"], "w:gs": ["851526", "854572"], "w:mqAb": ["862797"],
     "w:xft": ["116790"], "w:mjtj": ["600407", "67961", "64830", "67960"], "w:ntj": ["89760", "89890"], "w:sn": ["136310"],
-    "w:msj": ["74750"], "w:wHm": ["48530"], "w:nfr": ["83680", "83510"], "w:aA": ["34770"], "w:wr": ["47270", "47320"],
+    "w:wHm": ["48530"], "w:nfr": ["83680", "83510", "83670"], "w:aA": ["34770"], "w:wr": ["47270", "47320"],
     "w:wn": ["550129"], "w:suff": ["10060"], "w:mdwj": ["78150"], "w:wdf": ["51620"], "w:rS": ["96210"],
     "w:qn": ["854565"], "w:jqr": ["850289"], "w:zXAw": ["144270"],
     # Ptahhotep's epilogue, the same way: rḫ "the wise man", rḫ "knowledge" and rḫ-jḫt "a learned
@@ -159,8 +174,15 @@ EXTRA: dict[str, list[str]] = {
     "w:rx": ["95630", "95640", "95710"], "w:sxA": ["141690"], "w:aqA": ["400768"], "w:mtj": ["400854"],
     "w:ntf": ["90020"], "w:xt2": ["65300"], "w:pf": ["59890"], "w:ky": ["162830"], "w:km": ["164380"],
     "w:xnt": ["850802"], "w:Hzj": ["109800"], "w:mwt2": ["69320"], "w:sbA4": ["131330"], "w:dj": ["65040"],
-    "w:HAw": ["650006"], "w:Hr": ["650039"], "w:sA": ["126080"], "w:bw": ["55210"],
+    "w:HAw": ["650006"], "w:Hr": ["650039"], "w:sA": ["126080"], "w:bw": ["55210", "851129"],
     "w:Smsw": ["851311"], "w:bjAt": ["54340"],
+    # Westcar, the same way: jryt "deed" as jrj, mꜣꜣ "sight" as mꜣꜣ, ẖnt "rowing" as ẖnj, nfrwt
+    # "beauties" as nfr, zt-ḥmt "woman" as ḥmt, ḥbsw "clothes" as ḥbs, mswt "birth" as msj, ꜥḥꜥw
+    # "places" as ꜥḥꜥ, ḏr "come to an end" as ḏrw; pr-nswt, pr-ꜥꜣ, ꜥnḫ-wḏꜣ-snb, nswt-bjtj, st-qbt,
+    # bw-nb-nfr and the auxiliary pr.n through their words.
+    "w:jrj": ["28590"], "w:mAA": ["66280"], "w:Xnj": ["123160"], "w:Hmt": ["125370"], "w:Hbs": ["103750"],
+    "w:msj": ["74750", "75070"], "w:pr": ["400419", "60430"], "w:anx": ["400004"], "w:nswt": ["88060"],
+    "w:aHa": ["40410"], "w:prj": ["401169"], "w:Drw": ["184570"], "w:st2": ["125490"],
 }
 
 # Which TLA parts of speech can stand for a course word of each kind.

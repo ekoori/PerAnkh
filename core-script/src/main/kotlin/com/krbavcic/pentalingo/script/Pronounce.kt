@@ -49,6 +49,8 @@ object Pronounce {
         "m" to "ɛ m", "n" to "ɛ n", "r" to "ɛ r",
         // ...except these nouns, said with it after.
         "z" to "s ɛ", "t" to "t ɛ",
+        // jj, "to come", as two clear syllables: a single long i ran together into "eh".
+        "jj" to "i ji",
     )
 
     /** The phones of one word. Suffix pronouns (=f) and morpheme dots join the word they follow. */

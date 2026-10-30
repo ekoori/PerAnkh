@@ -508,6 +508,9 @@ class ExerciseFactory(
     private fun transliterate(word: WordItem): Arrange? {
         val letters = Translit.letters(word.translit)
         if (letters.size < 2) return null
+        // A sound no sign writes, like the m of rmṯ, can't be read off the signs: not a fair question.
+        val written = Translit.letters(signsOf(word.mdc).mapNotNull { course.signFor(it)?.sounds?.firstOrNull() }.joinToString("")).toSet()
+        if (letters.any { it !in written }) return null
         val extra = distractorLetters(letters, if (letters.size <= 3) 3 else 4)
         val tiles = (letters + extra).shuffled(rng).map { Choice(translit = it.toString()) }
         return Arrange(
@@ -587,8 +590,10 @@ class ExerciseFactory(
 
     fun breakdown(mdc: String): String = signsOf(mdc).joinToString(" + ") { signShort(it) }
 
+    /** How a word is written; when it is not read straight off its signs, its note says why. */
     fun wordExplanation(word: WordItem): String =
-        "${Translit.display(word.translit)} “${word.gloss}” is written ${breakdown(word.mdc)}."
+        "${Translit.display(word.translit)} “${word.gloss}” is written ${breakdown(word.mdc)}." +
+            (word.note?.takeIf { !readsInOrder(course, word) }?.let { " $it" } ?: "")
 
     /**
      * Sound out a word that has never been taught, from signs that have.

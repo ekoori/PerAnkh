@@ -1,5 +1,6 @@
 package com.krbavcic.pentalingo.content
 
+import com.krbavcic.pentalingo.model.ConceptItem
 import com.krbavcic.pentalingo.model.Course
 import com.krbavcic.pentalingo.model.PhraseItem
 import com.krbavcic.pentalingo.model.SignItem
@@ -88,6 +89,7 @@ fun clips(course: Course): List<Clip> = course.items.mapNotNull { item ->
         }
         is WordItem -> wordClip(item.id, item.translit)
         is PhraseItem -> wordClip(item.id, item.translit)
+        is ConceptItem -> item.said?.let { wordClip(item.id, it) }
         else -> null
     }
 }

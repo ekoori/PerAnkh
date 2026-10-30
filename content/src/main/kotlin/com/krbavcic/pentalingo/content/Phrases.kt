@@ -106,7 +106,7 @@ internal val PHRASES: List<PhraseItem> = listOf(
     phrase("offering3", "for the ka of the revered one", listOf("for", "the ka", "of", "the revered one"),
         t("N35", "n", "for", "n"), t("D28-Z1", "kꜣ", "the ka", "kA"), t("N35", "n", "of", "n"),
         t("F39-Z4", "jmꜣḫy", "the revered one", "jmAxy"),
-        note = "On a real stela the owner’s name follows here."),
+        note = "The two n’s are written and said alike: the first is “for”, the second “of”. Egyptologists often write the second n(j), “belonging to”, to tell them apart. On a real stela the owner’s name follows here."),
 
     // ---- literature ---------------------------------------------------------------------------
     phrase("peasant1", "There was a man named Khun-Anup",
@@ -2092,4 +2092,4 @@ internal val PHRASES: List<PhraseItem> = listOf(
         t("S34", "ꜥnḫ", "life", "anx"), t("U28", "wḏꜣ", "prosperity", "wDA"), t("S29", "snb", "health", "snb"),
         literal = "in writing of scribe excellent of fingers-his, Ameny son Amenaa, l.p.h.",
         note = "The copyist signs his work: Amenaa, son of Ameny, wrote this papyrus some 3,900 years ago."),
-) + TEACHING_PHRASES
+) + TEACHING_PHRASES + WESTCAR_PHRASES

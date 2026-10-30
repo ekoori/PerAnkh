@@ -57,7 +57,28 @@
   is good"), nfr.wj, "how good!", and jwtj, "who does not"; a card on the hundred-and-ten-year
   life. 54 words, 10 signs, 4 cards and 106 lines, and an award for reading the whole epilogue,
   all voiced.
-- The course's words now cover 72.3% of real Middle Egyptian text.
+- Section 7, The Magicians: units 39–42 read a whole tale from Papyrus Westcar. King Sneferu is
+  bored, so his lector priest Djadjaemankh sends him boating on the palace lake, rowed by twenty
+  beautiful women with oars of ebony and gold. When the lead rower's fish pendant of new turquoise
+  falls into the water she stops rowing and will not take a copy, so Djadjaemankh lays one half
+  of the lake on top of the other, finds the pendant on a potsherd and puts the water back. The
+  king tells it all again to the magician, and those lines come back as they are. New grammar:
+  the new "the", pꜣ, and pꜣy=s, "her"; a card on the tales told at Khufu's court. 62 words, 10
+  signs, 2 cards and 76 lines, and an award for reading the whole tale, all voiced.
+- The course's words now cover 73.6% of real Middle Egyptian text.
+- Fixes from testers' reports:
+  - A line put together on its own may leave off the "and" that joins it to the line before:
+    "you will die in your town" is right.
+  - After a pairs exercise, tap any matched pair to hear it again.
+  - Grammar cards with an Egyptian example say it aloud, when taught and after their question.
+  - After a word exercise, the explanation says why a word is written in a different order
+    from how it is read (nswt "king", ḥtp-dj-nswt) or has a sound no sign writes (the m of
+    rmṯ). Such words are no longer asked to be transliterated sign by sign.
+  - The card "What will happen" shows the whole of jw dpt r jj.t, with its r; the cards on
+    sḏm.n=f and on wishes show the words their questions ask about.
+  - jj, "to come", is said in two clear syllables.
+  - nswt "king" explains why the sedge comes first, and "for the ka of the revered one" why its
+    two n's look alike.
 
 ## 0.3.2 (2026-10-24)
 
