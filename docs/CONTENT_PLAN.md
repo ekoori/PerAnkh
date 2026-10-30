@@ -163,11 +163,33 @@ course teaches as signs. The 348 new clips were recorded on 30 October for about
 characters. 44 of them do not pass the automatic speech check, most of them lines that open with
 ꜥḥꜥ.n, whose ꜥ the check hears as a glottal stop; they should be checked by ear.
 
-### Section 6: The Teachings
+### Section 6: The Teachings (built: units 35–38, not yet released)
 
 | Unit | Text | Lines | New words | New grammar |
 |---|---|---|---|---|
 | The hearer (three or four units) | Ptahhotep's epilogue on hearing, to the end of the papyrus (Prisse 330–412). Grows "Ptahhotep on hearing" | 83 | 76 | participles and infinitives at length, tm |
+
+Built as units 35–38, 37 lessons (l224–l260): 54 words, 10 signs, 4 cards (the infinitive,
+nfr.wj "how good!", jwtj "who does not", the 110-year life) and 106 lines, with an award for
+reading the whole epilogue. Changes from the table:
+
+- **Lines.** The 73 new sentences (330–352 and 363–411) become 106 lines, the long ones split.
+  The last sentence, the colophon, is the Sailor's closing formula, so its two lines come back as
+  they are. "Ptahhotep on hearing" grows in front of its old lines and after them; a reading
+  shows each stretch learned so far, in place.
+- **Fewer new words.** Many of the 76 were taught by Sections 3–5, and compounds AES keeps whole
+  (zꜣ-z, bw-nb, rḫ-jḫt, ḥꜣw-ḥr, m-rḏj) are taught through their words.
+- **Doubtful readings** (sšsrt, mꜥn, ꜥḏ "blamed", tpj "the first") and a lost word in sentence
+  387 are noted on their lines.
+- **An award for a whole text.** A reading award was earned at a text's first reading; the new
+  `Requirement.ReadWhole` waits until every line is learned, as `ReadWork` does for a work.
+- **Code.** Section 6's lines are in their own file, `TeachingPhrases.kt`: a single list of every
+  line grew past the JVM's limit on the size of a class initializer.
+
+Afterwards the course's words cover 72.3% of the TLA's Middle Egyptian text and 72.7% of AES's
+Middle Kingdom literature. Papyrus Prisse is 85.5% covered, and the epilogue all of it but the
+numeral 110. The 163 new clips were recorded on 30 October for about 7,200 characters; 23 do not
+pass the automatic speech check and should be checked by ear.
 
 ### Later
 

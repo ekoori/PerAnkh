@@ -48,7 +48,16 @@
   and an award for reading the whole work, all voiced.
 - The Library shows a long work's chapters together, under the work's name and in story order,
   with how much of the whole you can read.
-- The course's words now cover 70.2% of real Middle Egyptian text.
+- Section 6, The Teachings: units 35–38 read Ptahhotep's last words, from "if you listen to these
+  things I have told you" to the end of the papyrus. "Ptahhotep on hearing" grows at both ends into
+  the whole epilogue: good words that last for ever, the official whose lips are exact and whose
+  ears hear what is useful, the fool who will not listen, "a dead man, every day", and the son who
+  listens and grows old in honour. Ptahhotep closes with his own life, a hundred and ten years, and
+  the papyrus with the same closing words as the Sailor's. New grammar: the infinitive ("hearing
+  is good"), nfr.wj, "how good!", and jwtj, "who does not"; a card on the hundred-and-ten-year
+  life. 54 words, 10 signs, 4 cards and 106 lines, and an award for reading the whole epilogue,
+  all voiced.
+- The course's words now cover 72.3% of real Middle Egyptian text.
 
 ## 0.3.2 (2026-10-24)
 

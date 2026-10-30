@@ -59,9 +59,10 @@ STORIES = {
 # here). Measured cumulatively: each line is what that unit adds to the ones above it. Proposals
 # already built — little words, pronouns, telling a story, negation, the body — are units 10–14;
 # unit 15 began the stative, units 16–19 (Section 3) took most of "Beloved of the god" and
-# "Lord of Abydos", units 20–25 (Section 4) read three Book of the Dead spells, and units 26–34
+# "Lord of Abydos", units 20–25 (Section 4) read three Book of the Dead spells, units 26–34
 # (Section 5) read the whole Shipwrecked Sailor, taking in "Gold and lapis", "A star fell" and
-# "Questions and commands". docs/CONTENT_PLAN.md places the rest.
+# "Questions and commands", and units 35–38 (Section 6) read Ptahhotep's epilogue to the end of
+# the papyrus. docs/CONTENT_PLAN.md places the rest.
 UNITS = {
     "I have come: the stative (sit, lie, wake, weep, fear, rejoice)": [
         "105780", "150740", "95940", "94180", "138740", "102060"],

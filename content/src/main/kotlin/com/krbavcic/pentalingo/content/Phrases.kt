@@ -3,10 +3,10 @@ package com.krbavcic.pentalingo.content
 import com.krbavcic.pentalingo.model.PhraseItem
 import com.krbavcic.pentalingo.model.Token
 
-private fun t(mdc: String, translit: String, gloss: String, word: String? = null) =
+internal fun t(mdc: String, translit: String, gloss: String, word: String? = null) =
     Token(mdc, translit, gloss, word?.let { "w:$it" })
 
-private fun phrase(
+internal fun phrase(
     key: String,
     translation: String,
     tiles: List<String>,
@@ -2092,4 +2092,4 @@ internal val PHRASES: List<PhraseItem> = listOf(
         t("S34", "ꜥnḫ", "life", "anx"), t("U28", "wḏꜣ", "prosperity", "wDA"), t("S29", "snb", "health", "snb"),
         literal = "in writing of scribe excellent of fingers-his, Ameny son Amenaa, l.p.h.",
         note = "The copyist signs his work: Amenaa, son of Ameny, wrote this papyrus some 3,900 years ago."),
-)
+) + TEACHING_PHRASES

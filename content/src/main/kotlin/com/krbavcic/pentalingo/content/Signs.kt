@@ -655,6 +655,28 @@ internal val SIGNS: List<SignItem> = listOf(
     multi("T3", "ḥḏ", "mace with a round head", "white, bright (ḥḏ)",
         "A mace with a pear-shaped head: ḥḏ, “white, bright” — and silver, the white metal."),
 
+    // ---- The Teachings: Ptahhotep's last words ---------------------------------------------------
+    multi("S24", "ṯz", "girdle knot", "tie (ṯz)",
+        "A knotted girdle: ṯz, “to tie” — and ṯz, “a saying”, words tied together."),
+    multi("U24", "ḥm", "stone-worker’s drill", "craft (ḥmt)",
+        "A drill weighted with stones, for boring out stone vessels: ḥm, as in ḥmww, “craftsman”."),
+    det("F37", "backbone and ribs", "the back",
+        "A backbone with its ribs: after words for the back, and written in sm, “to care for”."),
+    det("D5", "eye with painted lid", "seeing; looking",
+        "An eye with its lid painted: after words for looking — and for what is pleasant to see.", listOf("D4")),
+    multi("T33", "sm", "knife-sharpener", "sm",
+        "A butcher’s knife-sharpener on its cord: sm, as in sšm, “to guide”.", like = listOf("T34")),
+    multi("Aa23", "mḏd", "warp between two stakes", "press, keep to (mḏd)",
+        "Threads of a warp stretched between two stakes: mḏd, “to press”, “to keep to”."),
+    det("U39", "post of a balance", "lifting, raising",
+        "The upright post of a balance: after words for lifting up, as in ṯzj, “to raise a reproach”."),
+    multi("I1", "ꜥšꜣ", "lizard", "many (ꜥšꜣ)",
+        "A lizard: ꜥšꜣ — and ꜥšꜣ, “many”, as many as lizards."),
+    logo("D34", "ꜥḥꜣ", "arms holding a shield and an axe", "to fight",
+        "Two arms, one with a shield, one with an axe: ꜥḥꜣ, “to fight”."),
+    det("O31", "door", "doors; opening",
+        "A door leaf: after words for doors, and wn, “to open”."),
+
     // ---- numerals ------------------------------------------------------------------------------
     numeral("Z1", "stroke", "wꜥ", "One stroke for each unit. After a sign, a single stroke also says “this sign means what it shows”."),
     numeral("V20", "cattle hobble", "mḏ", "A hobble for cattle: ten."),

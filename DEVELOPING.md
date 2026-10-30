@@ -42,7 +42,7 @@ built from their tiles as a learner would) and a careless one (nothing may get s
 | `core-script` | Gardiner sign table (generated from the font), Manuel de Codage parser, quadrat layout, transliteration, pronunciation |
 | `core-model` | items, lessons, sections, course, memory, progress, awards — pure Kotlin, serialisable |
 | `core-engine` | FSRS scheduler, exercise factory, answer checker, session planner, recording, awards |
-| `content` | the Middle Egyptian course: 5 sections, 34 units, 223 lessons, ~257 signs, 513 words, phrases, texts; word frequencies |
+| `content` | the Middle Egyptian course: 6 sections, 38 units, 260 lessons, ~267 signs, 567 words, phrases, texts; word frequencies |
 | `data` | `ProgressStore`: one JSON document in DataStore; `ReportStore` and `ReportUploader`: problem reports; `ReleaseCheck`: the newest release, for About |
 | `core-ui` | papyrus, palette, hieroglyph renderer, painted buttons, audio, sound effects, the report flag |
 | `feature-path` / `feature-lesson` / `feature-codex` | the screens |

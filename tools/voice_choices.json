@@ -2485,6 +2485,1139 @@
   "seed": null,
   "text": "پِرْ إِنْ إِيتِفْ"
  },
+ "p:pt330a": {
+  "file": "adb9b382e656db1ff884a6c1922e9c56.mp3",
+  "heard_ar": "ير سجمك ننج الدينينك",
+  "heard_en": "",
+  "ipa": "ir sɛdʒɛmɛk nɛn dʒɛdɛni nɛk",
+  "latin": "ir sedjemek nen djedeni nek",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "إِيرْ سِجِمِكْ نِنْ جِدِنِي نِكْ"
+ },
+ "p:pt330b": {
+  "file": "d6a1723919f61a9a10a152e4384f4780.mp3",
+  "heard_ar": "وننسخ ريك نب إرحات",
+  "heard_en": "",
+  "ipa": "wɛnɛn sɛχɛrɛk nɛb ɛrħat",
+  "latin": "wenen sekherek neb erḥat",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "وِنِنْ سِخِرِكْ نِبْ إِرْحَاتْ"
+ },
+ "p:pt331": {
+  "file": "9c2619d6d3cbb968529332b4ae79eb2a.mp3",
+  "heard_ar": "AirSep in math إيدي شبس أس سمبل",
+  "heard_en": "AirSep in math, it is shapes as simple",
+  "ipa": "ir sɛp ɛn maʕat iri ʃɛpɛsɛsɛsɛn pu",
+  "latin": "ir sep en maʿat iri shepesesesen pu",
+  "passed": false,
+  "score": 0.76,
+  "seed": null,
+  "text": "إِيرْ سِپْ إِنْ مَاعَتْ إِيرِي شِپِسِسِسِنْ پُو"
+ },
+ "p:pt332a": {
+  "file": "130c2fb14b1ffe7f073da6ba88a99446.mp3",
+  "heard_ar": "رويا سخاسن، MRN Rimch",
+  "heard_en": "",
+  "ipa": "rɛwi sɛχasɛn ɛm ɛr ɛn rɛmɛtʃ",
+  "latin": "rewi sekhasen em er en remetj",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "رِوِي سِخَاسِنْ إِمْ إِرْ إِنْ رِمِچْ"
+ },
+ "p:pt332b": {
+  "file": "d9d8d0510716547d4e319916077ea8c3.mp3",
+  "heard_ar": "إمع نفر إن شسوسن",
+  "heard_en": "",
+  "ipa": "ɛmʕa nɛfɛr ɛn tʃɛsusɛn",
+  "latin": "emʿa nefer en tjesusen",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "إِمْعَ نِفِرْ إِنْ چِسُوسِنْ"
+ },
+ "p:pt333a": {
+  "file": "f434ef9b6a7fd5422aaa0ae8b5464176.mp3",
+  "heard_ar": "إن أنتم مديت ندت",
+  "heard_en": "",
+  "ipa": "inɛnɛtu mɛdɛt nɛbɛt",
+  "latin": "inenetu medet nebet",
+  "passed": true,
+  "score": 0.89,
+  "seed": null,
+  "text": "إِينِنِتُو مِدِتْ نِبِتْ"
+ },
+ "p:pt333b": {
+  "file": "0c2eb6241fe830e86a35302a3771b51a.mp3",
+  "heard_ar": "In second imta panjat",
+  "heard_en": "In second imta panjat",
+  "ipa": "ɛn sɛkɛn ɛm ta pɛn dʒɛt",
+  "latin": "en seken em ta pen djet",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "إِنْ سِكِنْ إِمْ تَا پِنْ جِتْ"
+ },
+ "p:pt334": {
+  "file": "f17c50a0d1ad92cb3b0f2521a59f3e06.mp3",
+  "heard_ar": "إرتسش سيرت إرنفرمدو سرورس",
+  "heard_en": "",
+  "ipa": "irtu sɛʃɛsɛrɛt ɛr nɛfɛr mɛdu sɛru rɛs",
+  "latin": "irtu sesheseret er nefer medu seru res",
+  "passed": true,
+  "score": 1.0,
+  "seed": 11,
+  "text": "إِيرْتُو سِشِسِرِتْ إِرْ نِفِرْ مِدُو سِرُو رِسْ"
+ },
+ "p:pt335": {
+  "file": "23015e5f42a0d730ef1d9fa044a462a4.mp3",
+  "heard_ar": "سَبَا سِپُو اِير جَد اِينِهِ مَخْت",
+  "heard_en": "سبا سپو ایر جد اینه مخت",
+  "ipa": "sɛba sɛ pu ɛr dʒɛd ɛn ɛmχɛt",
+  "latin": "seba se pu er djed en emkhet",
+  "passed": true,
+  "score": 0.85,
+  "seed": null,
+  "text": "سِبَا سِ پُو إِرْ جِدْ إِنْ إِمْخِتْ"
+ },
+ "p:pt336": {
+  "file": "53514cc77c719256e6bf5c9e7a2fd9b0.mp3",
+  "heard_ar": "سيجما فست خِپِر إم حيمو سيجمو",
+  "heard_en": "Sijma fset xper imhimu s jumu",
+  "ipa": "sɛdʒɛmɛf sɛt χɛpɛr ɛm ħɛmuu sɛdʒɛmu",
+  "latin": "sedjemef set kheper em ḥemuu sedjemu",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "سِجِمِفْ سِتْ خِپِرْ إِمْ حِمُوو سِجِمُو"
+ },
+ "p:pt337": {
+  "file": "e1b7df13e4814ab48ee184825353709d.mp3",
+  "heard_ar": "نفر جد إن امخت",
+  "heard_en": "",
+  "ipa": "nɛfɛr dʒɛd ɛn ɛmχɛt",
+  "latin": "nefer djed en emkhet",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "نِفِرْ جِدْ إِنْ إِمْخِتْ"
+ },
+ "p:pt338": {
+  "file": "ffaa9b0d0b11b60ab28cf25562815329.mp3",
+  "heard_ar": "نتف سجمفست",
+  "heard_en": "",
+  "ipa": "nɛtɛf sɛdʒɛmɛf sɛt",
+  "latin": "netef sedjemef set",
+  "passed": true,
+  "score": 1.0,
+  "seed": 11,
+  "text": "نِتِفْ سِجِمِفْ سِتْ"
+ },
+ "p:pt339a": {
+  "file": "3784bf26c34b198be1ce7f8a42e1ea82.mp3",
+  "heard_ar": "إر خبر سب نفر إما، ونن إمحريتب",
+  "heard_en": "Eir khapar sip nafar emah vanan emharitap",
+  "ipa": "ir χɛpɛr sɛp nɛfɛr ɛmʕa wɛnɛn ɛm ħɛri tɛp",
+  "latin": "ir kheper sep nefer emʿa wenen em ḥeri tep",
+  "passed": false,
+  "score": 0.91,
+  "seed": 23,
+  "text": "إِيرْ خِپِرْ سِپْ نِفِرْ إِمْعَ وِنِنْ إِمْ حِرِي تِپْ"
+ },
+ "p:pt339b": {
+  "file": "ce8b086aaba39f49b5de6bc6f82a42b2.mp3",
+  "heard_ar": "وينينف مينخ إن نحح",
+  "heard_en": "",
+  "ipa": "wɛnɛnɛf mɛnɛχ ɛn nɛħɛħ",
+  "latin": "wenenef menekh en neḥeḥ",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "وِنِنِفْ مِنِخْ إِنْ نَحَحْ"
+ },
+ "p:pt340": {
+  "file": "754a73dcf5394ee20faac3fa067320ee.mp3",
+  "heard_ar": "يوسف نب إرgit",
+  "heard_en": "",
+  "ipa": "iu saaf nɛb ɛr dʒɛt",
+  "latin": "iu saaf neb er djet",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "إِيو سَاافْ نِبْ إِرْ جِتْ"
+ },
+ "p:pt341a": {
+  "file": "8d5a65d2c144479784a931195fff203c.mp3",
+  "heard_ar": "إيه نراخ سمبة في امسمنت؟",
+  "heard_en": "",
+  "ipa": "in rɛχ sɛm baf ɛm sɛmɛnɛt",
+  "latin": "in rekh sem baf em semenet",
+  "passed": true,
+  "score": 1.0,
+  "seed": 11,
+  "text": "إِينْ رِخْ سِمْ بَافْ إِمْ سِمِنِتْ"
+ },
+ "p:pt341b": {
+  "file": "d9d640dc7e0b2f9c72df8855ab3cb26e.mp3",
+  "heard_ar": "نفرف إيمف تبتا",
+  "heard_en": "Nefer-Im-Ptah",
+  "ipa": "nɛfɛrɛf imɛf tɛp ta",
+  "latin": "neferef imef tep ta",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "نِفِرِفْ إِيمِفْ تِپْ تَا"
+ },
+ "p:pt342": {
+  "file": "a7d6c6a832d7616937d4b42539be7131.mp3",
+  "heard_ar": "ساتو ريح حر رختنف",
+  "heard_en": "",
+  "ipa": "saatu rɛχ ħɛr rɛχɛtɛnɛf",
+  "latin": "saatu rekh ḥer rekhetenef",
+  "passed": false,
+  "score": 0.57,
+  "seed": null,
+  "text": "سَااتُو رِخْ حِرْ رِخِتِنِفْ"
+ },
+ "p:pt343": {
+  "file": "ac9f38635614611ed49846247a83aa8c.mp3",
+  "heard_ar": "إنسر حر سيف نيف مع نيب في نفس",
+  "heard_en": "إنسر حر سيف نيف مع نيب في نفس",
+  "ipa": "in sɛr ħɛr sɛpɛf nɛfɛr maʕɛn ibɛf nɛsɛf",
+  "latin": "in ser ḥer sepef nefer maʿen ibef nesef",
+  "passed": false,
+  "score": 0.52,
+  "seed": 11,
+  "text": "إِينْ سِرْ حَرْ سِپِفْ نِفِرْ مَعَنْ إِيبِفْ نِسِفْ"
+ },
+ "p:pt344": {
+  "file": "426574674963ab95ad1084c10b485447.mp3",
+  "heard_ar": "عقّ سبيتيفي: \"أيوف حر جد\".",
+  "heard_en": "عق سبيتيفي: \"أيوف حر جد\".",
+  "ipa": "ʕaqa sɛpɛtifi iuf ħɛr dʒɛd",
+  "latin": "ʿaqa sepetifi iuf ḥer djed",
+  "passed": true,
+  "score": 0.85,
+  "seed": null,
+  "text": "عَقَا سِپِتِيفِي إِيوفْ حِرْ جِدْ"
+ },
+ "p:pt345": {
+  "file": "e6b58aad4476c14ee1381b4409d47724.mp3",
+  "heard_ar": "ارتفي حرمة",
+  "heard_en": "",
+  "ipa": "irtifi ħɛr maa",
+  "latin": "irtifi ḥer maa",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "إِيرْتِيفِي حِرْ مَاا"
+ },
+ "p:pt346a": {
+  "file": "0dc5543ada187b4a89fb3519f35da643.mp3",
+  "heard_ar": "مسجر Wave توت حر سجم آخر إنصاف",
+  "heard_en": "",
+  "ipa": "mɛsɛdʒɛrɛwif tut ħɛr sɛdʒɛm ʔaχɛt ɛn saf",
+  "latin": "mesedjerewif tut ḥer sedjem akhet en saf",
+  "passed": true,
+  "score": 0.95,
+  "seed": 11,
+  "text": "مِسِجِرِوِيفْ تُوتْ حَرْ سِجِمْ آخِتْ إِنْ سَافْ"
+ },
+ "p:pt346b": {
+  "file": "990464fd296da6be36fbf05afd0ec0ee.mp3",
+  "heard_ar": "Error معت شو ام قريك؟",
+  "heard_en": "",
+  "ipa": "irɛr maʕat ʃu ɛm gɛrɛg",
+  "latin": "irer maʿat shu em gereg",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "إِيرِرْ مَاعَتْ شُو إِمْ گِرِگْ"
+ },
+ "p:pt347": {
+  "file": "0aa715c19f76d6aba605851c02353af7.mp3",
+  "heard_ar": "أخ سجم إنسان سجم",
+  "heard_en": "",
+  "ipa": "ʔaχ sɛdʒɛm ɛn sa sɛdʒɛmu",
+  "latin": "akh sedjem en sa sedjemu",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "آخْ سِجِمْ إِنْ سَا سِجِمُو"
+ },
+ "p:pt348a": {
+  "file": "c3b5c157ab7b1fd9ce5e068e5e7ee757.mp3",
+  "heard_ar": "عق سجم ام سجمه",
+  "heard_en": "",
+  "ipa": "ʕaq sɛdʒɛm ɛm sɛdʒɛmu",
+  "latin": "ʿaq sedjem em sedjemu",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "عَقْ سِجِمْ إِمْ سِجِمُو"
+ },
+ "p:pt348b": {
+  "file": "0d2b77235dbfaa7d2106423ba6c7135f.mp3",
+  "heard_ar": "خِفِر سِجِمُو إم سِجِمِي",
+  "heard_en": "Khipr sijimu em sijimi",
+  "ipa": "χɛpɛr sɛdʒɛmu ɛm sɛdʒɛmi",
+  "latin": "kheper sedjemu em sedjemi",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "خِپِرْ سِجِمُو إِمْ سِجِمِي"
+ },
+ "p:pt349": {
+  "file": "55f81d202daf6b0a2fd8a82a3992dd4d.mp3",
+  "heard_ar": "نفر سجم نفر مديد",
+  "heard_en": "",
+  "ipa": "nɛfɛr sɛdʒɛm nɛfɛr mɛdɛt",
+  "latin": "nefer sedjem nefer medet",
+  "passed": true,
+  "score": 0.92,
+  "seed": null,
+  "text": "نِفِرْ سِجِمْ نِفِرْ مِدِتْ"
+ },
+ "p:pt350": {
+  "file": "a3d6b9d522cdbd45b1c8d96ac0528c92.mp3",
+  "heard_ar": "سيجيمونيب آخت",
+  "heard_en": "",
+  "ipa": "sɛdʒɛmu nɛb ʔaχɛt",
+  "latin": "sedjemu neb akhet",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "سِجِمُو نِبْ آخِتْ"
+ },
+ "p:pt351": {
+  "file": "271235f7c556f5697e053c9ccdc2ae7d.mp3",
+  "heard_ar": "أخ سجم إن سجموا",
+  "heard_en": "",
+  "ipa": "ʔaχ sɛdʒɛm ɛn sɛdʒɛmu",
+  "latin": "akh sedjem en sedjemu",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "آخْ سِجِمْ إِنْ سِجِمُو"
+ },
+ "p:pt352a": {
+  "file": "8cb92e8f7e7f6f6348d4a0524d762c3c.mp3",
+  "heard_ar": "نفرس جم إرنتت نبت",
+  "heard_en": "",
+  "ipa": "nɛfɛr sɛdʒɛm ɛr nɛtɛt nɛbɛt",
+  "latin": "nefer sedjem er netet nebet",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "نِفِرْ سِجِمْ إِرْ نِتِتْ نِبِتْ"
+ },
+ "p:pt352b": {
+  "file": "1952b47df064d55bad5a7cf6eaf7776a.mp3",
+  "heard_ar": "خفر ميروت نيفرت",
+  "heard_en": "Khufu Meruit Nefert",
+  "ipa": "χɛpɛr mɛrut nɛfɛrɛt",
+  "latin": "kheper merut neferet",
+  "passed": true,
+  "score": 0.85,
+  "seed": null,
+  "text": "خِپِرْ مِرُوتْ نِفِرِتْ"
+ },
+ "p:pt363": {
+  "file": "b33b73b2925dd759042558acd3094355.mp3",
+  "heard_ar": "ساعة نف إم نبسجم",
+  "heard_en": "",
+  "ipa": "sa ʕanɛf ɛm nɛb sɛdʒɛm",
+  "latin": "sa ʿanef em neb sedjem",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "سَا عَنِفْ إِمْ نِبْ سِجِمْ"
+ },
+ "p:pt364a": {
+  "file": "0e19f47b0eff4321df2a99bb83f3f811.mp3",
+  "heard_ar": "سيجي موجودون نفسيت من خف امخت",
+  "heard_en": "",
+  "ipa": "sɛdʒɛmu dʒɛdu nɛf sɛt mɛnɛχɛf ɛm çɛt",
+  "latin": "sedjemu djedu nef set menekhef em khet",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "سِجِمُو جِدُو نِفْ سِتْ مِنِخِفْ إِمْ خِتْ"
+ },
+ "p:pt364b": {
+  "file": "cc0162bc872478debc16ff2696145bf8.mp3",
+  "heard_ar": "يماخي خار إتف",
+  "heard_en": "",
+  "ipa": "imaχi χɛr itɛf",
+  "latin": "imakhi kher itef",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "إِيمَاخِي خِرْ إِيتِفْ"
+ },
+ "p:pt365a": {
+  "file": "0724fbea5a56a9aa9ed451cad5f5f5e4.mp3",
+  "heard_ar": "إيو، سخاف أم أر إن عنخو",
+  "heard_en": "",
+  "ipa": "iu sɛχaf ɛm ɛr ɛn ʕanχu",
+  "latin": "iu sekhaf em er en ʿankhu",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "إِيو سِخَافْ إِمْ إِرْ إِنْ عَنْخُو"
+ },
+ "p:pt365b": {
+  "file": "6c65470624e5749e6b10b675f2d3f8f6.mp3",
+  "heard_ar": "نطيع تب تواننتيسن",
+  "heard_en": "Netsiut tep tawenentisen",
+  "ipa": "nɛtiu tɛp ta wɛnɛnɛtisɛn",
+  "latin": "netiu tep ta wenenetisen",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "نِتِيو تِپْ تَا وِنِنِتِيسِنْ"
+ },
+ "p:pt366a": {
+  "file": "9c7b0d6848f641d2909afce30ba068b6.mp3",
+  "heard_ar": "يرشس بسس جد إتف",
+  "heard_en": "Ir šiaipsas gieda etif",
+  "ipa": "ir ʃɛsɛp sa sɛ dʒɛd itɛf",
+  "latin": "ir shesep sa se djed itef",
+  "passed": true,
+  "score": 1.0,
+  "seed": 11,
+  "text": "إِيرْ شِسِپْ سَا سِ جِدْ إِيتِفْ"
+ },
+ "p:pt366b": {
+  "file": "7aba19bd7caa8dd4f29a582082b20e89.mp3",
+  "heard_ar": "إنني من سخر فنب",
+  "heard_en": "",
+  "ipa": "ɛn nɛnɛmɛn sɛχɛrɛf nɛb",
+  "latin": "en nenemen sekheref neb",
+  "passed": false,
+  "score": 0.42,
+  "seed": null,
+  "text": "إِنْ نِنِمِنْ سِخِرِفْ نِبْ"
+ },
+ "p:pt367a": {
+  "file": "71573bd46321b92ae1b28be42cc6bd06.mp3",
+  "heard_ar": "سباك إمساك سجمو",
+  "heard_en": "",
+  "ipa": "sɛbak ɛm sak sɛdʒɛmu",
+  "latin": "sebak em sak sedjemu",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "سِبَاكْ إِمْ سَاكْ سِجِمُو"
+ },
+ "p:pt367b": {
+  "file": "72f7967b7615a8cba3fa5bf5dd983af8.mp3",
+  "heard_ar": "يكرتفي حر إب إنسر",
+  "heard_en": "",
+  "ipa": "iqɛrɛtifi ħɛr ib ɛn sɛru",
+  "latin": "iqeretifi ḥer ib en seru",
+  "passed": false,
+  "score": 0.83,
+  "seed": null,
+  "text": "إِيقِرِتِيفِي حِرْ إِيبْ إِنْ سِرُو"
+ },
+ "p:pt368": {
+  "file": "fc2e16ba2abe97876f0513798031458d.mp3",
+  "heard_ar": "سيشيم ريف إرجديدت نفماو إمسيجيمو",
+  "heard_en": "",
+  "ipa": "sɛʃɛm rɛf ɛr dʒɛdɛdɛt nɛf mau ɛm sɛdʒɛmu",
+  "latin": "seshem ref er djededet nef mau em sedjemu",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "سِشِمْ رِفْ إِرْ جِدِدِتْ نِفْ مَاو إِمْ سِجِمُو"
+ },
+ "p:pt369a": {
+  "file": "4852ca197e032a23b718211c6b905db9.mp3",
+  "heard_ar": "سا اقرف نيميتيتيف تشنو",
+  "heard_en": "",
+  "ipa": "sa iqɛrɛf nɛmɛtɛtɛf tʃɛnu",
+  "latin": "sa iqeref nemetetef tjenu",
+  "passed": true,
+  "score": 1.0,
+  "seed": 23,
+  "text": "سَا إِيقِرِفْ نِمِتِتِفْ چِنُو"
+ },
+ "p:pt369b": {
+  "file": "16f4038fb8e9e84b42821a1e7de3d6cc.mp3",
+  "heard_ar": "ننمبس إنتمسجم",
+  "heard_en": "",
+  "ipa": "nɛnɛm bɛs ɛn tɛm sɛdʒɛm",
+  "latin": "nenem bes en tem sedjem",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "نِنِمْ بِسْ إِنْ تِمْ سِجِمْ"
+ },
+ "p:pt370": {
+  "file": "5d1b088f0c99c25cdd369ad38049c31a.mp3",
+  "heard_ar": "دوارخ إرسمنتف",
+  "heard_en": "",
+  "ipa": "dɛwa rɛχ ɛr sɛmɛnɛtɛf",
+  "latin": "dewa rekh er semenetef",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "دِوَا رِخْ إِرْ سِمِنِتِفْ"
+ },
+ "p:pt371": {
+  "file": "37e3557aa5a00a8cda32face5663e9e2.mp3",
+  "heard_ar": "إيو، وخا مجدف",
+  "heard_en": "",
+  "ipa": "iu wɛχa mɛdʒɛdɛf",
+  "latin": "iu wekha medjedef",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "إِيو وِخَا مِجِدِفْ"
+ },
+ "p:pt372a": {
+  "file": "986dce8e7fdceec7588529369d760219.mp3",
+  "heard_ar": "إير واخة إيوتي سجنف",
+  "heard_en": "",
+  "ipa": "ir wɛχa iuti sɛdʒɛmɛf",
+  "latin": "ir wekha iuti sedjemef",
+  "passed": true,
+  "score": 0.9,
+  "seed": null,
+  "text": "إِيرْ وِخَا إِيوتِي سِجِمِفْ"
+ },
+ "p:pt372b": {
+  "file": "dc903dcda03a7cec44756d02fb92b01c.mp3",
+  "heard_ar": "نن إرينف خت نبت",
+  "heard_en": "",
+  "ipa": "nɛn irɛnɛf χɛt nɛbɛt",
+  "latin": "nen irenef khet nebet",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "نِنْ إِيرِنِفْ خِتْ نِبِتْ"
+ },
+ "p:pt373a": {
+  "file": "6501ec2884c4385f641146ae6de790a6.mp3",
+  "heard_ar": "مافرغ امخم أخت إمنت",
+  "heard_en": "",
+  "ipa": "maf rɛχ ɛm χɛm ʔaχɛt ɛm mɛnɛt",
+  "latin": "maf rekh em khem akhet em menet",
+  "passed": false,
+  "score": 0.62,
+  "seed": null,
+  "text": "مَافْ رِخْ إِمْ خِمْ آخِتْ إِمْ مِنِتْ"
+ },
+ "p:pt373b": {
+  "file": "d911e638afd9f22b29eb08dea99dd367.mp3",
+  "heard_ar": "إريرف خيبجت نبت",
+  "heard_en": "",
+  "ipa": "irɛrɛf χɛbɛdʒɛt nɛbɛt",
+  "latin": "ireref khebedjet nebet",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "إِيرِرِفْ خِبِجِتْ نِبِتْ"
+ },
+ "p:pt373c": {
+  "file": "0b8810a7d87d5747b6a9410d98ad4202.mp3",
+  "heard_ar": "إرcheسست إما فراهنب",
+  "heard_en": "",
+  "ipa": "ɛr tʃɛsɛsɛt imɛf raʕ nɛb",
+  "latin": "er tjeseset imef raʿ neb",
+  "passed": false,
+  "score": 0.83,
+  "seed": 11,
+  "text": "إِرْ چِسِسِتْ إِيمِفْ رَعْ نِبْ"
+ },
+ "p:pt374": {
+  "file": "b089d93b13ef6dabe5083e3d8aa0acd8.mp3",
+  "heard_ar": "عن خفم متت خرس",
+  "heard_en": "",
+  "ipa": "ʕanɛχɛf ɛm mɛtɛt çɛrɛs",
+  "latin": "ʿanekhef em metet kheres",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "عَنِخِفْ إِمْ مِتِتْ خِرِسْ"
+ },
+ "p:pt375": {
+  "file": "be04c4556866c2895ce88e90399a765a.mp3",
+  "heard_ar": "عقوب بوخيبنجد",
+  "heard_en": "Acoof book he binge it",
+  "ipa": "ʕaquf pu χɛbɛn dʒɛd",
+  "latin": "ʿaquf pu kheben djed",
+  "passed": true,
+  "score": 0.77,
+  "seed": null,
+  "text": "عَقُوفْ پُو خِبِنْ جِدْ"
+ },
+ "p:pt376a": {
+  "file": "47174550e0eb3d21ed800372b914d34e.mp3",
+  "heard_ar": "بياتف إيم إمرخ إن سرو",
+  "heard_en": "",
+  "ipa": "biatɛf im ɛmrɛχ ɛn sɛru",
+  "latin": "biatef im emrekh en seru",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "بِياتِفْ إِيمْ إِمْرِخْ إِنْ سِرُو"
+ },
+ "p:pt376b": {
+  "file": "1cc81521ec534a4b4d98553d001a30f3.mp3",
+  "heard_ar": "حرمة عنخرعنب",
+  "heard_en": "",
+  "ipa": "ħɛr mɛt ʕanχ raʕ nɛb",
+  "latin": "ḥer met ʿankh raʿ neb",
+  "passed": true,
+  "score": 0.93,
+  "seed": null,
+  "text": "حِرْ مِتْ عَنْخْ رَعْ نِبْ"
+ },
+ "p:pt377a": {
+  "file": "af6e4784ef7da11490d2437a8aadfa3e.mp3",
+  "heard_ar": "سيواتو هرسپوف",
+  "heard_en": "Siva to Hershpoof",
+  "ipa": "sɛwatu ħɛr sɛpuf",
+  "latin": "sewatu ḥer sepuf",
+  "passed": false,
+  "score": 0.78,
+  "seed": null,
+  "text": "سِوَاتُو حَرْ سِپُوفْ"
+ },
+ "p:pt377b": {
+  "file": "cdaf4b27d0dbe4a46cdb5b5669f8ba37.mp3",
+  "heard_ar": "امع عشا ان ايد حرف رعب",
+  "heard_en": "",
+  "ipa": "ɛmʕa ʕaʃa ɛn iit ħɛrɛf raʕ nɛb",
+  "latin": "emʿa ʿasha en iit ḥeref raʿ neb",
+  "passed": true,
+  "score": 0.89,
+  "seed": 11,
+  "text": "إِمْعَ عَشَا إِنْ إِييتْ حِرِفْ رَعْ نِبْ"
+ },
+ "p:pt378": {
+  "file": "63706527c2d4d1ca940487a4c633e384.mp3",
+  "heard_ar": "ساسي جمو امش مسحر",
+  "heard_en": "",
+  "ipa": "sa sɛdʒɛmu ɛm ʃɛmɛs ħɛr",
+  "latin": "sa sedjemu em shemes ḥer",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "سَا سِجِمُو إِمْ شِمِسْ حِرْ"
+ },
+ "p:pt379": {
+  "file": "0c227f162fa90c123e0c6dce5d398b94.mp3",
+  "heard_ar": "Nefernef Imkhet Sejemf",
+  "heard_en": "",
+  "ipa": "nɛfɛr nɛf ɛmχɛt sɛdʒɛmɛf",
+  "latin": "nefer nef emkhet sedjemef",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "نِفِرْ نِفْ إِمْخِتْ سِجِمِفْ"
+ },
+ "p:pt380a": {
+  "file": "e7ced91ff90905b20a05600f2962bc5d.mp3",
+  "heard_ar": "يوف بح في إيماخ",
+  "heard_en": "You've [beep] email",
+  "ipa": "iauf pɛħɛf imaχ",
+  "latin": "iauf peḥef imakh",
+  "passed": true,
+  "score": 1.0,
+  "seed": 23,
+  "text": "إِياوفْ پَحَفْ إِيمَاخْ"
+ },
+ "p:pt380b": {
+  "file": "f5413dca7dacedd7bdaea7978dc3ce91.mp3",
+  "heard_ar": "سجديف اميتت ان خردوف ام سماوي سباو ايتف",
+  "heard_en": "",
+  "ipa": "sɛdʒɛdɛf ɛmmitɛt ɛn çɛrɛduf ɛm sɛmawi sɛbau itɛf",
+  "latin": "sedjedef emmitet en khereduf em semawi sebau itef",
+  "passed": false,
+  "score": 0.39,
+  "seed": null,
+  "text": "سِجِدِفْ إِمْمِيتِتْ إِنْ خِرِدُوفْ إِمْ سِمَاوِي سِبَاو إِيتِفْ"
+ },
+ "p:pt381": {
+  "file": "37531ea21996489b84fee9cf0b6e0547.mp3",
+  "heard_ar": "سنيب صبا مي إيريف سجديف خرمسو",
+  "heard_en": "",
+  "ipa": "sɛ nɛb sɛba mi irɛf sɛdʒɛdɛf χɛr mɛsu",
+  "latin": "se neb seba mi iref sedjedef kher mesu",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "سِ نِبْ سِبَا مِي إِيرِفْ سِجِدِفْ خِرْ مِسُو"
+ },
+ "p:pt382": {
+  "file": "7f1779e658ff258bde378898a43bab66.mp3",
+  "heard_ar": "Ich gidesen in heridosen",
+  "heard_en": "",
+  "ipa": "iχ dʒɛdɛsɛn ɛn çɛrɛdusɛn",
+  "latin": "ikh djedesen en kheredusen",
+  "passed": false,
+  "score": 0.71,
+  "seed": null,
+  "text": "إِيخْ جِدِسِنْ إِنْ خِرِدُوسِنْ"
+ },
+ "p:pt383": {
+  "file": "b462525bab86d0e01f4ee84943a52f55.mp3",
+  "heard_ar": "أربيا",
+  "heard_en": "",
+  "ipa": "ir bia",
+  "latin": "ir bia",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "إِيرْ بِيا"
+ },
+ "p:pt384": {
+  "file": "4d3de10a9e6d71ede2728a8377696b00.mp3",
+  "heard_ar": "امردي عجتوك",
+  "heard_en": "",
+  "ipa": "ɛm rɛdi ʕadʒtuk",
+  "latin": "em redi ʿadjtuk",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "إِمْ رِدِي عَجْتُوكْ"
+ },
+ "p:pt385": {
+  "file": "45eb0d18851fbe0added8da4664e51e0.mp3",
+  "heard_ar": "سروج ماعت عن خميسوك",
+  "heard_en": "",
+  "ipa": "sɛrudʒ maʕat ʕanχ mɛsuk",
+  "latin": "serudj maʿat ʿankh mesuk",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "سِرُوجْ مَاعَتْ عَنْخْ مِسُوكْ"
+ },
+ "p:pt386a": {
+  "file": "4a1496e76f9c8c5fd56df04b6178ae01.mp3",
+  "heard_ar": "يرتبي إي خريصة.",
+  "heard_en": "Eer te be ii khir iiseft",
+  "ipa": "ir tɛpi iji çɛr isɛfɛt",
+  "latin": "ir tepi iyi kher isefet",
+  "passed": true,
+  "score": 0.75,
+  "seed": null,
+  "text": "إِيرْ تِپِي إِييِي خِرْ إِيسِفِتْ"
+ },
+ "p:pt386b": {
+  "file": "e8d58edbc2207613762a2b82966a4f0a.mp3",
+  "heard_ar": "إيه، جد رميت ماتيس الميتت إيز بيفا بو",
+  "heard_en": "Eh, git rymicz matezim meetit ies pifapo",
+  "ipa": "iχ dʒɛd rɛmɛtʃ maatisɛn mitɛt is pɛfa pu",
+  "latin": "ikh djed remetj maatisen mitet is pefa pu",
+  "passed": false,
+  "score": 0.84,
+  "seed": 11,
+  "text": "إِيخْ جِدْ رِمِچْ مَااتِيسِنْ مِيتِتْ إِيسْ پِفَا پُو"
+ },
+ "p:pt386c": {
+  "file": "fb9c8dfdb3af40e6f52f44ce0b2364ef.mp3",
+  "heard_ar": "جيدًا، سيجيميتيسن ميتيت إيز بيفا بوغور",
+  "heard_en": "Cidin sicimitisin mihtit is pifapo gür",
+  "ipa": "dʒɛdɛn sɛdʒɛmɛtisɛn mitɛt is pɛfa pu gɛr",
+  "latin": "djeden sedjemetisen mitet is pefa pu ger",
+  "passed": false,
+  "score": 0.8,
+  "seed": 23,
+  "text": "جِدِنْ سِجِمِتِيسِنْ مِيتِتْ إِيسْ پِفَا پُو گِرْ"
+ },
+ "p:pt387": {
+  "file": "327ee0c98f28e88383af69aa648f3939.mp3",
+  "heard_ar": "مع بونيب سغرة عشت",
+  "heard_en": "",
+  "ipa": "maa bu nɛb sɛgɛrɛħ ʕaʃat",
+  "latin": "maa bu neb segereḥ ʿashat",
+  "passed": false,
+  "score": 0.86,
+  "seed": null,
+  "text": "مَاا بُو نِبْ سِگِرَحْ عَشَاتْ"
+ },
+ "p:pt388": {
+  "file": "fe8b435864e886e304b9003fd9760386.mp3",
+  "heard_ar": "ننكم إن شيبسس إمخيميتسن",
+  "heard_en": "Ninkim in Shippesis im Chemitisin",
+  "ipa": "nɛn kɛm ɛn ʃɛpɛsɛs ɛmχɛmɛtɛsɛn",
+  "latin": "nen kem en shepeses emkhemetesen",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "نِنْ كِمْ إِنْ شِپِسِسْ إِمْخِمِتِسِنْ"
+ },
+ "p:pt389": {
+  "file": "412e4d18065ec2496a700a1556fbb116.mp3",
+  "heard_ar": "MH mit M ein C",
+  "heard_en": "",
+  "ipa": "ɛm itʃ mɛdɛt ɛm in si",
+  "latin": "em itj medet em in si",
+  "passed": false,
+  "score": 0.5,
+  "seed": null,
+  "text": "إِمْ إِيچْ مِدِتْ إِمْ إِينْ سِي"
+ },
+ "p:pt390": {
+  "file": "46c72a83b71d8e72665bf5599704c5c5.mp3",
+  "heard_ar": "امرديكت امستكت",
+  "heard_en": "",
+  "ipa": "ɛm rɛdi kɛt ɛm sɛt kɛt",
+  "latin": "em redi ket em set ket",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "إِمْ رِدِي كِتْ إِمْ سِتْ كِتْ"
+ },
+ "p:pt391": {
+  "file": "6f96e89b7f97e4c828149b82e6a8450d.mp3",
+  "heard_ar": "عحتو M1 mini iMac",
+  "heard_en": "",
+  "ipa": "ʕaħa tu ɛm wɛn ini imɛk",
+  "latin": "ʿaḥa tu em wen ini imek",
+  "passed": true,
+  "score": 0.82,
+  "seed": null,
+  "text": "عَحَا تُو إِمْ وِنْ إِينِي إِيمِكْ"
+ },
+ "p:pt392": {
+  "file": "c0acc0458af09da8f9ccaaf564fe57d6.mp3",
+  "heard_ar": "سأتو يرجع درخت",
+  "heard_en": "",
+  "ipa": "sau tu ɛr dʒɛd rɛχ χɛt",
+  "latin": "sau tu er djed rekh khet",
+  "passed": false,
+  "score": 0.83,
+  "seed": 11,
+  "text": "سَاو تُو إِرْ جِدْ رِخْ خِتْ"
+ },
+ "p:pt393": {
+  "file": "796d436b320fd421c981457949a255d7.mp3",
+  "heard_ar": "سيجم ريك مريك سيمينيتيك أم إر إن سيجميو",
+  "heard_en": "",
+  "ipa": "sɛdʒɛm rɛk mɛrɛk sɛmɛnɛtɛk ɛm ɛr ɛn sɛdʒɛmiu",
+  "latin": "sedjem rek merek semenetek em er en sedjemiu",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "سِجِمْ رِكْ مِرِكْ سِمِنِتِكْ إِمْ إِرْ إِنْ سِجِمِيو"
+ },
+ "p:pt394": {
+  "file": "de50e81ba7e60c1967ab5f103c3e73d2.mp3",
+  "heard_ar": "مدويك عقنك إمسبن حمو",
+  "heard_en": "مدويك عقنك امسبن حمو",
+  "ipa": "mɛdɛwik ʕaqɛnɛk ɛm sɛp ɛn ħɛmuu",
+  "latin": "medewik ʿaqenek em sep en ḥemuu",
+  "passed": true,
+  "score": 0.85,
+  "seed": null,
+  "text": "مِدِوِيكْ عَقِنِكْ إِمْ سِپْ إِنْ حِمُوو"
+ },
+ "p:pt395a": {
+  "file": "71d62cf9ff15ba360c960ea4c36f5c9d.mp3",
+  "heard_ar": "مدبك إرسيب إنجان",
+  "heard_en": "Mudvek er sep ingen",
+  "ipa": "mɛduk ɛr sɛp ɛn qɛn",
+  "latin": "meduk er sep en qen",
+  "passed": false,
+  "score": 0.8,
+  "seed": null,
+  "text": "مِدُوكْ إِرْ سِپْ إِنْ قِنْ"
+ },
+ "p:pt395b": {
+  "file": "1a29e99ec60bf38f7981c8407987440c.mp3",
+  "heard_ar": "وين نسخرك نب إرسطف؟",
+  "heard_en": "",
+  "ipa": "wɛnɛn sɛχɛrɛk nɛb ɛr sɛtɛf",
+  "latin": "wenen sekherek neb er setef",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "وِنِنْ سِخِرِكْ نِبْ إِرْ سِتِفْ"
+ },
+ "p:pt396": {
+  "file": "b6182e9d3c05b25f1db333f5139b370f.mp3",
+  "heard_ar": "هيرب إيبك",
+  "heard_en": "Hirip Ibik",
+  "ipa": "hɛrɛp ibɛk",
+  "latin": "herep ibek",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "هِرِپْ إِيبِكْ"
+ },
+ "p:pt397": {
+  "file": "086cd4de6cf4f651b3076631c8b47a48.mp3",
+  "heard_ar": "هنريك",
+  "heard_en": "",
+  "ipa": "ħɛn rɛk",
+  "latin": "ḥen rek",
+  "passed": false,
+  "score": 0.6,
+  "seed": null,
+  "text": "حِنْ رِكْ"
+ },
+ "p:pt398": {
+  "file": "1cbcce6c76c482343015181f303dd320.mp3",
+  "heard_ar": "إخ سيخيرك إميم سيرو",
+  "heard_en": "",
+  "ipa": "iχ sɛχɛrɛk ɛmɛm sɛru",
+  "latin": "ikh sekherek emem seru",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "إِيخْ سِخِرِكْ إِمِمْ سِرُو"
+ },
+ "p:pt399": {
+  "file": "23339dfbc8bd449d7ab013de280ba8c8.mp3",
+  "heard_ar": "متر حر قد خربك",
+  "heard_en": "",
+  "ipa": "mɛtɛr ħɛr qɛd χɛr nɛbɛk",
+  "latin": "meter ḥer qed kher nebek",
+  "passed": true,
+  "score": 0.93,
+  "seed": 23,
+  "text": "مِتِرْ حِرْ قِدْ خِرْ نِبِكْ"
+ },
+ "p:pt400a": {
+  "file": "51f66d2abba24f35b262332e5c81bdb3.mp3",
+  "heard_ar": "إير إير جد نف صافا فافو",
+  "heard_en": "Air, air, jadnaf safafapo",
+  "ipa": "ir ɛr dʒɛdɛnɛf sa pɛfa pu",
+  "latin": "ir er djedenef sa pefa pu",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "إِيرْ إِرْ جِدِنِفْ سَا پِفَا پُو"
+ },
+ "p:pt400b": {
+  "file": "cf73f5e9bf25d19092b509127bb65397.mp3",
+  "heard_ar": "يرجدن صجمتي سن ست حسي غرت مسي نفسه.",
+  "heard_en": "",
+  "ipa": "ɛr dʒɛdɛn sɛdʒɛmɛtisɛn sɛt ħɛsi gɛrɛt mɛsi nɛf su",
+  "latin": "er djeden sedjemetisen set ḥesi geret mesi nef su",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "إِرْ جِدِنْ سِجِمِتِيسِنْ سِتْ حِسِي گِرِتْ مِسِي نِفْ سُو"
+ },
+ "p:pt401a": {
+  "file": "f0eac7beff73b1a1923521593858b552.mp3",
+  "heard_ar": "واح إي بيكتر إم ميدويك",
+  "heard_en": "",
+  "ipa": "waħ ibɛk tɛr ɛn mɛdɛwik",
+  "latin": "waḥ ibek ter en medewik",
+  "passed": true,
+  "score": 0.92,
+  "seed": null,
+  "text": "وَاحْ إِيبِكْ تِرْ إِنْ مِدِوِيكْ"
+ },
+ "p:pt401b": {
+  "file": "bd73d2f76f60cd608281fd73bcc3b139.mp3",
+  "heard_ar": "جدك خدت شنو؟",
+  "heard_en": "",
+  "ipa": "dʒɛdɛk χɛt tʃɛnu",
+  "latin": "djedek khet tjenu",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "جِدِكْ خِتْ چِنُو"
+ },
+ "p:pt402": {
+  "file": "7575a0469a3c50bd571187ecbd8d92a4.mp3",
+  "heard_ar": "إخ، git siru sigimi tiysin",
+  "heard_en": "",
+  "ipa": "iχ dʒɛd sɛru sɛdʒɛmɛtisɛn",
+  "latin": "ikh djed seru sedjemetisen",
+  "passed": true,
+  "score": 0.93,
+  "seed": 11,
+  "text": "إِيخْ جِدْ سِرُو سِجِمِتِيسِنْ"
+ },
+ "p:pt403": {
+  "file": "8b616741dac3509cfdc36d3950dabcf1.mp3",
+  "heard_ar": "نفيريفي بيرو إنرف",
+  "heard_en": "Nefirivi Peru Enref",
+  "ipa": "nɛfɛrɛwi pɛru ɛn rɛf",
+  "latin": "neferewi peru en ref",
+  "passed": true,
+  "score": 0.89,
+  "seed": null,
+  "text": "نِفِرِوِي پِرُو إِنْ رِفْ"
+ },
+ "p:pt404": {
+  "file": "83a7f2887e5104a5d14d7e0db7ec0dcf.mp3",
+  "heard_ar": "إر إر جتا نبكراك",
+  "heard_en": "",
+  "ipa": "ir ɛr dʒɛdɛt nɛbɛk rɛk",
+  "latin": "ir er djedet nebek rek",
+  "passed": true,
+  "score": 0.91,
+  "seed": null,
+  "text": "إِيرْ إِرْ جِدِتْ نِبِكْ رِكْ"
+ },
+ "p:pt405": {
+  "file": "e9405a7cb0c72d7fd15f743ac219a26b.mp3",
+  "heard_ar": "نفر ويسبان إيتيف",
+  "heard_en": "",
+  "ipa": "nɛfɛrɛwi sɛban itɛf",
+  "latin": "neferewi seban itef",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "نِفِرِوِي سِبَانْ إِيتِفْ"
+ },
+ "p:pt406a": {
+  "file": "f50085352fa4fb6c3482c5eb96c06a93.mp3",
+  "heard_ar": "برنف إيمف خنت حعوف",
+  "heard_en": "برنيف إيمف خنت حعوف",
+  "ipa": "pɛrɛnɛf imɛf χɛnɛt ħaʕuf",
+  "latin": "perenef imef khenet ḥaʿuf",
+  "passed": true,
+  "score": 0.85,
+  "seed": 11,
+  "text": "پِرِنِفْ إِيمِفْ خِنِتْ حَعُوفْ"
+ },
+ "p:pt406b": {
+  "file": "8e17ddc973c0304e20eb38f611cba0d1.mp3",
+  "heard_ar": "جدني فنف إيوف امخت إراو",
+  "heard_en": "",
+  "ipa": "dʒɛdɛnɛf nɛf iuf ɛm çɛt ɛrʔau",
+  "latin": "djedenef nef iuf em khet erau",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "جِدِنِفْ نِفْ إِيوفْ إِمْ خِتْ إِرْآو"
+ },
+ "p:pt407": {
+  "file": "9dc7c9f7d2cc4832e4d95076bbfac177.mp3",
+  "heard_ar": "ور إرتنف إر جددت نف",
+  "heard_en": "",
+  "ipa": "wɛr irɛtɛnɛf ɛr dʒɛdɛdɛt nɛf",
+  "latin": "wer iretenef er djededet nef",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "وِرْ إِيرِتِنِفْ إِرْ جِدِدِتْ نِفْ"
+ },
+ "p:pt408a": {
+  "file": "c6411b5b0381f858bdd1c05fe313c469.mp3",
+  "heard_ar": "ميك سانيفير انجج نجر",
+  "heard_en": "",
+  "ipa": "mɛk sa nɛfɛr ɛn dʒɛdʒ nɛtʃɛr",
+  "latin": "mek sa nefer en djedj netjer",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "مِكْ سَا نِفِرْ إِنْ جِجْ نِچِرْ"
+ },
+ "p:pt408b": {
+  "file": "7d402ba212079887831d1d08cc0bf987.mp3",
+  "heard_ar": "ريدي حاو حر جددت نفخر نبف",
+  "heard_en": "",
+  "ipa": "rɛdi ħau ħɛr dʒɛdɛdɛt nɛf χɛr nɛbɛf",
+  "latin": "redi ḥau ḥer djededet nef kher nebef",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "رِدِي حَاو حِرْ جِدِدِتْ نِفْ خِرْ نِبِفْ"
+ },
+ "p:pt408c": {
+  "file": "6ebeb04dbc1aec2e5d88df277cd8dcc1.mp3",
+  "heard_ar": "إف مات إر نفير نوميتيف",
+  "heard_en": "",
+  "ipa": "irɛf maʕat irɛn ibɛf ɛr nɛmɛtɛtɛf",
+  "latin": "iref maʿat iren ibef er nemetetef",
+  "passed": false,
+  "score": 0.31,
+  "seed": null,
+  "text": "إِيرِفْ مَاعَتْ إِيرِنْ إِيبِفْ إِرْ نِمِتِتِفْ"
+ },
+ "p:pt409a": {
+  "file": "0378906b01b6f3b6c449774ce1e374bb.mp3",
+  "heard_ar": "ميبحك ويحعوك ويجا",
+  "heard_en": "Mipa hak wihakuk wija",
+  "ipa": "mi pɛħɛk wi ħaʕuk wɛdʒa",
+  "latin": "mi peḥek wi ḥaʿuk wedja",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "مِي پَحَكْ وِي حَعُوكْ وِجَا"
+ },
+ "p:pt409b": {
+  "file": "05be0e7c9f7edab11035d75be1c0ba3c.mp3",
+  "heard_ar": "نسوت حتى بإن خبرت نبت.",
+  "heard_en": "نسوت حتى بإن خبطت نبت",
+  "ipa": "nɛsut ħɛtɛp ɛm χɛpɛrɛt nɛbɛt",
+  "latin": "nesut ḥetep em kheperet nebet",
+  "passed": true,
+  "score": 0.79,
+  "seed": null,
+  "text": "نِسُوتْ حِتِپْ إِمْ خِپِرِتْ نِبِتْ"
+ },
+ "p:pt409c": {
+  "file": "127a120a6d49123918eb710c22ca9eec.mp3",
+  "heard_ar": "H Krampot M Ang",
+  "heard_en": "H Krampot M Ang",
+  "ipa": "itʃɛk rɛnɛput ɛm ʕanχ",
+  "latin": "itjek reneput em ʿankh",
+  "passed": false,
+  "score": 0.17,
+  "seed": null,
+  "text": "إِيچِكْ رِنِپُوتْ إِمْ عَنْخْ"
+ },
+ "p:pt410": {
+  "file": "735e228d33c73708cdf43663ab9336c5.mp3",
+  "heard_ar": "Ninshir Iritini Tebta",
+  "heard_en": "Ninshir Iritini Tebta",
+  "ipa": "nɛn ʃɛr irɛtɛni tɛp ta",
+  "latin": "nen sher ireteni tep ta",
+  "passed": true,
+  "score": 0.85,
+  "seed": 23,
+  "text": "نِنْ شِرْ إِيرِتِنِي تِپْ تَا"
+ },
+ "p:pt411a": {
+  "file": "c191c55a417d54703ce037f750b661dc.mp3",
+  "heard_ar": "إتش ني ريني بيت شيت مجو إمعنخ",
+  "heard_en": "It's near any pit shit mojo in ang.",
+  "ipa": "itʃni rɛnɛpɛt ʃɛt mɛdʒu ɛm ʕanχ",
+  "latin": "itjni renepet shet medju em ʿankh",
+  "passed": true,
+  "score": 1.0,
+  "seed": 11,
+  "text": "إِيچْنِي رِنِپِتْ شِتْ مِجُو إِمْ عَنْخْ"
+ },
+ "p:pt411b": {
+  "file": "944fcdc19efa6944fff2cb0216fe0a80.mp3",
+  "heard_ar": "انجزني نسوت حسوت خنت بيوعوي",
+  "heard_en": "Injejni nisut husut khanat tipi wawi",
+  "ipa": "ɛn dʒɛdʒ ni nɛsut ħɛsut χɛnɛt tɛpiu ʕawi",
+  "latin": "en djedj ni nesut ḥesut khenet tepiu ʿawi",
+  "passed": false,
+  "score": 0.86,
+  "seed": 23,
+  "text": "إِنْ جِجْ نِي نِسُوتْ حِسُوتْ خِنِتْ تِپِيو عَوِي"
+ },
+ "p:pt411c": {
+  "file": "3ee98f5d5c2d0076856987f156c50d51.mp3",
+  "heard_ar": "امع إيريت ماعت إن سوت إرسيت إيماخ",
+  "heard_en": "",
+  "ipa": "ɛmʕa irɛt maʕat ɛn nɛsut ɛr sɛt imaχ",
+  "latin": "emʿa iret maʿat en nesut er set imakh",
+  "passed": true,
+  "score": 0.95,
+  "seed": null,
+  "text": "إِمْعَ إِيرِتْ مَاعَتْ إِنْ نِسُوتْ إِرْ سِتْ إِيمَاخْ"
+ },
  "p:ptah1": {
   "file": "8e5926ba7bd1baa88b99e8e725d93c77.mp3",
   "heard_ar": "نفر ويشس بس جد إيتف",
@@ -4907,6 +6040,17 @@
   "seed": null,
   "text": "وِجَعْ"
  },
+ "s:Aa23": {
+  "file": "fed2c62f47dc9395e999302466ac6a92.mp3",
+  "heard_ar": "مجد",
+  "heard_en": "",
+  "ipa": "mɛdʒɛd",
+  "latin": "medjed",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "مِجِدْ"
+ },
  "s:Aa27": {
   "file": "55295b15dd9e12d5da9fc13e61dd1833.mp3",
   "heard_ar": "نيج",
@@ -4996,6 +6140,19 @@
   "score": 1.0,
   "seed": 11,
   "text": "خِنْ"
+ },
+ "s:D34": {
+  "file": "5e917f5079bcf2978d952f385b908923.mp3",
+  "framed": true,
+  "heard_ar": "أها",
+  "heard_en": "",
+  "heard_framed": "قل عها",
+  "ipa": "ʕaħa",
+  "latin": "ʿaḥa",
+  "passed": false,
+  "score": 0.5,
+  "seed": null,
+  "text": "عَحَا"
  },
  "s:D35": {
   "file": "1b471ad1e580d77a433ad1b8fd35d3fb.mp3",
@@ -5563,6 +6720,17 @@
   "score": 1.0,
   "seed": null,
   "text": "مَاعَتْ"
+ },
+ "s:I1": {
+  "file": "f276ec89c2b7d3ad7693cf838916c343.mp3",
+  "heard_ar": "عشا",
+  "heard_en": "",
+  "ipa": "ʕaʃa",
+  "latin": "ʿasha",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "عَشَا"
  },
  "s:I10": {
   "file": "d479cda7d0af54e60d28b18a8967ba85.mp3",
@@ -6240,6 +7408,17 @@
   "seed": null,
   "text": "خِتِمْ"
  },
+ "s:S24": {
+  "file": "1ca6f856a362cfadc4d12fd89293f8a4.mp3",
+  "heard_ar": "چيس",
+  "heard_en": "",
+  "ipa": "tʃɛs",
+  "latin": "tjes",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "چِسْ"
+ },
  "s:S27": {
   "file": "7b854673e16f541d7cc47f349e2c7f81.mp3",
   "heard_ar": "منخت",
@@ -6396,6 +7575,17 @@
   "seed": null,
   "text": "حِجْ"
  },
+ "s:T33": {
+  "file": "9ba35402ad22c6d1e1d9edc0cc06733a.mp3",
+  "heard_ar": "Sim",
+  "heard_en": "",
+  "ipa": "sɛm",
+  "latin": "sem",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "سِمْ"
+ },
  "s:T34": {
   "file": "fedc4c4a461b6961f56c79e499fc252a.mp3",
   "heard_ar": "Nim",
@@ -6483,6 +7673,19 @@
   "score": 1.0,
   "seed": null,
   "text": "آبْ"
+ },
+ "s:U24": {
+  "file": "86c05594d5dde8f3058eb13f0d219eec.mp3",
+  "framed": true,
+  "heard_ar": "حم",
+  "heard_en": "",
+  "heard_framed": "قل حم",
+  "ipa": "ħɛm",
+  "latin": "ḥem",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "حِمْ"
  },
  "s:U28": {
   "file": "a20226c1c9f95442238779e30b47ad4c.mp3",
@@ -7033,6 +8236,19 @@
   "seed": null,
   "text": "آخْ"
  },
+ "w:Ax2": {
+  "file": "efd609e213c51a325f34d1cd55d057d3.mp3",
+  "framed": true,
+  "heard_ar": "أخ.",
+  "heard_en": "",
+  "heard_framed": "قل آخ",
+  "ipa": "ʔaχ",
+  "latin": "akh",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "آخْ"
+ },
  "w:Ayt": {
   "file": "62d373b68311583fe2c8efd11b84e838.mp3",
   "heard_ar": "Aight",
@@ -7435,6 +8651,17 @@
   "seed": null,
   "text": "حِمِتْ"
  },
+ "w:Hmww": {
+  "file": "b85e552eb41132e8eab1d127deda4b36.mp3",
+  "heard_ar": "حمور",
+  "heard_en": "",
+  "ipa": "ħɛmuu",
+  "latin": "ḥemuu",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "حَمُوو"
+ },
  "w:Hn": {
   "file": "14c2aeb9fe4f2a62f133dd28e8621c59.mp3",
   "heard_ar": "حِن",
@@ -7546,6 +8773,17 @@
   "score": 0.83,
   "seed": null,
   "text": "حَرْ نِتِتْ"
+ },
+ "w:Hrqd": {
+  "file": "1c6e0c52fc600ae14782e481c5a58d71.mp3",
+  "heard_ar": "حرقد",
+  "heard_en": "",
+  "ipa": "ħɛr qɛd",
+  "latin": "ḥer qed",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "حِرْ قِدْ"
  },
  "w:Hrw": {
   "file": "81fc441e36604a326b34de1ff1b928f6.mp3",
@@ -7749,6 +8987,17 @@
   "seed": null,
   "text": "شِپِسْ"
  },
+ "w:Srr": {
+  "file": "9045a72ff7acf2c3152ae73c700f9305.mp3",
+  "heard_ar": "شيريل",
+  "heard_en": "",
+  "ipa": "ʃɛrɛr",
+  "latin": "sherer",
+  "passed": true,
+  "score": 0.75,
+  "seed": null,
+  "text": "شِرِرْ"
+ },
  "w:Ss": {
   "file": "c88219a64d373d84aac388001562012d.mp3",
   "heard_ar": "شس",
@@ -7839,6 +9088,17 @@
   "seed": null,
   "text": "چَاو"
  },
+ "w:TAz": {
+  "file": "1ca6f856a362cfadc4d12fd89293f8a4.mp3",
+  "heard_ar": "چيس",
+  "heard_en": "",
+  "ipa": "tʃɛs",
+  "latin": "tjes",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "چِسْ"
+ },
  "w:Tn": {
   "file": "ca8e9e84096baaf03b6c0d05e6ab2069.mp3",
   "heard_ar": "Chin",
@@ -7882,6 +9142,17 @@
   "score": 1.0,
   "seed": null,
   "text": "چِسْ"
+ },
+ "w:Tzj": {
+  "file": "20f11f502ebcb84924d76b3c2a1e3465.mp3",
+  "heard_ar": "چیسی",
+  "heard_en": "",
+  "ipa": "tʃɛsi",
+  "latin": "tjesi",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "چِسِي"
  },
  "w:Tzm": {
   "file": "caf4fdf9a48727f3b2f0251058e16c74.mp3",
@@ -8041,6 +9312,30 @@
   "seed": null,
   "text": "عَجْ"
  },
+ "w:aD2": {
+  "file": "f3834c6131301393a13c18addfdce877.mp3",
+  "heard_ar": "عج",
+  "heard_en": "",
+  "ipa": "ʕadʒ",
+  "latin": "ʿadj",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "عَجْ"
+ },
+ "w:aHA": {
+  "file": "5e917f5079bcf2978d952f385b908923.mp3",
+  "framed": true,
+  "heard_ar": "أها",
+  "heard_en": "",
+  "heard_framed": "قل عها",
+  "ipa": "ʕaħa",
+  "latin": "ʿaḥa",
+  "passed": false,
+  "score": 0.5,
+  "seed": null,
+  "text": "عَحَا"
+ },
  "w:aHa": {
   "file": "b17574889ff9801273017163469669fb.mp3",
   "framed": true,
@@ -8067,6 +9362,17 @@
   "seed": null,
   "text": "عَحَعِنْ"
  },
+ "w:aSA": {
+  "file": "f276ec89c2b7d3ad7693cf838916c343.mp3",
+  "heard_ar": "عشا",
+  "heard_en": "",
+  "ipa": "ʕaʃa",
+  "latin": "ʿasha",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "عَشَا"
+ },
  "w:aXnwtj": {
   "file": "8df2c18bbe141d5b5f55c23759030f54.mp3",
   "heard_ar": "أخنوتي",
@@ -8088,6 +9394,17 @@
   "score": 1.0,
   "seed": 23,
   "text": "عَبُو"
+ },
+ "w:anj": {
+  "file": "ea10e1afc71537d6be983f8dab73cddc.mp3",
+  "heard_ar": "عيني",
+  "heard_en": "",
+  "ipa": "ʕani",
+  "latin": "ʿani",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "عَنِي"
  },
  "w:antjw": {
   "file": "8320e0b1c0fe23a7f1a2b9235bf5ef42.mp3",
@@ -8132,6 +9449,17 @@
   "score": 1.0,
   "seed": null,
   "text": "عَقَا"
+ },
+ "w:aqw": {
+  "file": "705cca5b41362cde6f39fe61417b1b94.mp3",
+  "heard_ar": "عقل",
+  "heard_en": "",
+  "ipa": "ʕaqu",
+  "latin": "ʿaqu",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "عَقُو"
  },
  "w:arq": {
   "file": "0cdad9f91cc02b729b14df9db07f5c9c.mp3",
@@ -8234,6 +9562,17 @@
   "seed": null,
   "text": "بِيا"
  },
+ "w:bjAt": {
+  "file": "5e9b9e0d1fdbe25ca997a0b78db8c73c.mp3",
+  "heard_ar": "بيات",
+  "heard_en": "",
+  "ipa": "biat",
+  "latin": "biat",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "بِياتْ"
+ },
  "w:bjn": {
   "file": "28220b5319a30c569eb4cf7538d5ff97.mp3",
   "heard_ar": "بين",
@@ -8288,6 +9627,17 @@
   "score": 1.0,
   "seed": null,
   "text": "بُوتْ"
+ },
+ "w:bz": {
+  "file": "da8991fd4c9b5f0162a46d631c5d397f.mp3",
+  "heard_ar": "بس",
+  "heard_en": "",
+  "ipa": "bɛs",
+  "latin": "bes",
+  "passed": true,
+  "score": 1.0,
+  "seed": 11,
+  "text": "بِسْ"
  },
  "w:dAb": {
   "file": "7a823ae5826a8818b67fb3c38c500863.mp3",
@@ -8511,6 +9861,17 @@
   "seed": null,
   "text": "گِمِي"
  },
+ "w:gr": {
+  "file": "fe68c8e3e7a689912c9b4c1c5c6c9003.mp3",
+  "heard_ar": "غير",
+  "heard_en": "",
+  "ipa": "gɛr",
+  "latin": "ger",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "گِرْ"
+ },
  "w:grg": {
   "file": "73e844d14e420238f0a7435347e823bb.mp3",
   "heard_ar": "Gereg",
@@ -8610,6 +9971,17 @@
   "seed": 11,
   "text": "حَنَعْ"
  },
+ "w:hrp": {
+  "file": "594cb93a22cadb93ed1006b52f737326.mp3",
+  "heard_ar": "هرب",
+  "heard_en": "Herep",
+  "ipa": "hɛrɛp",
+  "latin": "herep",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "هِرِپْ"
+ },
  "w:hrw": {
   "file": "1deb674e5647ef6922492b92c84669d4.mp3",
   "heard_ar": "هيرو",
@@ -8705,6 +10077,17 @@
   "score": 1.0,
   "seed": null,
   "text": "إِياو"
+ },
+ "w:jAwj": {
+  "file": "f61d8c38b43d626d6edf9260b9efd06c.mp3",
+  "heard_ar": "ياوي",
+  "heard_en": "",
+  "ipa": "iawi",
+  "latin": "iawi",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "إِياوِي"
  },
  "w:jAwt": {
   "file": "4931250d5b380309cf26d02d858a806a.mp3",
@@ -8940,6 +10323,17 @@
   "text": "إِينِجْ حَرْ"
  },
  "w:jnj": {
+  "file": "cad6743fac9edef958942212f48b7ee7.mp3",
+  "heard_ar": "يني",
+  "heard_en": "",
+  "ipa": "ini",
+  "latin": "ini",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "إِينِي"
+ },
+ "w:jnj2": {
   "file": "cad6743fac9edef958942212f48b7ee7.mp3",
   "heard_ar": "يني",
   "heard_en": "",
@@ -9216,6 +10610,17 @@
   "seed": null,
   "text": "إِيوسُو"
  },
+ "w:jwtj": {
+  "file": "e3a42f7dd81211b30e15e6a24b67de61.mp3",
+  "heard_ar": "EUT",
+  "heard_en": "",
+  "ipa": "iuti",
+  "latin": "iuti",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "إِيوتِي"
+ },
  "w:jwtt": {
   "file": "2e7b1d67e3841f4c5f3d37f940eea381.mp3",
   "heard_ar": "يوتت",
@@ -9248,6 +10653,17 @@
   "score": 1.0,
   "seed": 23,
   "text": "إِيخْ"
+ },
+ "w:jyt": {
+  "file": "cafa89f35e4137ce7af760e92fec4895.mp3",
+  "heard_ar": "Eat",
+  "heard_en": "",
+  "ipa": "iit",
+  "latin": "iit",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "إِييتْ"
  },
  "w:jzft": {
   "file": "9521c0333823800e70561d9c454962a4.mp3",
@@ -9539,6 +10955,17 @@
   "seed": null,
   "text": "مَعْمَعْ"
  },
+ "w:man": {
+  "file": "59c404e08907827a285e78013baa7009.mp3",
+  "heard_ar": "معًا",
+  "heard_en": "",
+  "ipa": "maʕɛn",
+  "latin": "maʿen",
+  "passed": true,
+  "score": 0.75,
+  "seed": null,
+  "text": "مَعِنْ"
+ },
  "w:mbAH": {
   "file": "9574663f8a55778849c22b113ca7f2a8.mp3",
   "heard_ar": "إنباح",
@@ -9549,6 +10976,28 @@
   "score": 0.75,
   "seed": null,
   "text": "إِمْبَاحْ"
+ },
+ "w:mdd": {
+  "file": "fed2c62f47dc9395e999302466ac6a92.mp3",
+  "heard_ar": "مجد",
+  "heard_en": "",
+  "ipa": "mɛdʒɛd",
+  "latin": "medjed",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "مِجِدْ"
+ },
+ "w:mdt": {
+  "file": "606f19f5f0533e550aab84dced59784d.mp3",
+  "heard_ar": "ميديت",
+  "heard_en": "",
+  "ipa": "mɛdɛt",
+  "latin": "medet",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "مِدِتْ"
  },
  "w:mdwj": {
   "file": "23a44ba3620494c0f5a99f4b31e9cce5.mp3",
@@ -9604,6 +11053,17 @@
   "score": 1.0,
   "seed": null,
   "text": "مِكْ"
+ },
+ "w:mm": {
+  "file": "5897d3aac1197fc5773b52080865f27b.mp3",
+  "heard_ar": "إمم",
+  "heard_en": "",
+  "ipa": "ɛmɛm",
+  "latin": "emem",
+  "passed": true,
+  "score": 1.0,
+  "seed": 23,
+  "text": "إِمِمْ"
  },
  "w:mn": {
   "file": "f730f9924bd29f97b05fd83e057c7ce7.mp3",
@@ -9682,6 +11142,17 @@
   "seed": null,
   "text": "مِنِتْ"
  },
+ "w:mnx": {
+  "file": "fe956b8895d857159c151ae0d4d8ca4f.mp3",
+  "heard_ar": "منخ",
+  "heard_en": "",
+  "ipa": "mɛnɛχ",
+  "latin": "menekh",
+  "passed": true,
+  "score": 1.0,
+  "seed": 11,
+  "text": "مِنِخْ"
+ },
  "w:mnxt": {
   "file": "7b854673e16f541d7cc47f349e2c7f81.mp3",
   "heard_ar": "منخت",
@@ -9737,6 +11208,17 @@
   "seed": null,
   "text": "مِرِرِيتْ"
  },
+ "w:mrwt": {
+  "file": "083a44dfbd5066fc95c8c332c7f05d21.mp3",
+  "heard_ar": "Mirrot",
+  "heard_en": "",
+  "ipa": "mɛrut",
+  "latin": "merut",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "مِرُوتْ"
+ },
  "w:mryt": {
   "file": "82a8f2307d95ac90dc8799512941bc7f.mp3",
   "heard_ar": "ميرة",
@@ -9769,6 +11251,17 @@
   "score": 1.0,
   "seed": null,
   "text": "مِسِجِي"
+ },
+ "w:msDr": {
+  "file": "dd8d3804a682726f14c4f4b3561acd06.mp3",
+  "heard_ar": "Messenger",
+  "heard_en": "",
+  "ipa": "mɛsɛdʒɛr",
+  "latin": "mesedjer",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "مِسِجِرْ"
  },
  "w:msdmt": {
   "file": "60d5c17e3300fb4a29d5f7c875b0ce6d.mp3",
@@ -9880,6 +11373,19 @@
   "seed": null,
   "text": "إِمْخِدْ"
  },
+ "w:mxmt": {
+  "file": "3ad7834063f2724ea9ae9ecdd6bd15f7.mp3",
+  "framed": true,
+  "heard_ar": "Imchemet",
+  "heard_en": "",
+  "heard_framed": "قل امخمت",
+  "ipa": "ɛmχɛmɛt",
+  "latin": "emkhemet",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "إِمْخِمِتْ"
+ },
  "w:n": {
   "file": "1b471ad1e580d77a433ad1b8fd35d3fb.mp3",
   "heard_ar": "In",
@@ -9945,6 +11451,17 @@
   "score": 1.0,
   "seed": null,
   "text": "نِجِسْ"
+ },
+ "w:nHH": {
+  "file": "436052cc89f9f13d82a4862af5ddddb4.mp3",
+  "heard_ar": "نحح",
+  "heard_en": "",
+  "ipa": "nɛħɛħ",
+  "latin": "neḥeḥ",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "نِحِحْ"
  },
  "w:nHm": {
   "file": "4288e2e464dce56a5f6479ee52e79193.mp3",
@@ -10146,6 +11663,17 @@
   "seed": null,
   "text": "نِنْ"
  },
+ "w:nnm": {
+  "file": "0c128a3b40302a98c7c128a5ee511939.mp3",
+  "heard_ar": "Ninim",
+  "heard_en": "",
+  "ipa": "nɛnɛm",
+  "latin": "nenem",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "نِنِمْ"
+ },
  "w:nnnswt": {
   "file": "367a8300670ea2d719f2bddffd4e5282.mp3",
   "heard_ar": "نين نسوت",
@@ -10167,6 +11695,17 @@
   "score": 1.0,
   "seed": null,
   "text": "نِقَعُوتْ"
+ },
+ "w:ns": {
+  "file": "acf3d480e661601727a760c6b2ec63c3.mp3",
+  "heard_ar": "نس",
+  "heard_en": "",
+  "ipa": "nɛs",
+  "latin": "nes",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "نِسْ"
  },
  "w:nswt": {
   "file": "bfef220dc8ee1ebd2abe42cb495842ca.mp3",
@@ -10500,6 +12039,17 @@
   "seed": null,
   "text": "قِنْ"
  },
+ "w:qn2": {
+  "file": "cfd8aba4a98c9df801e7adbbf94a416f.mp3",
+  "heard_ar": "قن",
+  "heard_en": "",
+  "ipa": "qɛn",
+  "latin": "qen",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "قِنْ"
+ },
  "w:qnbt": {
   "file": "3c4ab290be75e98a75443a0aba317370.mp3",
   "heard_ar": "قنيبت",
@@ -10599,6 +12149,30 @@
   "seed": null,
   "text": "إِرْپِرْ"
  },
+ "w:rAw": {
+  "file": "f371891f26603f521f02071f33c8b35f.mp3",
+  "heard_ar": "إرآء.",
+  "heard_en": "",
+  "ipa": "ɛrʔau",
+  "latin": "erau",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "إِرْآو"
+ },
+ "w:rHAt": {
+  "file": "05a8a564239439c0feb3e5f75e1fac67.mp3",
+  "framed": true,
+  "heard_ar": "إرحات",
+  "heard_en": "",
+  "heard_framed": "قل إرحات",
+  "ipa": "ɛrħat",
+  "latin": "erḥat",
+  "passed": true,
+  "score": 1.0,
+  "seed": 11,
+  "text": "إِرْحَاتْ"
+ },
  "w:rS": {
   "file": "4dda21932a4419afb2310923b399220b.mp3",
   "heard_ar": "رِش",
@@ -10622,6 +12196,17 @@
   "score": 1.0,
   "seed": null,
   "text": "رَعْ"
+ },
+ "w:rana": {
+  "file": "1e28c67a5554cea5248b65d3d2e74a93.mp3",
+  "heard_ar": "رعنب",
+  "heard_en": "",
+  "ipa": "raʕ nɛb",
+  "latin": "raʿ neb",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "رَعْ نِبْ"
  },
  "w:rd": {
   "file": "c4774e8d36a766b4d101247629579e55.mp3",
@@ -10733,6 +12318,17 @@
   "seed": null,
   "text": "رُوجْ"
  },
+ "w:rwj": {
+  "file": "3ddeb73e8516484ac3cc3cdf3193d95f.mp3",
+  "heard_ar": "ريوي",
+  "heard_en": "",
+  "ipa": "rɛwi",
+  "latin": "rewi",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "رِوِي"
+ },
  "w:rx": {
   "file": "e5b825eb3c44a4316fa44ab6a5a8ad0f.mp3",
   "heard_ar": "رخ",
@@ -10776,6 +12372,17 @@
   "score": 1.0,
   "seed": null,
   "text": "سَا"
+ },
+ "w:sAA": {
+  "file": "a82976ee3a8fa7fddb9c98ded91ce1f2.mp3",
+  "heard_ar": "س",
+  "heard_en": "",
+  "ipa": "saa",
+  "latin": "saa",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "سَاا"
  },
  "w:sAH": {
   "file": "8bf670c8db7c404f11b14bba9a938ad3.mp3",
@@ -10843,6 +12450,17 @@
   "seed": null,
   "text": "سِجِمْ"
  },
+ "w:sDmj": {
+  "file": "260613c7fe4b50d0f602da2cc9b4fa90.mp3",
+  "heard_ar": "سيجي مي",
+  "heard_en": "",
+  "ipa": "sɛdʒɛmi",
+  "latin": "sedjemi",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "سِجِمِي"
+ },
  "w:sDr": {
   "file": "7581fd5070339b709d9b466f31dbb1ee.mp3",
   "heard_ar": "سيجر",
@@ -10898,6 +12516,17 @@
   "seed": null,
   "text": "سِشَا"
  },
+ "w:sSm": {
+  "file": "bab51ce59ad60dc9094d75b2592e7dc6.mp3",
+  "heard_ar": "Sishem",
+  "heard_en": "",
+  "ipa": "sɛʃɛm",
+  "latin": "seshem",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "سِشِمْ"
+ },
  "w:sSpt": {
   "file": "e9789a28389961ba7e8e91e566727617.mp3",
   "heard_ar": "سيشيبت",
@@ -10908,6 +12537,17 @@
   "score": 1.0,
   "seed": null,
   "text": "سِشِپِتْ"
+ },
+ "w:sSsrt": {
+  "file": "ff99ae9aac705bc8daecb377db1ed2a9.mp3",
+  "heard_ar": "سشسرت",
+  "heard_en": "",
+  "ipa": "sɛʃɛsɛrɛt",
+  "latin": "sesheseret",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "سِشِسِرِتْ"
  },
  "w:sam": {
   "file": "2230dfb9231980c18d56dd95c3d9683a.mp3",
@@ -10964,6 +12604,17 @@
   "seed": null,
   "text": "سِبَا"
  },
+ "w:sbA4": {
+  "file": "6ecb4317cc9db16d821915c30d6b9bf0.mp3",
+  "heard_ar": "سيبا",
+  "heard_en": "",
+  "ipa": "sɛba",
+  "latin": "seba",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "سِبَا"
+ },
  "w:sd": {
   "file": "4f5addcbeba4d6f63f848e4ffeee2de7.mp3",
   "heard_ar": "Syd",
@@ -10985,6 +12636,17 @@
   "score": 1.0,
   "seed": 11,
   "text": "سِفِخْ"
+ },
+ "w:sgrH": {
+  "file": "cd5b7baefda731c066b812359c4b4216.mp3",
+  "heard_ar": "سيجيرح",
+  "heard_en": "",
+  "ipa": "sɛgɛrɛħ",
+  "latin": "segereḥ",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "سِگِرَحْ"
  },
  "w:sj": {
   "file": "e84ea84e01f31f8fc7894307430c5d0f.mp3",
@@ -11030,6 +12692,17 @@
   "seed": null,
   "text": "سِكِي"
  },
+ "w:sm": {
+  "file": "9ba35402ad22c6d1e1d9edc0cc06733a.mp3",
+  "heard_ar": "Sim",
+  "heard_en": "",
+  "ipa": "sɛm",
+  "latin": "sem",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "سِمْ"
+ },
  "w:smA": {
   "file": "19abecdb914330ae2cb5f7a36bcf13a8.mp3",
   "heard_ar": "سما",
@@ -11040,6 +12713,17 @@
   "score": 1.0,
   "seed": null,
   "text": "سِمَا"
+ },
+ "w:smAwj": {
+  "file": "daa707769e9a276511831ba1bac8b507.mp3",
+  "heard_ar": "سماوي",
+  "heard_en": "",
+  "ipa": "sɛmawi",
+  "latin": "semawi",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "سِمَاوِي"
  },
  "w:smH": {
   "file": "daaf96f9761be90451787dbad63bcacc.mp3",
@@ -11062,6 +12746,17 @@
   "score": 1.0,
   "seed": null,
   "text": "سِمِي"
+ },
+ "w:smn": {
+  "file": "a32934763bb7dafa45b024b7dda6c4ff.mp3",
+  "heard_ar": "سمن",
+  "heard_en": "",
+  "ipa": "sɛmɛn",
+  "latin": "semen",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "سِمِنْ"
  },
  "w:smnx": {
   "file": "785ef7a4e42e6400a1373c633671f7c0.mp3",
@@ -11228,6 +12923,17 @@
   "seed": null,
   "text": "سِپِرْ"
  },
+ "w:spt": {
+  "file": "1a125451c8cc51a96f6dbe4d12b15878.mp3",
+  "heard_ar": "Sip it",
+  "heard_en": "Sip it",
+  "ipa": "sɛpɛt",
+  "latin": "sepet",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "سِپِتْ"
+ },
  "w:sqdw": {
   "file": "122689d1154a03d5fae858cba464555c.mp3",
   "heard_ar": "سقيدوا",
@@ -11282,6 +12988,17 @@
   "score": 1.0,
   "seed": null,
   "text": "سِرِمِي"
+ },
+ "w:srwd": {
+  "file": "706ee76cb072b253a1071251b4093351.mp3",
+  "heard_ar": "سيروج",
+  "heard_en": "",
+  "ipa": "sɛrudʒ",
+  "latin": "serudj",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "سِرُوجْ"
  },
  "w:ssA": {
   "file": "46369b4595012d101367743165a0e020.mp3",
@@ -11540,6 +13257,17 @@
   "seed": null,
   "text": "سِخِپِرْ"
  },
+ "w:sxr": {
+  "file": "135bfefc0a13340d0c116c4a3f0fc89a.mp3",
+  "heard_ar": "صخر",
+  "heard_en": "",
+  "ipa": "sɛχɛr",
+  "latin": "sekher",
+  "passed": true,
+  "score": 1.0,
+  "seed": 23,
+  "text": "سِخِرْ"
+ },
  "w:sxt": {
   "file": "c58bdd155b83421631f95d4dd8e1c565.mp3",
   "heard_ar": "سخة",
@@ -11696,6 +13424,28 @@
   "seed": null,
   "text": "تِپْعَ"
  },
+ "w:tpj": {
+  "file": "354a8709941f05aa705a52873e29ee9d.mp3",
+  "heard_ar": "تيبي",
+  "heard_en": "Tippy",
+  "ipa": "tɛpi",
+  "latin": "tepi",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "تِپِي"
+ },
+ "w:tpjwaw": {
+  "file": "31fe6652d63aecb851a92a8f143487bb.mp3",
+  "heard_ar": "تب يوع",
+  "heard_en": "Tipua",
+  "ipa": "tɛpiuʕa",
+  "latin": "tepiuʿa",
+  "passed": true,
+  "score": 1.0,
+  "seed": 11,
+  "text": "تِپِيوعَ"
+ },
  "w:tr": {
   "file": "b233a15b57a70649c3701d21722a906e.mp3",
   "heard_ar": "تير",
@@ -11706,6 +13456,17 @@
   "score": 1.0,
   "seed": null,
   "text": "تِرْ"
+ },
+ "w:twt": {
+  "file": "79030acefc5c389e8887d02066a899d8.mp3",
+  "heard_ar": "توت",
+  "heard_en": "",
+  "ipa": "tut",
+  "latin": "tut",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "تُوتْ"
  },
  "w:twtanxjmn": {
   "file": "9646c3a383eb1aef1804f0427e582d0b.mp3",
@@ -11997,6 +13758,17 @@
   "seed": null,
   "text": "وِنْ"
  },
+ "w:wn2": {
+  "file": "d5e5c9ed5412103d8ae804cf4bc13b94.mp3",
+  "heard_ar": "Win",
+  "heard_en": "",
+  "ipa": "wɛn",
+  "latin": "wen",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "وِنْ"
+ },
  "w:wnDwt": {
   "file": "c3115a1df8cbac5e83018b817ce7683f.mp3",
   "heard_ar": "وينيجوت",
@@ -12164,6 +13936,17 @@
   "seed": null,
   "text": "خَايتْ"
  },
+ "w:xbDt": {
+  "file": "4577c1642885431667b0445699565967.mp3",
+  "heard_ar": "خيبجت",
+  "heard_en": "",
+  "ipa": "χɛbɛdʒɛt",
+  "latin": "khebedjet",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "خِبِجِتْ"
+ },
  "w:xbj": {
   "file": "2eebb41bf96612ab0bea7511b3ba6f7a.mp3",
   "heard_ar": "خبي",
@@ -12174,6 +13957,17 @@
   "score": 1.0,
   "seed": null,
   "text": "خِبِي"
+ },
+ "w:xbn": {
+  "file": "b37c2b7bfbb8c431b74db303ce4e68f6.mp3",
+  "heard_ar": "خيبن",
+  "heard_en": "",
+  "ipa": "χɛbɛn",
+  "latin": "kheben",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "خِبِنْ"
  },
  "w:xbswt": {
   "file": "9eda670a08feed4ed2e3b5116b098c20.mp3",
@@ -12451,6 +14245,17 @@
   "score": 1.0,
   "seed": null,
   "text": "سَاچُو"
+ },
+ "w:zAw": {
+  "file": "abf5b8c253713219a1d645dfec62e91f.mp3",
+  "heard_ar": "So",
+  "heard_en": "",
+  "ipa": "sau",
+  "latin": "sau",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "سَاو"
  },
  "w:zAwt": {
   "file": "bb12e015c783e26ae708d25a1bcc7d55.mp3",

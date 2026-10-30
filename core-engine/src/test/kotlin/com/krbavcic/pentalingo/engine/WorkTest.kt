@@ -35,4 +35,14 @@ class WorkTest {
         val both = grown.copy(memories = learned("p:rnf", "p:mpt"))
         assertTrue(Awards.progress(award, course, both, t0).done)
     }
+
+    @Test
+    fun `a text is read whole only once every line is learned`() {
+        val text = ReadingText("t:long", "Long", "Fixture", listOf("p:rnf", "p:mpt"), "")
+        val whole = Award("a:whole", "Whole", "šdj", "Y1", "Read it all", "Lore", Requirement.ReadWhole("t:long"))
+        val withText = course.copy(texts = course.texts + text)
+        val partly = Progress(memories = learned("p:rnf"), textsRead = setOf("t:long"))
+        assertFalse(Awards.progress(whole, withText, partly, t0).done)
+        assertTrue(Awards.progress(whole, withText, partly.copy(memories = learned("p:rnf", "p:mpt")), t0).done)
+    }
 }

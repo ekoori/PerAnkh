@@ -118,6 +118,18 @@ MANUAL: dict[str, list[str]] = {
     "w:sSA": ["157030", "157090"], "w:jbj": ["23780"], "w:antjw": ["39010"], "w:mama": ["69540"], "w:nDHyt": ["86750"],
     "w:gwf": ["166670"], "w:xbswt": ["115920"], "w:rxnt": ["92280"], "w:mxd": ["65350"], "w:dmA": ["850991"],
     "w:makA": ["850573"], "w:gspr": ["168360"],
+    # Section 6, Ptahhotep's epilogue. Look-alikes: ꜥḏ "blame" (41940) and ꜥḏ "be safe"; ṯzj
+    # "reproach" (177210) and ṯzj "lift up"; ꜥqw "food" (41470) and ꜥqw "friends"; qn "perfection"
+    # (600621) and qn "brave"; ꜣḫ "useful" and ꜣḫ "become a spirit"; mrwt "love" and mrwt
+    # "serfs"; sšm "guide" (144980) and sšm "state". The rest are spelled differently in the TLA
+    # (ṯꜣz, mdw.t, šsr, mꜥnn, rꜥw-nb, tp.j-ꜥ.wj) or missing from it, and are pinned to their AES lemmas.
+    "w:TAz": ["176860"], "w:mdt": ["78030"], "w:sSsrt": ["157650"], "w:man": ["68790"], "w:sSm": ["144980"],
+    "w:rana": ["93320"], "w:sgrH": ["147300"], "w:tpjwaw": ["171600"], "w:sm": ["134040", "854545"],
+    "w:smn": ["135100", "135110", "851677"], "w:sAA": ["851310", "126160"], "w:Hmww": ["105480"],
+    "w:twt": ["170480", "170500"], "w:Ax2": ["600475", "217"], "w:mrwt": ["72650"], "w:aqw": ["41470"],
+    "w:aSA": ["41020", "41050"], "w:aD2": ["41940"], "w:tpj": ["171460", "171450", "550180"],
+    "w:gr": ["167730", "167740", "167790"], "w:qn2": ["600621"], "w:Tzj": ["177210"], "w:sxr": ["142800"],
+    "w:sDmj": ["150680", "150700"],
 }
 # Lemmas a course word covers besides its own: the course teaches N35 n as "to, for, of", which
 # is both the preposition and the genitive n.ꞽ (79800 in corpus v18, 850787 in AES). jn "by" is
@@ -132,13 +144,23 @@ MANUAL: dict[str, list[str]] = {
 # and wr, the auxiliary wn, n=j-jmj "mine", =fj after a dual, mdw "speech" as mdwj. AES also
 # spells wdf, rš and qn "be brave" wdfi̯, ršu̯ and qni̯, and reads zẖꜣw "writing" as zš.
 EXTRA: dict[str, list[str]] = {
-    "w:n": ["79800", "850788", "850787", "400984", "25160"], "w:jn": ["26670", "851426"], "w:zp": ["70011"],
+    "w:n": ["79800", "850788", "850787", "400984", "25160"], "w:jn": ["26670", "851426"], "w:zp": ["70011", "132560"],
     "w:mAaxrw": ["400178"],
     "w:Xnw": ["65370", "857318"], "w:Hrjjb": ["65190"], "w:gs": ["851526", "854572"], "w:mqAb": ["862797"],
-    "w:xft": ["116790"], "w:mjtj": ["600407", "67961"], "w:ntj": ["89760", "89890"], "w:sn": ["136310"],
-    "w:msj": ["74750"], "w:wHm": ["48530"], "w:nfr": ["83680"], "w:aA": ["34770"], "w:wr": ["47270", "47320"],
+    "w:xft": ["116790"], "w:mjtj": ["600407", "67961", "64830", "67960"], "w:ntj": ["89760", "89890"], "w:sn": ["136310"],
+    "w:msj": ["74750"], "w:wHm": ["48530"], "w:nfr": ["83680", "83510"], "w:aA": ["34770"], "w:wr": ["47270", "47320"],
     "w:wn": ["550129"], "w:suff": ["10060"], "w:mdwj": ["78150"], "w:wdf": ["51620"], "w:rS": ["96210"],
     "w:qn": ["854565"], "w:jqr": ["850289"], "w:zXAw": ["144270"],
+    # Ptahhotep's epilogue, the same way: rḫ "the wise man", rḫ "knowledge" and rḫ-jḫt "a learned
+    # man" as rḫ; sḫꜣw "memory" as sḫꜣ; m-ḫt "after" as ḫt; m-mjtt and mjtt as mjtj; pfꜣ as pf;
+    # kt "the other" as ky; km "completion" as km; ḫnt "in front of" as ḫnt; ḥzwt "favours" as ḥzj;
+    # mt "the dead" as mwt; nfr "goodness" as nfr; and compounds AES keeps whole that the lines
+    # split into their words (m-rḏj, ḥꜣw-ḥr, ḥr-ḏd, zp-nfr, zꜣ-z, bw-nb, šmsw-Ḥr); bjꜣ "example" as bjꜣt.
+    "w:rx": ["95630", "95640", "95710"], "w:sxA": ["141690"], "w:aqA": ["400768"], "w:mtj": ["400854"],
+    "w:ntf": ["90020"], "w:xt2": ["65300"], "w:pf": ["59890"], "w:ky": ["162830"], "w:km": ["164380"],
+    "w:xnt": ["850802"], "w:Hzj": ["109800"], "w:mwt2": ["69320"], "w:sbA4": ["131330"], "w:dj": ["65040"],
+    "w:HAw": ["650006"], "w:Hr": ["650039"], "w:sA": ["126080"], "w:bw": ["55210"],
+    "w:Smsw": ["851311"], "w:bjAt": ["54340"],
 }
 
 # Which TLA parts of speech can stand for a course word of each kind.

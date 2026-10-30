@@ -63,6 +63,7 @@ fun TreasuryScreen(
     val awards = course.awards.filter { award ->
         award.id in progress.awards || when (val req = award.requirement) {
             is Requirement.ReadText -> req.textId !in hidden
+            is Requirement.ReadWhole -> req.textId !in hidden
             is Requirement.ReadWork -> course.chapters(req.work).none { it.id in hidden }
             else -> true
         }

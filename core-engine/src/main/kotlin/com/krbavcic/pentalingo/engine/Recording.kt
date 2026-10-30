@@ -102,6 +102,10 @@ object Awards {
             is Requirement.Master -> AwardProgress(k.masteredCount(), r.count)
             is Requirement.Tally -> AwardProgress(progress.counter(r.key), r.count)
             is Requirement.ReadText -> AwardProgress(if (r.textId in progress.textsRead) 1 else 0, 1)
+            is Requirement.ReadWhole -> {
+                val text = course.text(r.textId)
+                AwardProgress(if (text != null && text.id in progress.textsRead && text.lines.all(progress::isIntroduced)) 1 else 0, 1)
+            }
             is Requirement.ReadWork -> {
                 // A chapter read before it grew counts again only once its new lines are learned.
                 val chapters = course.chapters(r.work)

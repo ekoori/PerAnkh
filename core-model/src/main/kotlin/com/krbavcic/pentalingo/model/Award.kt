@@ -22,6 +22,9 @@ sealed interface Requirement {
 
     data class ReadText(val textId: String) : Requirement
 
+    /** A text read with all its lines learned: for a text that grows, its last reading. */
+    data class ReadWhole(val textId: String) : Requirement
+
     /** Every chapter of a [ReadingText.work] read, each with all its lines learned. */
     data class ReadWork(val work: String) : Requirement
 
