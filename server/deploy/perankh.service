@@ -1,5 +1,5 @@
 [Unit]
-Description=Per Ankh API (problem reports, newest release)
+Description=Per Ankh API (problem reports, newest release, BushLines' plant identification)
 After=network.target
 
 [Service]
@@ -14,7 +14,9 @@ Restart=on-failure
 RestartSec=3
 
 # The service may write its database (and its copy of the newest release) and nothing else, and
-# reach nothing it does not need: its one outgoing connection is to api.github.com, for /v1/latest.
+# reach nothing it does not need: its outgoing connections are to api.github.com, for /v1/latest,
+# and to my-api.plantnet.org, for /v1/identify. It reads Pl@ntNet's key from
+# /etc/perankh/plantnet.key (root:perankh, 640; not in git), which it cannot change.
 UMask=0077
 NoNewPrivileges=yes
 ProtectSystem=strict

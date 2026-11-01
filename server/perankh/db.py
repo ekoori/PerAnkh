@@ -3,7 +3,8 @@
 The schema is versioned so later releases can add tables without touching existing rows. Version
 1 holds anonymous reports; `account_id` is reserved for when people can sign in and their reports
 (and, later, their progress) can be tied to an account they control. Version 2 lets more than one
-app share the store: `app` says which sent a report. See server/README.md.
+app share the store: `app` says which sent a report. Version 3 counts BushLines' plant
+identifications a day. See server/README.md.
 """
 from __future__ import annotations
 
@@ -62,6 +63,13 @@ MIGRATIONS = [
     ALTER TABLE reports ADD COLUMN app TEXT NOT NULL DEFAULT 'perankh';  -- which app sent it, one of APPS
     CREATE INDEX reports_by_app ON reports(app, status, received_at);
     """,
+    # 3: how many plant identifications were asked of Pl@ntNet each day, to stay in its free plan.
+    """
+    CREATE TABLE identify_days (
+        day   TEXT PRIMARY KEY,             -- UTC date, YYYY-MM-DD
+        count INTEGER NOT NULL
+    );
+    """,
 ]
 
 
@@ -115,6 +123,20 @@ def insert_report(conn: sqlite3.Connection, report: dict, app_version: str | Non
     if cursor.rowcount:
         log(conn, report["id"], "received", None)
     return bool(cursor.rowcount)
+
+
+def claim_identification(conn: sqlite3.Connection, day: str, limit: int) -> bool:
+    """Counts one identification for [day] if fewer than [limit] were made; False once the day is used up."""
+    conn.execute("BEGIN IMMEDIATE")
+    try:
+        conn.execute("INSERT OR IGNORE INTO identify_days (day, count) VALUES (?, 0)", (day,))
+        claimed = conn.execute("UPDATE identify_days SET count = count + 1 WHERE day = ? AND count < ?",
+                               (day, limit)).rowcount == 1
+        conn.execute("COMMIT")
+    except Exception:
+        conn.execute("ROLLBACK")
+        raise
+    return claimed
 
 
 def log(conn: sqlite3.Connection, report_id: str, action: str, detail: str | None) -> None:

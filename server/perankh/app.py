@@ -2,26 +2,33 @@
 
 Public surface, deliberately small:
 
-    GET  /v1/health   -> {"ok": true, "schema": 2}
+    GET  /v1/health   -> {"ok": true, "schema": 3}
     POST /v1/reports  -> {"accepted": [...], "duplicate": [...], "rejected": [{"id", "error"}]}
     GET  /v1/latest   -> {"tag_name", "html_url", "published_at"}: the newest release (releases.py)
+    POST /v1/identify -> {"found", "results": [...], "organs": [...]}: BushLines' plant
+                         identification through Pl@ntNet (identify.py)
 
 Reports are anonymous: the body carries which app sent them (`app.id`, one of db.APPS; Per Ankh
 when missing), the app version, the Android API level and the reports themselves, nothing that
 identifies a person or a device. The service logs no request bodies and no client addresses.
-Triage happens on the server through `perankh-reports`, never over HTTP.
+Triage happens on the server through `perankh-reports`, never over HTTP. Photos sent to be
+identified are passed on to Pl@ntNet and held in memory only.
 
 Everything else is refused. Every limit here is also enforced, more cheaply, by nginx in front.
 """
 from __future__ import annotations
 
+import datetime
 import json
 import os
 import re
 import sqlite3
 import threading
+import time
+import urllib.parse
 
-from . import db
+from . import db, identify
+from .identify import Identifier
 from .releases import Releases
 
 MAX_BODY = 256 * 1024
@@ -112,12 +119,15 @@ def parse_upload(body: bytes) -> tuple[str, str | None, int | None, list]:
 class Api:
     """The WSGI callable. One SQLite connection, serialised by a lock: traffic is tiny."""
 
-    def __init__(self, db_path: str, releases: Releases | None = None):
+    def __init__(self, db_path: str, releases: Releases | None = None, identifier: Identifier | None = None,
+                 clock=time.time):
         self.db_path = db_path
         self.conn = db.connect(db_path)
         self.lock = threading.Lock()
         # Kept beside the database: the one directory the service may write.
         self.releases = releases or Releases(os.path.join(os.path.dirname(os.path.abspath(db_path)), "latest.json"))
+        self.identifier = identifier or Identifier()
+        self.clock = clock
 
     def __call__(self, environ, start_response):
         method = environ.get("REQUEST_METHOD", "GET")
@@ -138,6 +148,10 @@ class Api:
                 if release is None:
                     return self.reply(start_response, 503, {"error": "the latest release is not known yet"})
                 return self.reply(start_response, 200, release)
+            if path == "/v1/identify":
+                if method != "POST":
+                    return self.reply(start_response, 405, {"error": "method not allowed"}, allow="POST")
+                return self.identify(environ, start_response)
             return self.reply(start_response, 404, {"error": "not found"})
         except Invalid as e:
             return self.reply(start_response, 400, {"error": str(e)})
@@ -178,11 +192,40 @@ class Api:
                 raise
         return self.reply(start_response, 200, {"accepted": accepted, "duplicate": duplicate, "rejected": rejected})
 
+    def identify(self, environ, start_response):
+        apps = urllib.parse.parse_qs(environ.get("QUERY_STRING", "")).get("app", [])
+        if len(apps) != 1 or apps[0] not in identify.APPS:
+            raise Invalid(f"app must be one of {', '.join(identify.APPS)}")
+        content_type = environ.get("CONTENT_TYPE", "")
+        if not content_type.lower().startswith("multipart/form-data") or "boundary=" not in content_type:
+            return self.reply(start_response, 415, {"error": "send multipart/form-data"})
+        try:
+            length = int(environ.get("CONTENT_LENGTH") or 0)
+        except ValueError:
+            raise Invalid("bad Content-Length")
+        if length <= 0:
+            raise Invalid("empty body")
+        if length > identify.MAX_BODY:
+            return self.reply(start_response, 413, {"error": f"body larger than {identify.MAX_BODY} bytes"})
+        key = self.identifier.key()
+        if key is None:
+            return self.reply(start_response, 503, {"error": "Identification is not set up on this server."})
+        body = environ["wsgi.input"].read(length)
+        day = datetime.datetime.fromtimestamp(self.clock(), datetime.timezone.utc).strftime("%Y-%m-%d")
+        with self.lock:
+            claimed = db.claim_identification(self.conn, day, self.identifier.limit)
+        if not claimed:
+            return self.reply(start_response, 429, {"error": "Identification is resting until tomorrow."})
+        # Outside the lock: Pl@ntNet can take many seconds, and reports must not wait for it.
+        status, payload = self.identifier.identify(body, content_type, key)
+        return self.reply(start_response, status, payload)
+
     @staticmethod
     def reply(start_response, status: int, payload: dict, allow: str | None = None):
         body = json.dumps(payload, ensure_ascii=False).encode("utf-8")
         reasons = {200: "OK", 400: "Bad Request", 404: "Not Found", 405: "Method Not Allowed",
-                   413: "Payload Too Large", 415: "Unsupported Media Type", 503: "Service Unavailable",
+                   413: "Payload Too Large", 415: "Unsupported Media Type", 429: "Too Many Requests",
+                   502: "Bad Gateway", 503: "Service Unavailable", 504: "Gateway Timeout",
                    507: "Insufficient Storage"}
         headers = [
             ("Content-Type", "application/json; charset=utf-8"),

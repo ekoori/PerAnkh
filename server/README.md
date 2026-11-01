@@ -2,9 +2,10 @@
 
 A small service that receives problem reports from the apps — Per Ankh, and BushLines
 (a field guide to plants and fungi from the same people), which uses the same system — so they can be triaged, investigated
-and resolved in one place, and that tells apps which release is the newest when they cannot ask
-GitHub themselves. It can share a server with other sites, and shares nothing with them except
-nginx: its own system user, code directory, database, systemd unit and nginx site.
+and resolved in one place; that tells apps which release is the newest when they cannot ask
+GitHub themselves; and that identifies plants from photos for BushLines, through Pl@ntNet, so
+Pl@ntNet's key stays here. It can share a server with other sites, and shares nothing with them
+except nginx: its own system user, code directory, database, systemd unit and nginx site.
 
 ```
 phone ──HTTPS──▶ nginx (perankh.hrana.app, Let's Encrypt) ──▶ 127.0.0.1:5101 perankh.service ──▶ SQLite
@@ -17,9 +18,10 @@ so no proxy in between sees a report.
 
 | | |
 |---|---|
-| `GET /v1/health` | `{"ok": true, "schema": 2}` |
+| `GET /v1/health` | `{"ok": true, "schema": 3}` |
 | `POST /v1/reports` | Body `{"app": {"id", "version", "sdk"}, "reports": [{"id", "at", "category", "note", "app", "context"}]}`; replies `{"accepted": [ids], "duplicate": [ids], "rejected": [{"id", "error"}]}` |
 | `GET /v1/latest` | The newest full release, in the shape of GitHub's release API: `{"tag_name": "v0.3.0", "html_url": "https://github.com/ekoori/PerAnkh/releases/tag/v0.3.0", "published_at"}`; 503 until GitHub has answered once |
+| `POST /v1/identify?app=bushlines` | BushLines only. A `multipart/form-data` body of up to 5 `images` (JPEG) and their `organs`, as Pl@ntNet takes them; replies `{"found", "results": [{"score", "name", "authorship", "family", "commonNames", "gbif", "powo"}], "organs"}`, best match first; 429 once the day's identifications are used up |
 | `GET /privacy` | The privacy policy page (static) |
 
 Everything else is 404, other methods 403/405. The version prefix lets later releases add
@@ -40,6 +42,14 @@ page under `github.com/ekoori/PerAnkh/releases/`, publication date), and goes on
 good answer while GitHub cannot be reached, retrying every five minutes. The answer is kept in
 `/var/lib/perankh/latest.json`, so a restart does not have to ask again.
 
+`/v1/identify` (`perankh/identify.py`) passes the photos unchanged to Pl@ntNet's Australia flora
+(`k-australia`), adding the API key, and trims the answer to the top 5 matches. Pl@ntNet's free
+plan allows 500 identifications a day on the account; the service counts them per UTC day
+(`identify_days`) and stops at 450 with a 429, so the account is never over. Pl@ntNet's "species
+not found" becomes `{"found": false}`; its other errors become this API's own messages, never
+echoed. The key is read on each request from `/etc/perankh/plantnet.key`, so installing it needs
+no restart; without it the route answers 503.
+
 ## Security and privacy
 
 - **Transport**: HTTPS only, TLS 1.2/1.3, HSTS. The app forbids cleartext and trusts only the
@@ -53,9 +63,15 @@ good answer while GitHub cannot be reached, retrying every five minutes. The ans
   reports per upload; strict field validation and length limits; control characters stripped; the
   service stops accepting reports if the database passes 512 MB. `/v1/latest` allows 30 requests
   a minute per address (burst 10), and however often it is asked, GitHub is asked at most twice
-  an hour.
-- **One outgoing connection**: to `api.github.com`, made by the server itself for `/v1/latest`.
-  Nothing about the phone that asked goes with it.
+  an hour. `/v1/identify` allows 6 a minute per address (burst 3), 6 MB a request, and 450 a day
+  in all.
+- **Two outgoing connections**: to `api.github.com` for `/v1/latest`, and to
+  `my-api.plantnet.org` for `/v1/identify`. Nothing about the phone that asked goes with either;
+  the photos go to Pl@ntNet, which keeps images only in memory while identifying (its terms).
+- **Photos are never kept**: `/v1/identify` holds them in memory for the one request and writes
+  nothing about them anywhere.
+- **Pl@ntNet's key** is in `/etc/perankh/plantnet.key` (root:perankh, 640), put there by
+  `server/plantnet-key.sh` over SSH. It is not in git, the bundle or any reply.
 - **No admin surface on the network**: triage happens over SSH on the server. There is nothing
   to log into over HTTP.
 - **Least privilege**: the service runs as `perankh` (no shell, no home), can write only
@@ -75,7 +91,8 @@ rows are `perankh`), app version, Android API level, category, note, the indexed
 (screen, lesson, exercise, item — BushLines fills screen and item, a species id or
 `method:<id>`), the full context as JSON, triage status (`new`, `triaged`, `in_progress`, `fixed`,
 `released`, `wontfix`, `duplicate`, `invalid`), resolution, the version that fixes it, duplicate
-link. `report_log`: every status change.
+link. `report_log`: every status change. `identify_days` (migration 3): how many identifications
+were asked of Pl@ntNet each UTC day.
 
 Retention follows the privacy policy: `perankh-reports prune --closed-days 365` deletes closed
 reports untouched for a year. Open reports are never pruned.
@@ -107,6 +124,7 @@ with nothing to deploy.
 ```bash
 server/deploy.sh                       # tests, ship, install, restart; nginx -t before reload
 server/deploy.sh --issue-certificate   # once: Let's Encrypt for perankh.hrana.app
+server/plantnet-key.sh ~/dev/BushLines/.env   # Pl@ntNet's key, over SSH on stdin; no restart
 ```
 
 `server/deploy.sh` and `tools/reports.sh` reach the server over SSH, as a user with sudo. They
@@ -128,7 +146,7 @@ Designed for, not built. When people can sign in to keep their progress across d
   Credential Manager. The server stores no passwords.
 - **Sessions**: random 256-bit bearer tokens, stored only as SHA-256 hashes, with expiry and a
   last-used time; revoked on sign-out.
-- **Tables** (migration 3): `accounts` (id, email, created, deleted), `sessions` (token hash,
+- **Tables** (migration 4): `accounts` (id, email, created, deleted), `sessions` (token hash,
   account, expiry), `progress` (account, revision, updated, the Progress JSON). `reports.account_id`
   stays NULL unless a signed-in tester chooses to attach their account to a report.
 - **Sync**: `GET /v1/progress` returns `{revision, data}`; `PUT /v1/progress` with the revision

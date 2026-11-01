@@ -31,6 +31,10 @@ if ! id perankh >/dev/null 2>&1; then
 fi
 install -d -o root -g root -m 755 "$APP" "$APP/static" "$ACME"
 install -d -o perankh -g perankh -m 700 "$DATA"
+# Pl@ntNet's key, for BushLines' plant identification, lives here: put there by
+# server/plantnet-key.sh, never in the bundle. Without it, /v1/identify says it is not set up.
+install -d -o root -g perankh -m 750 /etc/perankh
+if [ -f /etc/perankh/plantnet.key ]; then chown root:perankh /etc/perankh/plantnet.key; chmod 640 /etc/perankh/plantnet.key; fi
 
 # -- code -------------------------------------------------------------------------------------
 rm -rf "$APP/perankh.new"

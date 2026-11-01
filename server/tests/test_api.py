@@ -61,7 +61,7 @@ class ApiTest(unittest.TestCase):
     def test_health(self):
         status, payload = self.call("GET", "/v1/health")
         self.assertEqual(200, status)
-        self.assertEqual({"ok": True, "schema": 2}, payload)
+        self.assertEqual({"ok": True, "schema": 3}, payload)
 
     def test_accepts_and_stores_a_report(self):
         r = report()
@@ -307,7 +307,7 @@ class MigrationTest(unittest.TestCase):
             conn.close()
             conn = db.connect(path)
             try:
-                self.assertEqual(2, db.schema_version(conn))
+                self.assertEqual(len(db.MIGRATIONS), db.schema_version(conn))
                 self.assertEqual("perankh", conn.execute("SELECT app FROM reports WHERE id = 'old'").fetchone()[0])
             finally:
                 conn.close()
