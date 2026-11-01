@@ -132,7 +132,8 @@ About never asks and links to Per Ankh on Google Play instead.
   `$ELEVENLABS_API_KEY`, or from a file outside the repository (`$ELEVENLABS_KEY_FILE`, default
   `~/dev/11labs/.env`), read by path and never stored here.
 - `tools/reports.sh` — triages problem reports on the server over SSH: `list`, `show`, `resolve`,
-  `export` (see [server/README.md](server/README.md)).
+  `export` (see [server/README.md](server/README.md)). BushLines reports to the same server, so
+  `list` shows both apps' reports; `--app perankh` keeps to Per Ankh's.
 - `tools/reports_xlsx.py` — the whole report database as an Excel workbook in `tools/out/reports/`:
   every table and column, timestamps as UTC dates, each report's context one field per row, the
   schema. `tools/reports_snapshot.py` reads the database on the server, sent over SSH (read-only,

@@ -52,6 +52,7 @@ MEANING = {
     ("reports", "id"): "UUID made on the phone, so a retried upload is stored once",
     ("reports", "received_at"): "When the server stored it: server clock, ms since 1970",
     ("reports", "created_at"): "When the tester saved it: phone clock, ms since 1970",
+    ("reports", "app"): "Which app sent it: perankh or bushlines (rows from before schema 2 are perankh)",
     ("reports", "app_version"): "App version that sent it",
     ("reports", "android_sdk"): "Android API level of the phone",
     ("reports", "category"): "Kind of problem the tester picked",

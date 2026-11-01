@@ -105,7 +105,8 @@ listing instead. The donation link goes into the `github` flavour only.
 6. Upload the AAB to the Play track (Play never accepts a version code twice, even once its upload
    is deleted: replacing a bundle takes a new patch version); tag `vX.Y.Z`; create the GitHub
    release with the APK and its SHA-256 (a full release; only `-beta.N` tags are pre-releases).
-7. Resolve the reports fixed in this version: `tools/reports.sh resolve ID --in X.Y.Z`.
+7. Resolve the reports fixed in this version: `tools/reports.sh resolve ID --in X.Y.Z` (find them
+   with `tools/reports.sh list --app perankh`; BushLines reports to the same server).
 8. On a phone with the previous release, Settings → About offers the new version, and within half
    an hour so does `https://perankh.hrana.app/v1/latest`, the copy for phones that cannot reach
    GitHub.

@@ -8,6 +8,7 @@ import contextlib
 import io
 import json
 import os
+import sqlite3
 import tempfile
 import unittest
 import uuid
@@ -60,7 +61,7 @@ class ApiTest(unittest.TestCase):
     def test_health(self):
         status, payload = self.call("GET", "/v1/health")
         self.assertEqual(200, status)
-        self.assertEqual({"ok": True, "schema": 1}, payload)
+        self.assertEqual({"ok": True, "schema": 2}, payload)
 
     def test_accepts_and_stores_a_report(self):
         r = report()
@@ -73,7 +74,22 @@ class ApiTest(unittest.TestCase):
         self.assertEqual("0.2.0 (200)", row["app_version"])
         self.assertEqual(34, row["android_sdk"])
         self.assertEqual("new", row["status"])
+        self.assertEqual("perankh", row["app"])
         self.assertEqual(r["context"], json.loads(row["context"]))
+
+    def test_reports_say_which_app_sent_them(self):
+        bush = report(category="Identification", context={"screen": "species", "item": "burrawang"})
+        status, payload = self.upload(bush, app={"id": "bushlines", "version": "0.1.0 (100)", "sdk": 28})
+        self.assertEqual(200, status)
+        self.assertEqual([bush["id"]], payload["accepted"])
+        row = self.api.conn.execute("SELECT app, item, screen, lesson FROM reports").fetchone()
+        self.assertEqual(("bushlines", "burrawang", "species", None), tuple(row))
+
+    def test_an_unknown_app_is_refused(self):
+        status, payload = self.upload(report(), app={"id": "someone-else", "version": "1", "sdk": 34})
+        self.assertEqual(400, status)
+        self.assertIn("app.id", payload["error"])
+        self.assertEqual(400, self.upload(report(), app={"id": None, "version": "1", "sdk": 34})[0])
 
     def test_a_report_keeps_the_version_it_was_written_in(self):
         self.upload(report(app="0.1.0 (1)"))
@@ -252,6 +268,22 @@ class TriageTest(unittest.TestCase):
         self.assertEqual(self.first["id"], by_id[self.second["id"]]["duplicate_of"])
         self.assertIn("fixed: re-recorded; in 0.2.1", self.run_cli("show", self.first["id"][:8]))
 
+    def test_lists_one_app_or_all(self):
+        conn = db.connect(self.path)
+        bush = report(note="photo 2 is a different fern", context={"screen": "species", "item": "nardoo"})
+        db.insert_report(conn, bush, "0.1.0 (100)", 28, "bushlines")
+        conn.close()
+        only = self.run_cli("list", "--app", "bushlines")
+        self.assertIn(bush["id"][:8], only)
+        self.assertIn("species nardoo", only)
+        self.assertNotIn(self.first["id"][:8], only)
+        everything = self.run_cli("list")
+        self.assertIn(bush["id"][:8], everything)
+        self.assertIn(self.first["id"][:8], everything)
+        self.assertEqual([bush["id"]], [r["id"] for r in json.loads(self.run_cli("export", "--app", "bushlines"))])
+        self.assertIn("app:       bushlines 0.1.0 (100)", self.run_cli("show", bush["id"][:8]))
+        self.assertIn("bushlines", self.run_cli("stats"))
+
     def test_prune_keeps_open_reports(self):
         self.run_cli("status", self.first["id"][:8], "wontfix")
         conn = db.connect(self.path)
@@ -260,6 +292,25 @@ class TriageTest(unittest.TestCase):
         self.assertIn("deleted 1", self.run_cli("prune", "--closed-days", "30"))
         remaining = json.loads(self.run_cli("export", "--all"))
         self.assertEqual([self.second["id"]], [r["id"] for r in remaining])
+
+
+class MigrationTest(unittest.TestCase):
+    def test_reports_from_schema_1_become_per_ankh_s(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = os.path.join(tmp, "reports.db")
+            # The database as the first release of the service left it.
+            conn = sqlite3.connect(path, isolation_level=None)
+            conn.executescript(f"BEGIN;\n{db.MIGRATIONS[0]}\nPRAGMA user_version=1;\nCOMMIT;")
+            conn.execute(
+                "INSERT INTO reports (id, received_at, created_at, category, context, updated_at) "
+                "VALUES ('old', 1, 1, 'Other', '{}', 1)")
+            conn.close()
+            conn = db.connect(path)
+            try:
+                self.assertEqual(2, db.schema_version(conn))
+                self.assertEqual("perankh", conn.execute("SELECT app FROM reports WHERE id = 'old'").fetchone()[0])
+            finally:
+                conn.close()
 
 
 if __name__ == "__main__":

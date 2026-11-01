@@ -1,6 +1,7 @@
 # Per Ankh server
 
-A small service that receives problem reports from the app, so they can be triaged, investigated
+A small service that receives problem reports from the apps — Per Ankh, and BushLines
+(a field guide to plants and fungi from the same people), which uses the same system — so they can be triaged, investigated
 and resolved in one place, and that tells apps which release is the newest when they cannot ask
 GitHub themselves. It can share a server with other sites, and shares nothing with them except
 nginx: its own system user, code directory, database, systemd unit and nginx site.
@@ -16,8 +17,8 @@ so no proxy in between sees a report.
 
 | | |
 |---|---|
-| `GET /v1/health` | `{"ok": true, "schema": 1}` |
-| `POST /v1/reports` | Body `{"app": {"version", "sdk"}, "reports": [{"id", "at", "category", "note", "app", "context"}]}`; replies `{"accepted": [ids], "duplicate": [ids], "rejected": [{"id", "error"}]}` |
+| `GET /v1/health` | `{"ok": true, "schema": 2}` |
+| `POST /v1/reports` | Body `{"app": {"id", "version", "sdk"}, "reports": [{"id", "at", "category", "note", "app", "context"}]}`; replies `{"accepted": [ids], "duplicate": [ids], "rejected": [{"id", "error"}]}` |
 | `GET /v1/latest` | The newest full release, in the shape of GitHub's release API: `{"tag_name": "v0.3.0", "html_url": "https://github.com/ekoori/PerAnkh/releases/tag/v0.3.0", "published_at"}`; 503 until GitHub has answered once |
 | `GET /privacy` | The privacy policy page (static) |
 
@@ -27,6 +28,11 @@ endpoints (accounts, progress) without breaking apps already installed.
 Uploads are idempotent: a report's id is a UUID made on the phone, so a retry after a dropped
 connection stores nothing twice. A bad report is rejected on its own; the rest of the batch is
 kept.
+
+`app.id` names the app sending: `perankh` or `bushlines` (`db.APPS`); an upload naming any other
+is refused. Per Ankh builds made before BushLines reported here send no id, which stores their
+reports as `perankh`. A report's own `app` is the version it was written in, which may be older
+than the one sending it.
 
 `/v1/latest` backs up the app's own question to GitHub (Settings → About). The service asks
 `api.github.com` at most every half hour, keeps only a full release of this repository (tag,
@@ -64,10 +70,12 @@ good answer while GitHub cannot be reached, retrying every five minutes. The ans
 SQLite in WAL mode, `/var/lib/perankh/reports.db`. Schema version in `PRAGMA user_version`;
 `perankh/db.py` migrates on start, each migration in one transaction.
 
-`reports`: id, received/created times, app version, Android API level, category, note, the
-indexed context fields (screen, lesson, exercise, item), the full context as JSON, triage status
-(`new`, `triaged`, `in_progress`, `fixed`, `released`, `wontfix`, `duplicate`, `invalid`),
-resolution, the version that fixes it, duplicate link. `report_log`: every status change.
+`reports`: id, received/created times, which app sent it (`app`, added by migration 2; earlier
+rows are `perankh`), app version, Android API level, category, note, the indexed context fields
+(screen, lesson, exercise, item — BushLines fills screen and item, a species id or
+`method:<id>`), the full context as JSON, triage status (`new`, `triaged`, `in_progress`, `fixed`,
+`released`, `wontfix`, `duplicate`, `invalid`), resolution, the version that fixes it, duplicate
+link. `report_log`: every status change.
 
 Retention follows the privacy policy: `perankh-reports prune --closed-days 365` deletes closed
 reports untouched for a year. Open reports are never pruned.
@@ -77,7 +85,8 @@ reports untouched for a year. Open reports are never pruned.
 From a development machine, over SSH (`tools/reports.sh` runs `perankh-reports` on the server):
 
 ```bash
-tools/reports.sh list                       # open reports, newest first
+tools/reports.sh list                       # open reports, newest first, from every app
+tools/reports.sh list --app bushlines       # one app's (perankh or bushlines)
 tools/reports.sh list --item s:G17          # everything about one sign
 tools/reports.sh show 3f2a9c                # one report in full: note, screen, answer, clip
 tools/reports.sh status 3f2a9c in_progress
@@ -119,7 +128,7 @@ Designed for, not built. When people can sign in to keep their progress across d
   Credential Manager. The server stores no passwords.
 - **Sessions**: random 256-bit bearer tokens, stored only as SHA-256 hashes, with expiry and a
   last-used time; revoked on sign-out.
-- **Tables** (migration 2): `accounts` (id, email, created, deleted), `sessions` (token hash,
+- **Tables** (migration 3): `accounts` (id, email, created, deleted), `sessions` (token hash,
   account, expiry), `progress` (account, revision, updated, the Progress JSON). `reports.account_id`
   stays NULL unless a signed-in tester chooses to attach their account to a report.
 - **Sync**: `GET /v1/progress` returns `{revision, data}`; `PUT /v1/progress` with the revision

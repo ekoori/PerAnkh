@@ -1,13 +1,16 @@
 """perankh-reports: triage tester reports on the server.
 
-    perankh-reports list [--all | --status S ...] [--category C] [--item ID] [--limit N]
+    perankh-reports list [--all | --status S ...] [--app A] [--category C] [--item ID] [--limit N]
     perankh-reports show ID                 # a unique prefix of 6+ characters is enough
     perankh-reports status ID STATUS [--note TEXT]
     perankh-reports resolve ID --in VERSION [--note TEXT]
     perankh-reports duplicate ID --of OTHER
-    perankh-reports export [--all | --status S ...]   # JSON, for investigating elsewhere
+    perankh-reports export [--all | --status S ...] [--app A]   # JSON, for investigating elsewhere
     perankh-reports stats
     perankh-reports prune --closed-days N   # delete closed reports untouched for N days
+
+Reports come from more than one app (`--app perankh` or `--app bushlines`); without --app, the
+lists show every app's.
 
 The database is $PERANKH_DB, by default /var/lib/perankh/reports.db. From a development machine,
 tools/reports.sh runs this over SSH.
@@ -51,13 +54,14 @@ def as_dict(row) -> dict:
 
 def cmd_list(conn, args) -> None:
     statuses = None if args.all else (args.status or list(db.OPEN))
-    rows = db.query(conn, statuses, args.category, args.item, args.limit)
+    rows = db.query(conn, statuses, args.category, args.item, args.limit, args.app)
     if not rows:
         print("no reports")
         return
     for r in rows:
-        where = " ".join(x for x in (r["lesson"], r["exercise"], r["item"]) if x)
-        print(f"{r['id'][:8]}  {when(r['received_at'])}  {r['status']:<11} {r['category']:<22} "
+        # Per Ankh's reports say which lesson; other apps' say which screen.
+        where = " ".join(x for x in (r["lesson"] or r["screen"], r["exercise"], r["item"]) if x)
+        print(f"{r['id'][:8]}  {when(r['received_at'])}  {r['app']:<9} {r['status']:<11} {r['category']:<22} "
               f"{one_line(where, 40):<40}  {one_line(r['note'], 60)}")
 
 
@@ -71,7 +75,7 @@ def cmd_show(conn, args) -> None:
         print(f"duplicate: {r['duplicate_of']}")
     print(f"category:  {r['category']}")
     print(f"saved:     {when(r['created_at'])} (phone)   received: {when(r['received_at'])}")
-    print(f"app:       {r['app_version'] or '-'}   Android API {r['android_sdk'] or '-'}")
+    print(f"app:       {r['app']} {r['app_version'] or '-'}   Android API {r['android_sdk'] or '-'}")
     print(f"note:      {r['note'] or '-'}")
     print("context:")
     width = max((len(k) for k in r["context"]), default=0)
@@ -103,7 +107,7 @@ def cmd_duplicate(conn, args) -> None:
 
 def cmd_export(conn, args) -> None:
     statuses = None if args.all else (args.status or list(db.OPEN))
-    rows = db.query(conn, statuses, None, None, args.limit)
+    rows = db.query(conn, statuses, None, None, args.limit, args.app)
     json.dump([as_dict(r) for r in rows], sys.stdout, ensure_ascii=False, indent=1)
     print()
 
@@ -111,6 +115,11 @@ def cmd_export(conn, args) -> None:
 def cmd_stats(conn, args) -> None:
     for status, count in conn.execute("SELECT status, COUNT(*) FROM reports GROUP BY status ORDER BY status"):
         print(f"{status:<12} {count}")
+    print("open by app:")
+    for app, count in conn.execute(
+            f"SELECT app, COUNT(*) FROM reports WHERE status IN ({','.join('?' * len(db.OPEN))}) "
+            "GROUP BY app ORDER BY COUNT(*) DESC", db.OPEN):
+        print(f"  {app:<24} {count}")
     print("open by category:")
     for category, count in conn.execute(
             f"SELECT category, COUNT(*) FROM reports WHERE status IN ({','.join('?' * len(db.OPEN))}) "
@@ -124,13 +133,14 @@ def cmd_prune(conn, args) -> None:
 
 
 def main(argv: list[str] | None = None) -> None:
-    parser = argparse.ArgumentParser(prog="perankh-reports", description="Triage Per Ankh tester reports")
+    parser = argparse.ArgumentParser(prog="perankh-reports", description="Triage Per Ankh and BushLines reports")
     parser.add_argument("--db", default=os.environ.get("PERANKH_DB", DEFAULT_DB))
     sub = parser.add_subparsers(dest="command", required=True)
 
     def filters(p, limit=50):
         p.add_argument("--status", action="append", choices=db.STATUSES)
         p.add_argument("--all", action="store_true", help="every status, not just open ones")
+        p.add_argument("--app", choices=db.APPS, help="only this app's reports")
         p.add_argument("--limit", type=int, default=limit)
 
     p = sub.add_parser("list", help="open reports, newest first")

@@ -2,7 +2,8 @@
 
 The schema is versioned so later releases can add tables without touching existing rows. Version
 1 holds anonymous reports; `account_id` is reserved for when people can sign in and their reports
-(and, later, their progress) can be tied to an account they control. See server/README.md.
+(and, later, their progress) can be tied to an account they control. Version 2 lets more than one
+app share the store: `app` says which sent a report. See server/README.md.
 """
 from __future__ import annotations
 
@@ -17,6 +18,11 @@ OPEN = ("new", "triaged", "in_progress")
 
 # Context fields copied into their own columns, so triage can filter on them.
 INDEXED_CONTEXT = {"screen": "screen", "lesson": "lesson", "exercise": "exercise", "item": "item"}
+
+# The apps that send reports here. An upload that names none comes from Per Ankh, the only app
+# that sent reports before there was more than one.
+APPS = ("perankh", "bushlines")
+DEFAULT_APP = "perankh"
 
 MIGRATIONS = [
     # 1: anonymous tester reports and their triage history.
@@ -50,6 +56,11 @@ MIGRATIONS = [
         action    TEXT NOT NULL,
         detail    TEXT
     );
+    """,
+    # 2: more than one app reports here; every report stored before this came from Per Ankh.
+    """
+    ALTER TABLE reports ADD COLUMN app TEXT NOT NULL DEFAULT 'perankh';  -- which app sent it, one of APPS
+    CREATE INDEX reports_by_app ON reports(app, status, received_at);
     """,
 ]
 
@@ -86,17 +97,18 @@ def migrate(conn: sqlite3.Connection) -> None:
             raise
 
 
-def insert_report(conn: sqlite3.Connection, report: dict, app_version: str | None, sdk: int | None) -> bool:
-    """Stores one validated report. Returns False if a report with that id is already stored."""
+def insert_report(conn: sqlite3.Connection, report: dict, app_version: str | None, sdk: int | None,
+                  app: str = DEFAULT_APP) -> bool:
+    """Stores one validated report from [app]. Returns False if a report with that id is already stored."""
     context = report["context"]
     columns = {column: context.get(key) for key, column in INDEXED_CONTEXT.items()}
     stamp = now_ms()
     cursor = conn.execute(
         """INSERT OR IGNORE INTO reports
-           (id, received_at, created_at, app_version, android_sdk, category, note,
+           (id, received_at, created_at, app, app_version, android_sdk, category, note,
             screen, lesson, exercise, item, context, updated_at)
-           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
-        (report["id"], stamp, report["at"], app_version, sdk, report["category"], report["note"],
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+        (report["id"], stamp, report["at"], app, app_version, sdk, report["category"], report["note"],
          columns["screen"], columns["lesson"], columns["exercise"], columns["item"],
          json.dumps(context, ensure_ascii=False, sort_keys=True), stamp),
     )
@@ -143,13 +155,16 @@ def set_status(conn: sqlite3.Connection, report_id: str, status: str, note: str 
 
 
 def query(conn: sqlite3.Connection, statuses: Iterable[str] | None = None, category: str | None = None,
-          item: str | None = None, limit: int = 50) -> list[sqlite3.Row]:
+          item: str | None = None, limit: int = 50, app: str | None = None) -> list[sqlite3.Row]:
     sql = "SELECT * FROM reports WHERE 1=1"
     args: list = []
     if statuses:
         statuses = list(statuses)
         sql += f" AND status IN ({','.join('?' * len(statuses))})"
         args += statuses
+    if app:
+        sql += " AND app = ?"
+        args.append(app)
     if category:
         sql += " AND category = ?"
         args.append(category)

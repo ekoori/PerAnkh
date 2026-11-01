@@ -2,13 +2,14 @@
 
 Public surface, deliberately small:
 
-    GET  /v1/health   -> {"ok": true, "schema": 1}
+    GET  /v1/health   -> {"ok": true, "schema": 2}
     POST /v1/reports  -> {"accepted": [...], "duplicate": [...], "rejected": [{"id", "error"}]}
     GET  /v1/latest   -> {"tag_name", "html_url", "published_at"}: the newest release (releases.py)
 
-Reports are anonymous: the body carries the app version, the Android API level and the reports
-themselves, nothing that identifies a person or a device. The service logs no request bodies and
-no client addresses. Triage happens on the server through `perankh-reports`, never over HTTP.
+Reports are anonymous: the body carries which app sent them (`app.id`, one of db.APPS; Per Ankh
+when missing), the app version, the Android API level and the reports themselves, nothing that
+identifies a person or a device. The service logs no request bodies and no client addresses.
+Triage happens on the server through `perankh-reports`, never over HTTP.
 
 Everything else is refused. Every limit here is also enforced, more cheaply, by nginx in front.
 """
@@ -81,7 +82,7 @@ def validate_report(raw) -> dict:
     return {"id": report_id.lower(), "at": at, "category": category, "note": note, "context": context, "app": app}
 
 
-def parse_upload(body: bytes) -> tuple[str | None, int | None, list]:
+def parse_upload(body: bytes) -> tuple[str, str | None, int | None, list]:
     try:
         payload = json.loads(body.decode("utf-8"))
     except (UnicodeDecodeError, json.JSONDecodeError):
@@ -91,6 +92,10 @@ def parse_upload(body: bytes) -> tuple[str | None, int | None, list]:
     app = payload.get("app", {})
     if not isinstance(app, dict):
         raise Invalid("app must be an object")
+    # Per Ankh builds from before other apps reported here send no id.
+    app_id = app.get("id", db.DEFAULT_APP)
+    if app_id not in db.APPS:
+        raise Invalid(f"app.id must be one of {', '.join(db.APPS)}")
     version = app.get("version")
     version = clean_text(version, MAX_VERSION, "app.version") if version is not None else None
     sdk = app.get("sdk")
@@ -101,7 +106,7 @@ def parse_upload(body: bytes) -> tuple[str | None, int | None, list]:
         raise Invalid("reports must be a non-empty list")
     if len(reports) > MAX_REPORTS:
         raise Invalid(f"at most {MAX_REPORTS} reports per upload")
-    return version, sdk, reports
+    return app_id, version, sdk, reports
 
 
 class Api:
@@ -151,7 +156,7 @@ class Api:
         if length > MAX_BODY:
             return self.reply(start_response, 413, {"error": f"body larger than {MAX_BODY} bytes"})
         body = environ["wsgi.input"].read(length)
-        version, sdk, raw_reports = parse_upload(body)
+        app_id, version, sdk, raw_reports = parse_upload(body)
         if os.path.exists(self.db_path) and os.path.getsize(self.db_path) > MAX_DB_BYTES:
             return self.reply(start_response, 507, {"error": "report store is full"})
         accepted, duplicate, rejected = [], [], []
@@ -165,7 +170,7 @@ class Api:
                         raw_id = raw.get("id") if isinstance(raw, dict) else None
                         rejected.append({"id": raw_id if isinstance(raw_id, str) else None, "error": str(e)})
                         continue
-                    stored = db.insert_report(self.conn, report, report["app"] or version, sdk)
+                    stored = db.insert_report(self.conn, report, report["app"] or version, sdk, app_id)
                     (accepted if stored else duplicate).append(report["id"])
                 self.conn.execute("COMMIT")
             except Exception:
