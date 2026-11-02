@@ -1,8 +1,8 @@
 # Per Ankh server
 
-A small service that receives problem reports from the apps — Per Ankh, and BushLines
-(a field guide to plants and fungi from the same people), which uses the same system — so they can be triaged, investigated
-and resolved in one place; that tells apps which release is the newest when they cannot ask
+A small service that receives problem reports from the apps — Per Ankh, and BushLines (a field
+guide to plants and fungi from the same people), which uses the same system — so they can be
+triaged, investigated and resolved in one place; that tells apps which release is the newest when they cannot ask
 GitHub themselves; and that identifies plants from photos for BushLines, through Pl@ntNet, so
 Pl@ntNet's key stays here. It can share a server with other sites, and shares nothing with them
 except nginx: its own system user, code directory, database, systemd unit and nginx site.
@@ -23,6 +23,7 @@ so no proxy in between sees a report.
 | `GET /v1/latest` | The newest full release, in the shape of GitHub's release API: `{"tag_name": "v0.3.0", "html_url": "https://github.com/ekoori/PerAnkh/releases/tag/v0.3.0", "published_at"}`; 503 until GitHub has answered once |
 | `POST /v1/identify?app=bushlines` | BushLines only. A `multipart/form-data` body of up to 5 `images` (JPEG) and their `organs`, as Pl@ntNet takes them; replies `{"found", "results": [{"score", "name", "authorship", "family", "commonNames", "gbif", "powo"}], "organs"}`, best match first; 429 once the day's identifications are used up |
 | `GET /privacy` | The privacy policy page (static) |
+| `GET /bushlines/privacy` | BushLines' privacy policy page (static), made from BushLines' PRIVACY.md |
 
 Everything else is 404, other methods 403/405. The version prefix lets later releases add
 endpoints (accounts, progress) without breaking apps already installed.

@@ -48,6 +48,7 @@ chown -R root:root "$APP"
 find "$APP" -type d -exec chmod 755 {} +
 find "$APP" -type f -exec chmod 644 {} +
 [ -f "$BUNDLE/static/privacy.html" ] && install -o root -g root -m 644 "$BUNDLE/static/privacy.html" "$APP/static/privacy.html"
+[ -f "$BUNDLE/static/bushlines-privacy.html" ] && install -o root -g root -m 644 "$BUNDLE/static/bushlines-privacy.html" "$APP/static/bushlines-privacy.html"
 install -o root -g root -m 755 "$HERE/perankh-reports" /usr/local/bin/perankh-reports
 log "code installed in $APP"
 
