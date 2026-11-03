@@ -44,10 +44,10 @@ update each other and keep progress.
   as 0.3.0 does, so GitHub stayed on 0.3.0 and v0.3.2 is a tag without a GitHub release. There is
   no 0.3.1: its version code went to a Play upload that was deleted, and Play never takes a code
   twice.
-- **0.4.0, GitHub release and Play open testing.** Sections 3–7 (units 15–42: the Abydos stelae,
-  the Book of the Dead, the whole Shipwrecked Sailor, Ptahhotep's epilogue, Papyrus Westcar),
-  tablets, and the fixes from testers' reports. The course content becomes CC BY-SA 4.0 (its
-  texts come from AES), and reports name their app now that BushLines shares the server.
+- **0.4.0, GitHub release and Play open testing (2026-11-03).** Sections 3–7 (units 15–42: the
+  Abydos stelae, the Book of the Dead, the whole Shipwrecked Sailor, Ptahhotep's epilogue, Papyrus
+  Westcar), tablets, and the fixes from testers' reports. The course content becomes CC BY-SA 4.0
+  (its texts come from AES), and reports name their app now that BushLines shares the server.
 - **0.4.x, open testing.** Anyone can join the test from the Play listing. Fix what testers
   report; re-record the weak clips. A couple of weeks of testing before production (new
   *personal* Play accounts would need 12 testers for 14 days in closed testing; LOVI Tech's

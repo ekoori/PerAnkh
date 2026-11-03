@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.4.0 (2026-11-03)
 
 - Tablets. On a tablet Per Ankh turns with the device, and each page keeps to a column in the
   middle of the screen instead of stretching across it; sheets and dialogs keep to the same width.
