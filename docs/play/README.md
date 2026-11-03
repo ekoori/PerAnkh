@@ -59,7 +59,7 @@ Console menu names move between Play Console versions; the help pages name the c
 | Free or paid | Free |
 | Category | Education |
 | Tags | Education, Language learning, History |
-| Contact email | *(LOVI Tech's support address; required, shown publicly)* |
+| Contact email | support@hrana.app (required, shown publicly) |
 | Website | https://github.com/ekoori/PerAnkh |
 | Privacy policy | https://perankh.hrana.app/privacy |
 

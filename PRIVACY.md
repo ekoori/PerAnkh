@@ -70,5 +70,7 @@ not knowingly collect personal information from anyone.
 
 If a future version adds anything that collects more data, such as optional accounts to sync
 progress between devices, this policy will be updated before that version is released, and that
-feature will be optional. Questions and requests: open an issue at
+feature will be optional. For questions and requests, including deleting a report, the quickest
+way to reach us is a report from the app: the flag on any lesson page, in the Codex or in the
+reader. You can also write to support@hrana.app, or open an issue at
 https://github.com/ekoori/PerAnkh/issues.
