@@ -66,6 +66,11 @@
   the new "the", pꜣ, and pꜣy=s, "her"; a card on the tales told at Khufu's court. 62 words, 10
   signs, 2 cards and 76 lines, and an award for reading the whole tale, all voiced.
 - The course's words now cover 73.6% of real Middle Egyptian text.
+- The full readings follow Ancient Egyptian Sentences (AES), made from the Thesaurus Linguae
+  Aegyptiae's database, and Settings → About credits it. Like its texts, the course is now shared
+  under CC BY-SA 4.0; the code stays under the MIT licence.
+- Problem reports say that they come from Per Ankh: BushLines, a field guide from the same people,
+  sends its reports to the same server. The privacy policy says so.
 - Fixes from testers' reports:
   - A line put together on its own may leave off the "and" that joins it to the line before:
     "you will die in your town" is right.

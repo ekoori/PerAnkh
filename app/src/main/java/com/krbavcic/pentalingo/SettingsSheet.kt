@@ -298,10 +298,14 @@ private fun AboutPage(about: AboutOptions) {
         "Hieroglyphs: Noto Sans Egyptian Hieroglyphs. Text: Noto Serif. Both © Google, under the SIL Open " +
             "Font License 1.1. Sign codes follow Gardiner’s sign list; transliteration follows Allen’s " +
             "Middle Egyptian. Royal names and several spellings were checked against Wikipedia’s hieroglyph " +
-            "markup; the offering formula and the literary openings are simplified for learners.\n\n" +
-            "Word frequencies were counted in the Thesaurus Linguae Aegyptiae (Berlin-Brandenburg Academy " +
-            "of Sciences and Saxon Academy of Sciences, Leipzig), Earlier Egyptian corpus v18: its 3,631 " +
-            "Middle Egyptian sentences. The counts are shared under CC BY-SA 4.0.",
+            "markup; the offering formula is simplified for learners.\n\n" +
+            "The stelae, the Book of the Dead spells, the Shipwrecked Sailor, Ptahhotep’s last words and the " +
+            "tale from Papyrus Westcar are read in full, written as in Ancient Egyptian Sentences (AES, by " +
+            "Simon D. Schweitzer, made from the Thesaurus Linguae Aegyptiae’s database), and translated from " +
+            "its translations. Word frequencies were counted in the Thesaurus Linguae Aegyptiae " +
+            "(Berlin-Brandenburg Academy of Sciences and Saxon Academy of Sciences, Leipzig), Earlier Egyptian " +
+            "corpus v18: its 3,631 Middle Egyptian sentences. Both are shared under CC BY-SA 4.0, and so is " +
+            "the course built on them.",
         style = Type.small,
     )
 
@@ -322,8 +326,8 @@ private fun AboutPage(about: AboutOptions) {
 
     Rubric("Open source")
     Text(
-        "Per Ankh is free and open source under the MIT licence, published by LOVI Tech. Its code, " +
-            "course and every release are on GitHub.",
+        "Per Ankh is free and open source, published by LOVI Tech: its code under the MIT licence, its " +
+            "course under CC BY-SA 4.0. Code, course and every release are on GitHub.",
         style = Type.small,
     )
     Link("Per Ankh on GitHub") { about.onOpen(about.projectUrl) }

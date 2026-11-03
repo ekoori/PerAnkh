@@ -4,8 +4,9 @@ Per Ankh is a free Android app that teaches you to read the hieroglyphs of ancie
 way Egyptologists learn them: sign by sign, then words, grammar and real inscriptions. Every sign,
 word and phrase is spoken aloud, and a lesson takes a few minutes.
 
-**[Download the latest version](https://github.com/ekoori/PerAnkh/releases/latest)** for Android
-8.0 or newer · free, no ads, no account · works offline · [how to install it](#install)
+**[Get it on Google Play](https://play.google.com/store/apps/details?id=app.hrana.perankh)** or
+**[download it from GitHub](https://github.com/ekoori/PerAnkh/releases/latest)** for Android 8.0
+or newer · free, no ads, no account · works offline · [how to install it](#install)
 
 <p align="center">
   <img src="docs/demo.gif" width="320" alt="A lesson in Per Ankh: the path, a new word, a listening question, matching pairs, an explained mistake, sounding out a word never taught, the lesson summary, then the codex, a word, a royal inscription and the amulets">
@@ -60,8 +61,10 @@ and opens when you get there.
 
 ## Install
 
-Per Ankh is not on Google Play yet, so you install it from its download page instead. It takes a
-minute, on the phone itself:
+**From Google Play:** open [Per Ankh on Google Play](https://play.google.com/store/apps/details?id=app.hrana.perankh)
+on your phone and tap **Install**.
+
+**From GitHub,** without Google Play, it takes a minute, on the phone itself:
 
 1. Open **[the latest release](https://github.com/ekoori/PerAnkh/releases/latest)** in your
    phone's browser.
@@ -78,16 +81,18 @@ to another.
 
 ### Updating
 
-Open the settings (the gear at the top of the path) and choose **About**: it shows the version
-you have and tells you when a newer one is out, with a button that takes you to it. Download and
-install it the same way. It installs over the version you have, and your progress stays.
+Google Play updates Per Ankh by itself. In the version from GitHub, open the settings (the gear at
+the top of the path) and choose **About**: it shows the version you have and tells you when a
+newer one is out, with a button that takes you to it. Download and install it the same way. It
+installs over the version you have, and your progress stays.
 
 ## Questions
 
 **Does it cost anything, or show ads?** No. Per Ankh is free, has no ads and needs no account.
 
 **Does it need the internet?** No, it works offline. It goes online only to send a problem report
-you choose to send, and to see whether a newer version is out when you open About.
+you choose to send and, in the version from GitHub, to see whether a newer version is out when you
+open About.
 
 **What happens to my data?** Your progress stays on your phone. The [privacy policy](PRIVACY.md)
 has the details.
@@ -99,16 +104,19 @@ and tap Send. The report includes what was on screen, so a few words are enough.
 one and it appears next to 0.1.0. Progress from 0.1.0 does not carry over. Once you have moved,
 uninstall 0.1.0.
 
-**Will it be on Google Play?** Yes, with version 1.0.
+**Google Play or GitHub?** Either. They are the same app, signed the same way, so one installs
+over the other and your progress stays. Google Play keeps its copy up to date by itself.
 
 ## About
 
 The name is pr-ꜥnḫ, "House of Life": the temple school where scribes were trained and books were
 copied. You learn its two signs, the house 𓉐 and the ankh 𓋹, in Unit 3.
 
-Per Ankh is made by LOVI Tech and is open source under the [MIT licence](LICENSE). The fonts, the
-word frequencies and the voice keep their own terms, listed in [NOTICE.md](NOTICE.md). The
-changes in each version are in the [changelog](CHANGELOG.md).
+Per Ankh is made by LOVI Tech and is open source: the code under the [MIT licence](LICENSE), the
+course under CC BY-SA 4.0, because its texts and word counts come from the Ancient Egyptian
+Sentences corpus and the Thesaurus Linguae Aegyptiae. The fonts and the voice keep their own
+terms; [NOTICE.md](NOTICE.md) lists them all. The changes in each version are in the
+[changelog](CHANGELOG.md).
 
 **For developers:** how the app is built, the course engine, the tools and the server are
 described in [DEVELOPING.md](DEVELOPING.md).

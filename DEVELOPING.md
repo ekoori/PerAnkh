@@ -73,7 +73,7 @@ built from their tiles as a learner would) and a careless one (nothing may get s
   library shows real inscriptions with the words you know painted in. The codex fills with the
   colours of a tomb wall as you learn, and fades back to ink as memory fades, and says how much of
   a real page your words fill — word frequencies counted in the Thesaurus Linguae Aegyptiae's
-  Middle Egyptian sentences (the whole course reaches 60%). Amulets mark abilities (telling the
+  Middle Egyptian sentences (the whole course reaches 74%). Amulets mark abilities (telling the
   four h's apart, relearning what you forgot, reading the offering formula, knowing a quarter of
   every page), each with its own piece of Egyptian lore.
 - **Sections, sealed until you get there.** `CourseSection`s after the first wait at the end of
@@ -95,7 +95,8 @@ options and accepted answers, the item's spelling, transliteration, respelling, 
 text the voice was given and the clip file, the answer given and the verdict. Tapping **Send**
 uploads it at once, over HTTPS, to the Per Ankh server at perankh.hrana.app, where reports wait in
 SQLite to be triaged with `tools/reports.sh` (see [server/README.md](server/README.md)). Offline,
-it waits on the phone and goes out the next time the app starts.
+it waits on the phone and goes out the next time the app starts. BushLines reports to the same
+server, so each upload names its app (`BuildConfig.REPORTS_APP`, `perankh`).
 
 Settings → Testing → *Tester mode* adds tools for testing the course: *Open any lesson* (start
 locked lessons, and see sealed sections' contents), *Answer button* (a "solve" chip), *Preview

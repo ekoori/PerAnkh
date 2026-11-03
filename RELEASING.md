@@ -39,11 +39,16 @@ update each other and keep progress.
   (different key and id), which deletes their progress.
 - **0.3.0, GitHub release (2026-10-22).** Sections, units 13–14, the fixes from the first problem
   reports, and Settings → About, which from now on tells people when a newer release is out.
-- **0.3.2, the first Google Play build, and a GitHub release (2026-10-24).** The `play` flavour,
-  for open testing under LOVI Tech's Play developer account (created October 2026); on GitHub
-  the same version, unchanged there. There is no 0.3.1: its version code went to a Play upload
-  that was deleted, and Play never takes a code twice.
-- **0.3.x, open testing.** Anyone can join the test from the Play listing. Fix what testers
+- **0.3.2, the first Google Play build (2026-10-24).** The `play` flavour, for open testing under
+  LOVI Tech's Play developer account (created October 2026). Its `github` build behaves exactly
+  as 0.3.0 does, so GitHub stayed on 0.3.0 and v0.3.2 is a tag without a GitHub release. There is
+  no 0.3.1: its version code went to a Play upload that was deleted, and Play never takes a code
+  twice.
+- **0.4.0, GitHub release and Play open testing.** Sections 3–7 (units 15–42: the Abydos stelae,
+  the Book of the Dead, the whole Shipwrecked Sailor, Ptahhotep's epilogue, Papyrus Westcar),
+  tablets, and the fixes from testers' reports. The course content becomes CC BY-SA 4.0 (its
+  texts come from AES), and reports name their app now that BushLines shares the server.
+- **0.4.x, open testing.** Anyone can join the test from the Play listing. Fix what testers
   report; re-record the weak clips. A couple of weeks of testing before production (new
   *personal* Play accounts would need 12 testers for 14 days in closed testing; LOVI Tech's
   organisation account does not).
