@@ -166,7 +166,7 @@ fun AppHost() {
     // at once; if the server cannot be reached it waits, and goes out the next time the app starts
     // or another report is sent.
     val build = "${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE}${if (BuildConfig.DEBUG) ", debug" else ""})"
-    val uploader = remember { ReportUploader(BuildConfig.REPORTS_URL, build) }
+    val uploader = remember { ReportUploader(BuildConfig.REPORTS_URL, BuildConfig.REPORTS_APP, build) }
     var reportCount by remember { mutableIntStateOf(0) }
     var unsentCount by remember { mutableIntStateOf(0) }
     var sending by remember { mutableStateOf(false) }

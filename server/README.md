@@ -33,9 +33,9 @@ connection stores nothing twice. A bad report is rejected on its own; the rest o
 kept.
 
 `app.id` names the app sending: `perankh` or `bushlines` (`db.APPS`); an upload naming any other
-is refused. Per Ankh builds made before BushLines reported here send no id, which stores their
-reports as `perankh`. A report's own `app` is the version it was written in, which may be older
-than the one sending it.
+is refused. Per Ankh sends `perankh` from 0.4.0; its earlier builds send no id, which stores their
+reports as `perankh` too. A report's own `app` is the version it was written in, which may be
+older than the one sending it.
 
 `/v1/latest` backs up the app's own question to GitHub (Settings → About). The service asks
 `api.github.com` at most every half hour, keeps only a full release of this repository (tag,
@@ -57,7 +57,7 @@ no restart; without it the route answers 503.
   system's certificate authorities (`app/src/main/res/xml/network_security_config.xml`). nginx
   refuses the TLS handshake for any other name on port 443.
 - **Nothing identifying is collected**: no account, device id, advertising id or location; the
-  body carries the app version and Android API level only. nginx writes no access log for this
+  body carries the app's id and version and the Android API level only. nginx writes no access log for this
   site and does not forward client addresses; the service logs no requests at all. The client
   address is used, in memory, only for rate limiting.
 - **Abuse limits**: 10 uploads a minute per address (burst 5) at nginx; 256 KB per request; 50

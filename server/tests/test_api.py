@@ -85,6 +85,11 @@ class ApiTest(unittest.TestCase):
         row = self.api.conn.execute("SELECT app, item, screen, lesson FROM reports").fetchone()
         self.assertEqual(("bushlines", "burrawang", "species", None), tuple(row))
 
+    def test_per_ankh_names_itself_from_0_4_0(self):
+        r = report()
+        self.assertEqual(200, self.upload(r, app={"id": "perankh", "version": "0.4.0 (400)", "sdk": 34})[0])
+        self.assertEqual("perankh", self.api.conn.execute("SELECT app FROM reports").fetchone()[0])
+
     def test_an_unknown_app_is_refused(self):
         status, payload = self.upload(report(), app={"id": "someone-else", "version": "1", "sdk": 34})
         self.assertEqual(400, status)

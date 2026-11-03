@@ -18,13 +18,20 @@ import kotlinx.serialization.json.jsonPrimitive
 import kotlinx.serialization.json.put
 
 /**
- * Sends tester reports to the Per Ankh server, only when the tester asks to.
+ * Sends tester reports to the Per Ankh server, only when the tester asks to. BushLines reports to
+ * the same server, so each upload says which app sent it ([appId]).
  *
- * What goes over the wire is exactly the stored reports plus the app version and the Android API
- * level: nothing that identifies the person or the device. The connection is HTTPS only (the
- * app's network security config forbids anything else). See PRIVACY.md and server/README.md.
+ * What goes over the wire is exactly the stored reports plus the app's id and version and the
+ * Android API level: nothing that identifies the person or the device. The connection is HTTPS
+ * only (the app's network security config forbids anything else). See PRIVACY.md and
+ * server/README.md.
  */
-class ReportUploader(private val url: String, private val appVersion: String) {
+class ReportUploader(
+    private val url: String,
+    private val appId: String,
+    private val appVersion: String,
+    private val sdk: Int = Build.VERSION.SDK_INT,
+) {
 
     sealed interface Outcome {
         /** [stored] are the ids the server now holds, including any it already had. */
@@ -52,8 +59,9 @@ class ReportUploader(private val url: String, private val appVersion: String) {
     private fun send(batch: List<Report>): Outcome {
         val body = buildJsonObject {
             put("app", buildJsonObject {
+                put("id", appId)
                 put("version", appVersion)
-                put("sdk", Build.VERSION.SDK_INT)
+                put("sdk", sdk)
             })
             put("reports", buildJsonArray {
                 for (r in batch) add(buildJsonObject {

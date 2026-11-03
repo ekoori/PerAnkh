@@ -30,6 +30,8 @@ android {
         versionName = appVersion
 
         buildConfigField("String", "REPORTS_URL", "\"https://perankh.hrana.app/v1/reports\"")
+        // BushLines reports to the same server; each report says which app sent it (server/README.md).
+        buildConfigField("String", "REPORTS_APP", "\"perankh\"")
         buildConfigField("String", "PRIVACY_URL", "\"https://perankh.hrana.app/privacy\"")
         // In the GitHub build, Settings → About asks GitHub for the newest release, and the Per Ankh
         // server (which keeps a copy of GitHub's answer) when GitHub cannot be reached. Either way it

@@ -1,6 +1,6 @@
 # Per Ankh privacy policy
 
-Effective 23 October 2026. Per Ankh is published by LOVI Tech. This policy is also served at
+Effective 3 November 2026. Per Ankh is published by LOVI Tech. This policy is also served at
 https://perankh.hrana.app/privacy.
 
 ## In short
@@ -31,10 +31,11 @@ It does not contain your name, email address, phone number, location, contacts, 
 account, advertising ID or device ID.
 
 Reports travel over an encrypted connection (HTTPS) directly to our server at perankh.hrana.app,
-hosted by Akamai Cloud (Linode). No other company sees their contents. The server keeps no record
-of where a report came from: it writes no access log, and holds your network address in memory
-only to limit how often reports can be sent. Server error logs, kept for up to 14 days for
-security, may contain network addresses.
+which Per Ankh shares with BushLines, a field guide from the same people; each report is marked
+as Per Ankh's. The server is hosted by Akamai Cloud (Linode), and no other company sees the
+contents. It keeps no record of where a report came from: it writes no access log, and holds your
+network address in memory only to limit how often reports can be sent. Server error logs, kept
+for up to 14 days for security, may contain network addresses.
 
 We use reports only to find and fix problems in the course. We never sell them, share them,
 use them for advertising, or combine them with other data.

@@ -12,7 +12,7 @@ be deployed.
 The sheets: one per table, every column in table order, each millisecond timestamp followed by a
 formula giving it as a date and time in UTC; "context (expanded)", each report's context JSON one
 key and value per row; "fields", every column with its type, constraints and meaning; "schema",
-the CREATE statements; "about", where it all came from and the reports by status.
+the CREATE statements; "about", where it all came from and the reports by status and by app.
 
 The file is written with the standard library, each formula with its result filled in, so making
 it needs no Excel, LibreOffice or openpyxl, and viewers that do not calculate still show the
@@ -40,12 +40,16 @@ OUT_DIR = os.path.join(ROOT, "tools", "out", "reports")
 # Triage states in server/perankh/db.py order; OPEN are the ones still waiting on work.
 STATUSES = ["new", "triaged", "in_progress", "fixed", "released", "wontfix", "duplicate", "invalid"]
 OPEN = ["new", "triaged", "in_progress"]
+# The apps that report here, in server/perankh/db.py order (APPS).
+APPS = {"perankh": "Per Ankh", "bushlines": "BushLines"}
 
 TABLES = {
-    "reports": "one row per problem report: what the tester wrote, where they were in the app, and "
-               "its triage state",
+    "reports": "one row per problem report: which app sent it, what the tester wrote, where they "
+               "were in the app, and its triage state",
     "report_log": "every event on a report: received, then each status change",
     "sqlite_sequence": "SQLite’s own: the last id handed out in each AUTOINCREMENT table",
+    "identify_days": "BushLines’ plant identifications asked of Pl@ntNet, counted per UTC day to stay "
+                     "within its free plan",
 }
 # What each column holds, from server/perankh/db.py; a comment in the live CREATE TABLE wins.
 MEANING = {
@@ -62,7 +66,7 @@ MEANING = {
     ("reports", "exercise"): "Copied from context, so triage can filter on it",
     ("reports", "item"): "Copied from context, so triage can filter on it",
     ("reports", "context"): "Everything on screen when the report was made, a JSON object",
-    ("reports", "account_id"): "Reserved for signed-in reports; always NULL in schema 1",
+    ("reports", "account_id"): "Reserved for signed-in reports; always NULL so far",
     ("reports", "status"): "Triage state: " + ", ".join(STATUSES),
     ("reports", "resolution"): "Note given with the latest status change",
     ("reports", "resolved_in"): "App version or commit with the fix",
@@ -75,6 +79,8 @@ MEANING = {
     ("report_log", "detail"): "Note given, “in VERSION” for a fix, “of ID” for a duplicate",
     ("sqlite_sequence", "name"): "Table that uses AUTOINCREMENT",
     ("sqlite_sequence", "seq"): "Largest id handed out in that table so far",
+    ("identify_days", "day"): "UTC date, YYYY-MM-DD",
+    ("identify_days", "count"): "Identifications asked of Pl@ntNet that day; the service stops at 450",
 }
 MS_COLUMNS = {"reports": ("received_at", "created_at", "updated_at"), "report_log": ("at",)}
 WRAPPED = {"note": 50, "resolution": 50, "context": 60, "detail": 60}  # column: width
@@ -463,9 +469,11 @@ def schema_sheet(book: Book, snap: dict) -> None:
     ws.freeze = (0, 1)
 
 
-def about_sheet(book: Book, snap: dict, status_column: str | None) -> None:
+def about_sheet(book: Book, snap: dict, letters: dict[str, str]) -> None:
+    """[letters]: each header of the reports sheet and its column letter."""
+    status_column = letters.get("status")
     ws = book.sheet("about")
-    ws.put(1, 1, "Per Ankh problem reports", bold=True, size=14)
+    ws.put(1, 1, "Per Ankh and BushLines problem reports", bold=True, size=14)
     ws.put(2, 1, "Every table and column of the live report database, as one read-only snapshot.")
     facts = [
         ("Source", f"The report service behind perankh.hrana.app: {snap['database']} (SQLite)", None),
@@ -526,6 +534,26 @@ def about_sheet(book: Book, snap: dict, status_column: str | None) -> None:
         ws.put(r, 1, "total", **LABEL)
         ws.formula(r, 3, f"SUM(C{first}:C{last})", sum(counts[s] for s in statuses), number="0", bold=True)
 
+    app_column = letters.get("app")
+    if reports and status_column and app_column:
+        apps = [str(row[names.index("app")]).lower() for row in reports["rows"]]
+        opened = collections.Counter(app for app, row in zip(apps, reports["rows"])
+                                     if str(row[names.index("status")]).lower() in OPEN)
+        counts = collections.Counter(apps)
+        r += 2
+        ws.put(r, 1, "Reports by app", **SECTION)
+        r += 1
+        for n, head in enumerate(("app", "", "reports", "open"), start=1):
+            ws.put(r, n, head, **HEAD)
+        for app in [a for a in APPS if a in counts] + sorted(set(counts) - set(APPS)):
+            r += 1
+            ws.put(r, 1, app, **LABEL)
+            ws.put(r, 2, APPS.get(app))
+            ws.formula(r, 3, f"COUNTIF('reports'!${app_column}:${app_column},A{r})", counts[app], number="0")
+            ws.formula(r, 4, "+".join(f"COUNTIFS('reports'!${app_column}:${app_column},A{r},"
+                                      f"'reports'!${status_column}:${status_column},\"{s}\")" for s in OPEN),
+                       opened[app], number="0")
+
     empty_notes = "note" in names and any(row[names.index("note")] == "" for row in reports["rows"])
     notes = [
         "Columns headed “… (UTC)” are formulas, not database columns: the millisecond timestamp to their "
@@ -543,21 +571,21 @@ def about_sheet(book: Book, snap: dict, status_column: str | None) -> None:
         r += 1
         ws.put(r, 1, "•", align="right")
         ws.put(r, 2, text, wrap=True)
-    ws.widths = [22, 90, 10]
+    ws.widths = [22, 90, 10, 10]
 
 
 def build(snap: dict) -> Book:
     book = Book()
-    status_column = None
-    for name in snap["tables"]:  # sqlite_master order: reports, report_log, sqlite_sequence
+    report_letters = {}
+    for name in snap["tables"]:  # sqlite_master order: reports, report_log, sqlite_sequence, identify_days
         letters = table_sheet(book, snap, name)
         if name == "reports":
-            status_column = letters.get("status")
+            report_letters = letters
     if "reports" in snap["tables"] and any(c["name"] == "context" for c in snap["tables"]["reports"]["columns"]):
         context_sheet(book, snap)
     fields_sheet(book, snap)
     schema_sheet(book, snap)
-    about_sheet(book, snap, status_column)
+    about_sheet(book, snap, report_letters)
     return book
 
 
