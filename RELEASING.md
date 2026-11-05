@@ -48,6 +48,8 @@ update each other and keep progress.
   Abydos stelae, the Book of the Dead, the whole Shipwrecked Sailor, Ptahhotep's epilogue, Papyrus
   Westcar), tablets, and the fixes from testers' reports. The course content becomes CC BY-SA 4.0
   (its texts come from AES), and reports name their app now that BushLines shares the server.
+- **0.4.1, GitHub release and Play open testing (2026-11-05).** One fix: with 0.4.0's 629 words,
+  choosing the wrong answers for a word question froze lessons for seconds on a phone.
 - **0.4.x, open testing.** Anyone can join the test from the Play listing. Fix what testers
   report; re-record the weak clips. A couple of weeks of testing before production (new
   *personal* Play accounts would need 12 testers for 14 days in closed testing; LOVI Tech's

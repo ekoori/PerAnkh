@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.4.1 (2026-11-05)
 
 - Lessons no longer freeze for several seconds after Continue, sometimes long enough for Android
   to say the app is not responding. Choosing the wrong answers for a "What does this word mean?"
