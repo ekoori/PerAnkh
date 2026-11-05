@@ -141,12 +141,18 @@ class ExerciseFactory(
 
     // ---- picking ---------------------------------------------------------------------------
 
-    /** Weighted sampling without replacement. */
+    /**
+     * Weighted sampling without replacement.
+     *
+     * Each weight is worked out once, up front. Callers order a whole pool, such as every word in
+     * the course, to keep the first few that suit; weighing what is left before every draw would
+     * take hundreds of thousands of weights for one question, seconds on a phone.
+     */
     private fun <T> pick(pool: List<T>, n: Int, weight: (T) -> Double): List<T> {
         val remaining = pool.toMutableList()
+        val weights = pool.mapTo(ArrayList(pool.size)) { max(weight(it), 1e-4) }
         val out = mutableListOf<T>()
         while (out.size < n && remaining.isNotEmpty()) {
-            val weights = remaining.map { max(weight(it), 1e-4) }
             var r = rng.nextDouble() * weights.sum()
             var i = 0
             while (i < weights.lastIndex && r >= weights[i]) {
@@ -154,6 +160,7 @@ class ExerciseFactory(
                 i++
             }
             out += remaining.removeAt(i)
+            weights.removeAt(i)
         }
         return out
     }
@@ -408,7 +415,10 @@ class ExerciseFactory(
 
     // ---- words -----------------------------------------------------------------------------
 
-    private fun signsOf(mdc: String): List<String> = Mdc.parse(mdc).signs
+    // Weighing a word against another compares their signs, so each spelling is parsed once.
+    private val parsed = HashMap<String, List<String>>()
+
+    private fun signsOf(mdc: String): List<String> = parsed.getOrPut(mdc) { Mdc.parse(mdc).signs }
 
     private fun wordWeight(target: WordItem, other: WordItem, hard: Boolean): Double {
         var w = 1.0
