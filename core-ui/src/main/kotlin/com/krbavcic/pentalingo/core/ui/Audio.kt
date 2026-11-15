@@ -12,6 +12,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
+import com.krbavcic.pentalingo.model.Token
 import org.json.JSONObject
 
 /**
@@ -40,6 +41,11 @@ class Voice private constructor(private val context: Context) {
 
     /** The clip file an item plays, for tester reports. */
     fun fileFor(id: String?): String? = id?.let { manifest[it] }
+
+    /** What a phrase's word says when tapped: the form as written there (jt=f "itef"), else its word. */
+    fun tokenClip(token: Token): String? = token.clipId.takeIf(::has) ?: token.wordId?.takeIf(::has)
+
+    fun playToken(token: Token) = play(tokenClip(token))
 
     fun play(id: String?, slow: Boolean = false) {
         val file = id?.let { manifest[it] } ?: return

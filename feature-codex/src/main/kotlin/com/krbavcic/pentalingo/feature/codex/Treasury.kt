@@ -41,6 +41,7 @@ import com.krbavcic.pentalingo.engine.Knowledge
 import com.krbavcic.pentalingo.model.Award
 import com.krbavcic.pentalingo.model.ItemKind
 import com.krbavcic.pentalingo.model.Memory
+import com.krbavcic.pentalingo.model.MemoryState
 import com.krbavcic.pentalingo.model.Requirement
 import kotlin.math.roundToInt
 
@@ -128,8 +129,13 @@ private fun Ledger(k: Knowledge, hidden: Set<String>) {
     val p = k.progress
     val signsKnown = k.knownCount(ItemKind.SIGN)
     val wordsKnown = k.knownCount(ItemKind.WORD)
-    val mastered = p.memories.values.count { it.stability >= Memory.MASTERED_DAYS }
-    val accuracy = if (p.answered == 0) 0 else (100.0 * p.correct / p.answered).roundToInt()
+    // Signs and words only, like the two lines above it, and only those not fading now: it
+    // counted phrases and notes too, and memories that had long since faded.
+    val mastered = k.course.items.count { item ->
+        (item.kind == ItemKind.SIGN || item.kind == ItemKind.WORD) &&
+            p.memory(item.id)?.let { it.stability >= Memory.MASTERED_DAYS && it.state(k.now) != MemoryState.FADING } == true
+    }
+    fun percent(n: Int) = if (p.answered == 0) 0 else (100.0 * n / p.answered).roundToInt()
     Column(
         Modifier
             .padding(top = 12.dp)
@@ -143,10 +149,10 @@ private fun Ledger(k: Knowledge, hidden: Set<String>) {
         Rubric("The ledger")
         Line("Signs known", "$signsKnown of ${k.course.signs.count { it.id !in hidden || k.isIntroduced(it.id) }}")
         Line("Words known", "$wordsKnown of ${k.course.words.count { it.id !in hidden || k.isIntroduced(it.id) }}")
-        Line("Mastered (safe for three weeks)", "$mastered")
+        Line("Mastered signs and words", "$mastered")
         Line("Fading now", "${k.fadingCount()}")
         Line("Days studied", "${p.studyDays.size}")
-        Line("Answers", "${p.answered} · $accuracy% right")
+        Line("Answers", "${p.answered} · ${percent(p.correct)}% right" + if (p.nearlyRight > 0) ", ${percent(p.nearlyRight)}% nearly" else "")
         Line("Time studied", "${(p.secondsStudied / 60)} min")
         Spacer(Modifier.height(4.dp))
         Text("No streaks are kept. Memory grows between visits, not by visiting every day.", style = Type.small)

@@ -1,6 +1,7 @@
 package com.krbavcic.pentalingo
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -104,6 +105,8 @@ fun SettingsSheet(
     settings: Settings,
     onSounds: (Boolean) -> Unit,
     onAutoplay: (Boolean) -> Unit,
+    onHighContrast: (Boolean) -> Unit,
+    onTextScale: (Int) -> Unit,
     onReset: () -> Unit,
     reports: ReportOptions,
     tester: TesterOptions,
@@ -129,7 +132,7 @@ fun SettingsSheet(
                 verticalArrangement = Arrangement.spacedBy(14.dp),
             ) {
                 when (page) {
-                    Page.SETTINGS -> SettingsPage(settings, onSounds, onAutoplay, onReset, reports)
+                    Page.SETTINGS -> SettingsPage(settings, onSounds, onAutoplay, onHighContrast, onTextScale, onReset, reports)
                     Page.TESTING -> TestingPage(settings, reports, tester)
                     Page.ABOUT -> AboutPage(about)
                 }
@@ -187,12 +190,19 @@ private fun SettingsPage(
     settings: Settings,
     onSounds: (Boolean) -> Unit,
     onAutoplay: (Boolean) -> Unit,
+    onHighContrast: (Boolean) -> Unit,
+    onTextScale: (Int) -> Unit,
     onReset: () -> Unit,
     reports: ReportOptions,
 ) {
     var confirming by remember { mutableStateOf(false) }
     Toggle("Sound effects", "Harp plucks for right and wrong answers", settings.sounds, onSounds)
     Toggle("Speak automatically", "Play each word’s pronunciation as it appears", settings.autoplay, onAutoplay)
+
+    Rubric("Reading")
+    Toggle("High contrast", "Darker text and signs on a plain, pale page", settings.highContrast, onHighContrast)
+    Text("Text size", style = Type.heading)
+    TextSizes(settings.textScale, onTextScale)
 
     // Reports go out as soon as they are written; this shows only while some are still waiting.
     if (reports.unsent > 0) {
@@ -379,6 +389,30 @@ private fun Link(text: String, onClick: () -> Unit) {
             .clickable(role = Role.Button, onClick = onClick)
             .padding(vertical = 4.dp),
     )
+}
+
+/** Text sizes on offer, in percent: larger ones still fit every screen of the app. */
+private val TEXT_SIZES = listOf(100 to "Normal", 115 to "Large", 130 to "Larger")
+
+@Composable
+private fun TextSizes(selected: Int, onSelect: (Int) -> Unit) {
+    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        for ((percent, label) in TEXT_SIZES) {
+            val on = percent == selected
+            Box(
+                Modifier
+                    .weight(1f)
+                    .clip(RoundedCornerShape(14.dp))
+                    .background(if (on) Palette.lapis.copy(alpha = 0.14f) else Palette.sheet)
+                    .border(1.5.dp, if (on) Palette.lapis else Palette.edge.copy(alpha = 0.6f), RoundedCornerShape(14.dp))
+                    .selectable(selected = on, role = Role.RadioButton) { onSelect(percent) }
+                    .padding(vertical = 10.dp),
+                contentAlignment = Alignment.Center,
+            ) {
+                Text(label, style = Type.heading.copy(color = if (on) Palette.lapisDeep else Palette.ink, fontSize = Type.heading.fontSize * (percent / 100f)))
+            }
+        }
+    }
 }
 
 @Composable

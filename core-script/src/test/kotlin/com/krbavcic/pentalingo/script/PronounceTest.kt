@@ -44,6 +44,20 @@ class PronounceTest {
     }
 
     @Test
+    fun `the second of two reeds is a glide, so both are heard`() {
+        // A single long i for both ran jj "come" into "eh", and dj=j "I give" into plain "di".
+        assertEquals("iyi", Pronounce.latin("jj"))
+        assertEquals("إِييِي", Pronounce.arabic("jj"))
+        assertEquals("iyet", Pronounce.latin("jjt"))
+        assertEquals("iyet", Pronounce.latin("jj.t"))
+        assertEquals("iyni", Pronounce.latin("jj.n=j"))
+        assertEquals("iyetef", Pronounce.latin("jj.t=f"))
+        assertEquals("diyi", Pronounce.latin("dj=j"))
+        assertEquals("ḥatiyi", Pronounce.latin("ḥꜣtj=j"))
+        assertEquals("di", Pronounce.latin("dj"))
+    }
+
+    @Test
     fun `suffixes join their word, compounds split into words`() {
         assertEquals("renef", Pronounce.latin("rn=f"))
         assertEquals("ḥetep di nesut", Pronounce.latin("ḥtp-dj-nswt"))

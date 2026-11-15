@@ -1,0 +1,512 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Clip review · Per Ankh</title>
+<style>
+@font-face { font-family: "Hiero"; src: url("/font/hieroglyphs.ttf") format("truetype"); }
+@font-face { font-family: "PASerif"; src: url("/font/serif.ttf") format("truetype"); }
+@font-face { font-family: "PASerif"; src: url("/font/serif-bold.ttf") format("truetype"); font-weight: 700; }
+@font-face { font-family: "PASerif"; src: url("/font/serif-italic.ttf") format("truetype"); font-style: italic; }
+
+:root {
+  --bg: #f6f4ef; --panel: #ffffff; --panel-2: #faf8f3; --ink: #1b1a17; --muted: #55503f; --faint: #8a8473;
+  --line: #d9d2c1; --accent: #1d5aa6; --accent-ink: #ffffff; --sel: #e4edfa;
+  --ok: #17703a; --ok-bg: #e3f3e8; --warn: #8f4f00; --warn-bg: #fdf0dc; --bad: #b02a21; --bad-bg: #fbe5e3;
+  --flag-bg: #fff6d6; --flag-line: #e3c766; --chip: #efeadf; --chip-on: #1b1a17; --chip-on-ink: #ffffff;
+  --shadow: 0 1px 2px rgba(0,0,0,.06), 0 4px 16px rgba(0,0,0,.05);
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #12110e; --panel: #1c1a16; --panel-2: #23211c; --ink: #f2eee5; --muted: #c4bcaa; --faint: #8f8878;
+    --line: #3a362d; --accent: #82b4f5; --accent-ink: #0d1726; --sel: #1f2f47;
+    --ok: #79d496; --ok-bg: #16301f; --warn: #f4b860; --warn-bg: #36270f; --bad: #ff8d84; --bad-bg: #3a1714;
+    --flag-bg: #2f2812; --flag-line: #7a6626; --chip: #2b2821; --chip-on: #f2eee5; --chip-on-ink: #12110e;
+    --shadow: none;
+  }
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; }
+body { background: var(--bg); color: var(--ink); font: 15px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+button, input, select, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.tr { font-family: "PASerif", Georgia, serif; }
+.hiero { font-family: "Hiero", sans-serif; }
+.muted { color: var(--muted); }
+.small { font-size: 13px; }
+.mono { font-family: ui-monospace, "Cascadia Mono", Consolas, monospace; font-size: 13px; }
+
+/* top bar */
+header { display: flex; align-items: center; gap: 16px; padding: 10px 16px; border-bottom: 1px solid var(--line); background: var(--panel); position: sticky; top: 0; z-index: 5; flex-wrap: wrap; }
+header h1 { font-size: 16px; margin: 0; white-space: nowrap; }
+.progress { flex: 1 1 220px; min-width: 160px; }
+.bar { height: 8px; border-radius: 99px; background: var(--chip); overflow: hidden; }
+.bar > i { display: block; height: 100%; background: var(--ok); width: 0; transition: width .3s; }
+.toggles { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+.toggles label { display: flex; gap: 6px; align-items: center; white-space: nowrap; }
+.btn { border: 1px solid var(--line); background: var(--panel-2); border-radius: 8px; padding: 6px 12px; }
+.btn:hover { border-color: var(--muted); }
+
+/* layout */
+.layout { display: grid; grid-template-columns: minmax(280px, 360px) 1fr; height: calc(100% - 57px); }
+aside { border-right: 1px solid var(--line); display: flex; flex-direction: column; min-height: 0; background: var(--panel-2); }
+.filters { padding: 12px; display: grid; gap: 8px; border-bottom: 1px solid var(--line); }
+.tabs { display: flex; gap: 4px; flex-wrap: wrap; }
+.tab { border: 1px solid var(--line); background: var(--panel); border-radius: 99px; padding: 4px 10px; font-size: 13px; }
+.tab[aria-selected="true"] { background: var(--chip-on); color: var(--chip-on-ink); border-color: var(--chip-on); }
+.row2 { display: flex; gap: 6px; }
+.row2 select, .filters input { flex: 1; min-width: 0; border: 1px solid var(--line); background: var(--panel); border-radius: 8px; padding: 6px 8px; }
+#list { list-style: none; margin: 0; padding: 0; overflow-y: auto; flex: 1; }
+#list li { display: grid; grid-template-columns: 12px 1fr; gap: 10px; padding: 8px 12px; border-bottom: 1px solid var(--line); cursor: pointer; }
+#list li:hover { background: var(--panel); }
+#list li[aria-current="true"] { background: var(--sel); }
+#list .l1 { display: flex; gap: 8px; align-items: baseline; min-width: 0; }
+#list .l1 .tr { font-size: 15px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+#list .l2 { font-size: 12.5px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.dot { width: 10px; height: 10px; border-radius: 50%; margin-top: 6px; background: var(--faint); }
+.dot.todo { background: var(--accent); } .dot.retake { background: var(--warn); } .dot.done { background: var(--ok); }
+.dot.skipped { background: transparent; border: 2px solid var(--faint); } .dot.unrecorded { background: transparent; border: 2px solid var(--bad); }
+.empty { padding: 24px; color: var(--muted); }
+
+/* clip */
+main { overflow-y: auto; padding: 20px 28px 80px; }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 18px 20px; box-shadow: var(--shadow); max-width: 980px; margin: 0 auto 16px; }
+.head { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 4px; }
+.badge { font-size: 12px; border-radius: 99px; padding: 2px 9px; background: var(--chip); color: var(--ink); white-space: nowrap; }
+.badge.ok { background: var(--ok-bg); color: var(--ok); } .badge.bad { background: var(--bad-bg); color: var(--bad); }
+.badge.warn { background: var(--warn-bg); color: var(--warn); } .badge.acc { background: var(--sel); color: var(--accent); }
+.glyphline { font-size: 46px; line-height: 1.25; margin: 10px 0 4px; word-break: break-word; }
+.respell { font-size: 30px; font-weight: 700; margin: 2px 0; }
+.meaning { font-size: 18px; margin-top: 4px; }
+.kv { display: grid; grid-template-columns: max-content 1fr; gap: 3px 14px; margin-top: 10px; font-size: 14px; }
+.kv dt { color: var(--muted); } .kv dd { margin: 0; }
+.tokens { display: flex; flex-wrap: wrap; gap: 14px 18px; margin-top: 14px; padding-top: 12px; border-top: 1px dashed var(--line); }
+.token { display: grid; justify-items: center; text-align: center; min-width: 56px; }
+.token .hiero { font-size: 30px; line-height: 1.2; }
+.token .tr { font-size: 15px; }
+.token .g { font-size: 12.5px; color: var(--muted); max-width: 140px; }
+.flag { background: var(--flag-bg); border: 1px solid var(--flag-line); border-radius: 10px; padding: 10px 12px; margin-top: 12px; }
+.flag b { margin-right: 6px; }
+h2 { font-size: 13px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin: 0 0 10px; }
+
+.takes { display: grid; gap: 8px; }
+.take { display: grid; grid-template-columns: auto auto 1fr auto; gap: 12px; align-items: center; border: 1.5px solid var(--line); border-radius: 12px; padding: 10px 12px; cursor: pointer; }
+.take[aria-checked="true"] { border-color: var(--accent); background: var(--sel); }
+.take.playing .play { background: var(--accent); color: var(--accent-ink); }
+.play { width: 44px; height: 44px; border-radius: 50%; border: 1.5px solid var(--accent); background: var(--panel); color: var(--accent); font-size: 17px; display: grid; place-items: center; }
+.key { font: 700 12px ui-monospace, Consolas, monospace; border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 6px; padding: 1px 6px; color: var(--muted); background: var(--panel-2); }
+.take .meta { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.take .heard { font-size: 13px; color: var(--muted); margin-top: 3px; }
+.take .heard span[dir="rtl"] { font-size: 15px; }
+.take .label { font-weight: 700; }
+
+.verdicts { display: flex; gap: 10px; flex-wrap: wrap; }
+.vbtn { border-radius: 12px; padding: 12px 18px; border: 2px solid var(--line); background: var(--panel); font-weight: 700; display: flex; gap: 10px; align-items: center; }
+.vbtn.ok { border-color: var(--ok); color: var(--ok); } .vbtn.retake { border-color: var(--warn); color: var(--warn); }
+.vbtn.ok[aria-pressed="true"] { background: var(--ok); color: var(--panel); }
+.vbtn.retake[aria-pressed="true"] { background: var(--warn); color: var(--panel); }
+.vbtn.skip[aria-pressed="true"] { background: var(--faint); color: var(--panel); }
+.chips { display: flex; gap: 6px; flex-wrap: wrap; margin: 14px 0 10px; }
+.chipb { border: 1px solid var(--line); background: var(--chip); border-radius: 99px; padding: 4px 11px; font-size: 13px; }
+.chipb[aria-pressed="true"] { background: var(--chip-on); color: var(--chip-on-ink); border-color: var(--chip-on); }
+textarea { width: 100%; min-height: 76px; border: 1.5px solid var(--line); border-radius: 10px; padding: 10px 12px; background: var(--panel-2); resize: vertical; }
+.saved { font-size: 13px; color: var(--muted); min-height: 18px; margin-top: 6px; }
+.history { margin-top: 12px; font-size: 13px; color: var(--muted); }
+details summary { cursor: pointer; color: var(--muted); }
+.ar { font-size: 20px; }
+
+.help { position: fixed; inset: 0; background: rgba(0,0,0,.45); display: none; place-items: center; z-index: 20; }
+.help.open { display: grid; }
+.help .card { max-width: 560px; }
+.help table { border-collapse: collapse; width: 100%; }
+.help td { padding: 5px 8px; border-bottom: 1px solid var(--line); }
+
+@media (max-width: 760px) {
+  .layout { grid-template-columns: 1fr; height: auto; }
+  aside { max-height: 42vh; border-right: 0; border-bottom: 1px solid var(--line); }
+  main { padding: 14px 12px 60px; }
+  .glyphline { font-size: 36px; } .respell { font-size: 24px; }
+  .take { grid-template-columns: auto 1fr; }
+  .take .key { display: none; }
+}
+</style>
+</head>
+<body>
+<header>
+  <h1>Clip review</h1>
+  <div class="progress">
+    <div class="bar"><i id="bar"></i></div>
+    <div class="small muted" id="progressText">Loading…</div>
+  </div>
+  <div class="toggles small">
+    <label><input type="checkbox" id="optAutoplay"> Autoplay</label>
+    <label><input type="checkbox" id="optAdvance"> Next after verdict</label>
+    <label><input type="checkbox" id="optSlow"> Slow (0.7×)</label>
+    <button class="btn" id="reload" title="Load new takes and verdicts">Reload</button>
+    <button class="btn" id="helpBtn" aria-haspopup="dialog">Keys <span class="key">?</span></button>
+  </div>
+</header>
+
+<div class="layout">
+  <aside>
+    <div class="filters">
+      <div class="tabs" role="tablist" id="tabs"></div>
+      <div class="row2">
+        <select id="group" aria-label="Why it needs review"></select>
+        <select id="kind" aria-label="Kind of clip">
+          <option value="">All kinds</option>
+          <option value="s">Signs</option><option value="w">Words</option><option value="f">Word forms</option>
+          <option value="p">Phrases</option><option value="c">Cards</option>
+        </select>
+      </div>
+      <input type="search" id="q" placeholder="Search id, transliteration, meaning…  ( / )" aria-label="Search">
+    </div>
+    <ol id="list" aria-label="Clips"></ol>
+  </aside>
+  <main id="main" aria-live="polite"><div class="empty">Loading clips…</div></main>
+</div>
+
+<div class="help" id="help" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
+  <div class="card">
+    <h2 id="helpTitle">Keyboard</h2>
+    <table>
+      <tr><td><span class="key">1</span>–<span class="key">9</span></td><td>Play that take and select it</td></tr>
+      <tr><td><span class="key">B</span></td><td>Play the take the app used before</td></tr>
+      <tr><td><span class="key">Space</span></td><td>Play the selected take again</td></tr>
+      <tr><td><span class="key">G</span></td><td>The selected take sounds right</td></tr>
+      <tr><td><span class="key">R</span></td><td>Needs a retake: then pick tags, type what should change</td></tr>
+      <tr><td><span class="key">S</span></td><td>Skip for now</td></tr>
+      <tr><td><span class="key">J</span> / <span class="key">↓</span></td><td>Next clip</td></tr>
+      <tr><td><span class="key">K</span> / <span class="key">↑</span></td><td>Previous clip</td></tr>
+      <tr><td><span class="key">/</span></td><td>Search</td></tr>
+      <tr><td><span class="key">Esc</span></td><td>Leave the comment box (it saves as you type)</td></tr>
+      <tr><td><span class="key">Ctrl</span>+<span class="key">Enter</span></td><td>In the comment box: save and go to the next clip</td></tr>
+    </table>
+    <p class="small muted">Verdicts save at once to tools/out/review/review.json. Approved takes are pinned with
+      <span class="mono">python -X utf8 tools/review.py apply</span>; retakes are recorded from your comments.</p>
+    <p><button class="btn" id="helpClose">Close</button></p>
+  </div>
+</div>
+
+<script>
+"use strict";
+const TABS = [["todo", "To review"], ["retake", "Retake asked"], ["done", "Done"], ["skipped", "Skipped"], ["all", "All"]];
+const GROUP_LABEL = { changed: "New take since your review", reported: "Reported", rule: "Pronunciation rule changed",
+  flagged: "Flagged for a listen", failing: "Fails the voice check", form: "Word forms (tap a word)", other: "Everything else" };
+const KIND_LABEL = { s: "Sign", w: "Word", f: "Word form", p: "Phrase", c: "Card" };
+const TAGS = ["English accent", "r not rolled", "ḏ sounds like g", "ṯ wrong", "ḥ weak or missing", "ꜥ missing",
+  "ḫ / ẖ wrong", "q wrong", "wrong vowel", "sound swallowed", "wrong stress", "cut off", "glitch or noise",
+  "too fast", "respelling itself wrong"];
+const STATUS_LABEL = { todo: "to review", retake: "retake asked", done: "done", skipped: "skipped", unrecorded: "no clip yet", fine: "not queued" };
+
+const state = { clips: [], byId: new Map(), signs: {}, tab: "todo", group: "", kind: "", q: "",
+  current: null, take: null, playing: null };
+const audio = new Audio();
+audio.addEventListener("ended", () => { state.playing = null; markPlaying(); });
+const $ = (id) => document.getElementById(id);
+
+function prefs() { try { return JSON.parse(localStorage.getItem("clipReviewPrefs") || "{}"); } catch { return {}; } }
+function savePrefs() {
+  try { localStorage.setItem("clipReviewPrefs", JSON.stringify({ autoplay: $("optAutoplay").checked, advance: $("optAdvance").checked, slow: $("optSlow").checked })); } catch {}
+}
+
+function h(tag, attrs, ...kids) {
+  const el = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs || {})) {
+    if (v == null || v === false) continue;
+    if (k === "class") el.className = v;
+    else if (k.startsWith("on")) el.addEventListener(k.slice(2), v);
+    else el.setAttribute(k, v === true ? "" : v);
+  }
+  for (const kid of kids.flat()) if (kid != null && kid !== false) el.append(kid instanceof Node ? kid : document.createTextNode(String(kid)));
+  return el;
+}
+
+function glyphs(mdc) {
+  if (!mdc) return "";
+  return mdc.trim().split(/\s+/).map((tok) => tok
+    .replace(/[A-Z][a-z]?\d+[A-Za-z]?/g, (code) => state.signs[code] ? String.fromCodePoint(parseInt(state.signs[code], 16)) : `[${code}]`)
+    .replace(/[-:*&]/g, "").replace(/</g, "〈").replace(/>/g, "〉")).join(" ");
+}
+
+async function load(keepId) {
+  const [clips, signs] = await Promise.all([fetch("/api/clips").then((r) => r.json()),
+    Object.keys(state.signs).length ? state.signs : fetch("/api/signs").then((r) => r.json())]);
+  state.signs = signs;
+  state.clips = clips.clips;
+  state.byId = new Map(state.clips.map((c) => [c.id, c]));
+  renderTabs(); renderGroups(); renderList();
+  const fromHash = decodeURIComponent(location.hash.slice(1));
+  const want = keepId || (state.byId.has(fromHash) ? fromHash : null);
+  if (want && state.byId.has(want)) select(want, { autoplay: false });
+  else { const first = filtered()[0]; if (first) select(first.id, { autoplay: false }); else $("main").replaceChildren(h("div", { class: "empty" }, "Nothing in this list.")); }
+}
+
+function matches(c) {
+  if (state.tab !== "all" && c.status !== state.tab) return false;
+  if (state.group && c.group !== state.group) return false;
+  if (state.kind && c.kind !== state.kind) return false;
+  if (state.q) {
+    const q = state.q.toLowerCase();
+    const hay = [c.id, c.spoken, c.latin, c.ipa, c.meaning, c.lesson, c.usedInText].filter(Boolean).join(" ").toLowerCase();
+    if (!hay.includes(q)) return false;
+  }
+  return true;
+}
+const filtered = () => state.clips.filter(matches);
+
+function counts() {
+  const n = { todo: 0, retake: 0, done: 0, skipped: 0, all: state.clips.length };
+  for (const c of state.clips) if (c.status in n) n[c.status]++;
+  return n;
+}
+
+function renderTabs() {
+  const n = counts();
+  $("tabs").replaceChildren(...TABS.map(([id, label]) => h("button", { class: "tab", role: "tab", "aria-selected": String(state.tab === id),
+    onclick: () => { state.tab = id; renderTabs(); renderGroups(); renderList(); const f = filtered()[0]; if (f && !matches(state.byId.get(state.current) || {})) select(f.id); } },
+    `${label} ${n[id]}`)));
+  const queued = state.clips.filter((c) => c.group !== "other" || c.review);
+  const reviewed = queued.filter((c) => ["done", "retake", "skipped"].includes(c.status)).length;
+  $("bar").style.width = queued.length ? `${(100 * reviewed / queued.length).toFixed(1)}%` : "0";
+  $("progressText").textContent = `${reviewed} of ${queued.length} queued clips reviewed · ${n.todo} to go · ${n.retake} waiting for a retake`;
+}
+
+function renderGroups() {
+  const by = {};
+  for (const c of state.clips) if (state.tab === "all" || c.status === state.tab) by[c.group] = (by[c.group] || 0) + 1;
+  const opts = [h("option", { value: "" }, "Every reason")];
+  for (const g of Object.keys(GROUP_LABEL)) if (by[g]) opts.push(h("option", { value: g }, `${GROUP_LABEL[g]} (${by[g]})`));
+  $("group").replaceChildren(...opts);
+  $("group").value = by[state.group] ? state.group : "";
+  state.group = $("group").value;
+}
+
+function renderList() {
+  const items = filtered();
+  const list = $("list");
+  if (!items.length) { list.replaceChildren(h("li", { class: "empty" }, "Nothing here.")); return; }
+  list.replaceChildren(...items.map((c) => h("li", { "data-id": c.id, "aria-current": String(c.id === state.current), onclick: () => select(c.id) },
+    h("span", { class: `dot ${c.status}`, title: STATUS_LABEL[c.status] }),
+    h("div", {},
+      h("div", { class: "l1" }, h("span", { class: "tr" }, c.latin), h("span", { class: "mono muted" }, c.id)),
+      h("div", { class: "l2" }, [GROUP_LABEL[c.group] && c.group !== "other" ? GROUP_LABEL[c.group] : null, c.meaning].filter(Boolean).join(" · "))))));
+  const cur = list.querySelector('[aria-current="true"]');
+  if (cur) cur.scrollIntoView({ block: "nearest" });
+}
+
+/** The takes shown for a clip: "before" first when a flag names the take the app used to play, then every recorded take. */
+function takesOf(c) {
+  const out = [];
+  const was = (c.flags || []).map((f) => f.was).find(Boolean);
+  if (was && !c.takes.some((t) => t.file === was)) out.push({ file: was, before: true });
+  for (const t of c.takes) out.push({ ...t, before: t.file === was });
+  return out;
+}
+
+function select(id, opts = {}) {
+  const c = state.byId.get(id);
+  if (!c) return;
+  state.current = id;
+  history.replaceState(null, "", `#${encodeURIComponent(id)}`);
+  const takes = takesOf(c);
+  const reviewedTake = c.review && c.review.take && takes.some((t) => t.file === c.review.take) ? c.review.take : null;
+  state.take = reviewedTake || c.chosen || (takes[0] && takes[0].file);
+  for (const li of $("list").children) li.setAttribute("aria-current", String(li.dataset.id === id));
+  const cur = $("list").querySelector('[aria-current="true"]'); if (cur) cur.scrollIntoView({ block: "nearest" });
+  renderClip(c);
+  if ((opts.autoplay ?? true) && $("optAutoplay").checked && state.take) play(state.take);
+}
+
+function play(file) {
+  if (!file) return;
+  if (state.playing === file && !audio.paused) { audio.pause(); audio.currentTime = 0; state.playing = null; markPlaying(); return; }
+  audio.src = `/audio/${file}`;
+  audio.playbackRate = $("optSlow").checked ? 0.7 : 1;
+  state.playing = file;
+  audio.play().catch(() => { state.playing = null; markPlaying(); });
+  markPlaying();
+}
+function markPlaying() { for (const el of document.querySelectorAll(".take")) el.classList.toggle("playing", el.dataset.file === state.playing); }
+
+function chooseTake(file) {
+  state.take = file;
+  for (const el of document.querySelectorAll(".take")) el.setAttribute("aria-checked", String(el.dataset.file === file));
+}
+
+function heardLine(t) {
+  const bits = [];
+  if (t.heard_ar) bits.push(h("span", {}, "ar: ", h("span", { dir: /[؀-ۿ]/.test(t.heard_ar) ? "rtl" : "ltr" }, t.heard_ar)));
+  if (t.heard_en) bits.push(h("span", {}, "  ·  en: ", t.heard_en));
+  if (t.heard_framed) bits.push(h("span", {}, "  ·  framed: ", t.heard_framed));
+  return bits.length ? h("div", { class: "heard" }, "Transcriber heard  ", ...bits) : null;
+}
+
+function renderClip(c) {
+  const main = $("main");
+  const takes = takesOf(c);
+  const review = c.review || {};
+  // what it should say
+  const say = h("section", { class: "card" },
+    h("div", { class: "head" },
+      h("span", { class: "badge acc" }, KIND_LABEL[c.kind] || c.kind),
+      h("span", { class: "mono" }, c.id),
+      c.lesson ? h("span", { class: "badge" }, c.lesson) : null,
+      h("span", { class: `badge ${c.status === "done" ? "ok" : c.status === "retake" ? "warn" : ""}` }, STATUS_LABEL[c.status]),
+      c.pinned ? h("span", { class: "badge ok" }, "pinned by ear") : null,
+      c.group !== "other" ? h("span", { class: "badge" }, GROUP_LABEL[c.group]) : null),
+    c.mdc ? h("div", { class: "glyphline hiero", "aria-label": `Hieroglyphs ${c.mdc}` }, glyphs(c.mdc)) : null,
+    h("div", { class: "respell tr" }, c.latin),
+    c.meaning ? h("div", { class: "meaning" }, c.meaning) : null,
+    h("dl", { class: "kv" },
+      h("dt", {}, "Transliteration"), h("dd", { class: "tr" }, c.spoken),
+      h("dt", {}, "IPA"), h("dd", { class: "tr" }, `/${c.ipa}/`),
+      c.mdc ? [h("dt", {}, "Signs"), h("dd", { class: "mono" }, c.mdc)] : null,
+      c.usedInText ? [h("dt", {}, "In the phrase"), h("dd", {}, h("span", { class: "mono" }, c.usedIn), "  ", h("span", { class: "tr" }, c.usedInText))] : null),
+    c.tokens ? h("div", { class: "tokens" }, c.tokens.map((t) => h("div", { class: "token" },
+      h("div", { class: "hiero" }, glyphs(t.mdc)), h("div", { class: "tr" }, t.translit), h("div", { class: "g" }, t.gloss)))) : null,
+    (c.flags || []).map((f) => h("div", { class: "flag" },
+      h("b", {}, f.reason === "reported" ? "Reported" : f.reason === "rule" ? "Rule change" : (f.reason || "Note")),
+      f.note || "", f.report ? h("span", { class: "mono muted" }, `  (report ${f.report})`) : null)));
+
+  // takes
+  let n = 0;
+  const takeEls = takes.map((t) => {
+    const label = t.before && !t.text ? "Before" : `Take ${++n}`;
+    const keyHint = t.before && !t.text ? "B" : String(n);
+    const el = h("div", { class: "take", role: "radio", tabindex: "0", "data-file": t.file, "aria-checked": String(t.file === state.take),
+        onclick: (e) => { chooseTake(t.file); if (!e.target.closest(".play")) play(t.file); },
+        onkeydown: (e) => { if (e.key === "Enter") { chooseTake(t.file); play(t.file); } } },
+      h("button", { class: "play", "aria-label": `Play ${label}`, onclick: (e) => { e.stopPropagation(); chooseTake(t.file); play(t.file); } }, "▶"),
+      h("span", { class: "key" }, keyHint),
+      h("div", {},
+        h("div", { class: "meta" },
+          h("span", { class: "label" }, label),
+          t.file === c.chosen ? h("span", { class: "badge acc" }, "in the app now") : null,
+          t.before ? h("span", { class: "badge warn" }, "before") : null,
+          t.text ? h("span", { class: `badge ${t.passed ? "ok" : "bad"}` }, t.passed ? "passes check" : `fails check ${t.score ?? ""}`) : null,
+          t.text ? h("span", { class: "badge" }, t.lang === "ar" ? "told: Arabic" : "older recording") : null,
+          t.seed != null ? h("span", { class: "badge" }, `seed ${t.seed}`) : null,
+          t.framed ? h("span", { class: "badge" }, "cut from “qul: …”") : null),
+        heardLine(t)),
+      h("span", { class: "mono muted small" }, t.file.slice(0, 8)));
+    el.dataset.key = keyHint;
+    return el;
+  });
+  const takesCard = h("section", { class: "card" }, h("h2", {}, takes.length > 1 ? "Takes — pick the best one" : "Take"),
+    takes.length ? h("div", { class: "takes", role: "radiogroup", "aria-label": "Takes" }, takeEls) : h("div", { class: "muted" }, "No take recorded yet."));
+
+  // verdict
+  const tagSet = new Set(review.tags || []);
+  const comment = h("textarea", { id: "comment", placeholder: "What should change? e.g. “the r should roll”, “say iyet with a clear y”, “stress the second syllable”" });
+  comment.value = review.comment || "";
+  const saved = h("div", { class: "saved", id: "saved" }, review.at ? `Saved ${new Date(review.at).toLocaleString()}` : "");
+  const vb = (v, cls, text, key) => h("button", { class: `vbtn ${cls}`, "aria-pressed": String(review.verdict === v), onclick: () => verdict(v) }, text, h("span", { class: "key" }, key));
+  const verdictCard = h("section", { class: "card" },
+    h("h2", {}, "Your verdict"),
+    h("div", { class: "verdicts" },
+      vb("ok", "ok", "✓ Sounds right", "G"),
+      vb("retake", "retake", "↻ Needs a retake", "R"),
+      vb("skip", "skip", "Skip for now", "S")),
+    h("div", { class: "chips", role: "group", "aria-label": "What is wrong" }, TAGS.map((tag) => h("button", { class: "chipb", "aria-pressed": String(tagSet.has(tag)),
+      onclick: (e) => { tagSet.has(tag) ? tagSet.delete(tag) : tagSet.add(tag); e.currentTarget.setAttribute("aria-pressed", String(tagSet.has(tag))); state.tags = tagSet; queueSave(); } }, tag))),
+    comment, saved,
+    (review.history || []).length ? h("div", { class: "history" }, h("b", {}, "Earlier verdicts: "),
+      review.history.map((r) => h("div", {}, `${new Date(r.at).toLocaleDateString()} — ${r.verdict}${(r.tags || []).length ? ` (${r.tags.join(", ")})` : ""}${r.comment ? `: ${r.comment}` : ""}`))) : null,
+    h("details", { style: "margin-top:12px" }, h("summary", {}, "What the voice was given"),
+      h("div", { class: "ar", dir: "rtl" }, c.candidates.map((t) => h("div", {}, t)))));
+  state.tags = tagSet;
+  comment.addEventListener("input", queueSave);
+  comment.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") { comment.blur(); e.preventDefault(); }
+    if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) { e.preventDefault(); flushSave().then(() => next()); }
+  });
+  main.replaceChildren(say, takesCard, verdictCard);
+  main.scrollTop = 0;
+}
+
+let saveTimer = null;
+function queueSave() { clearTimeout(saveTimer); $("saved").textContent = "Saving…"; saveTimer = setTimeout(() => send(currentVerdict()), 600); }
+function flushSave() { clearTimeout(saveTimer); return send(currentVerdict()); }
+function currentVerdict() { const c = state.byId.get(state.current); return c && c.review ? c.review.verdict : null; }
+
+async function send(v) {
+  const c = state.byId.get(state.current);
+  if (!c) return;
+  const body = { id: c.id, verdict: v ?? null, take: state.take, tags: [...(state.tags || [])], comment: ($("comment") || {}).value || "" };
+  try {
+    const r = await fetch("/api/review", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body) });
+    const res = await r.json();
+    if (!r.ok) throw new Error(res.error || r.status);
+    c.review = Object.keys(res).length ? res : null;
+    c.status = !v ? (c.group !== "other" ? "todo" : "fine") : v === "ok" ? "done" : v === "retake" ? "retake" : "skipped";
+    $("saved").textContent = `Saved ${new Date().toLocaleTimeString()}`;
+    renderTabs();
+    const li = $("list").querySelector(`[data-id="${CSS.escape(c.id)}"] .dot`);
+    if (li) li.className = `dot ${c.status}`;
+  } catch (e) { $("saved").textContent = `Not saved: ${e.message}`; }
+}
+
+async function verdict(v) {
+  const c = state.byId.get(state.current);
+  if (!c) return;
+  const after = nextId(1);
+  await send(v);
+  for (const b of document.querySelectorAll(".vbtn")) b.setAttribute("aria-pressed", "false");
+  const pressed = document.querySelector(`.vbtn.${v === "skip" ? "skip" : v}`);
+  if (pressed) pressed.setAttribute("aria-pressed", "true");
+  if (v === "retake") { $("comment").focus(); return; }
+  if ($("optAdvance").checked && after) { renderList(); select(after); }
+  else renderList();
+}
+
+function nextId(step) {
+  const items = filtered();
+  const i = items.findIndex((c) => c.id === state.current);
+  if (i < 0) return items[0] ? items[0].id : null;
+  const j = i + step;
+  return j >= 0 && j < items.length ? items[j].id : null;
+}
+function next() { renderList(); const id = nextId(1) || filtered()[0]?.id; if (id) select(id); }
+function prev() { const id = nextId(-1); if (id) select(id); }
+
+document.addEventListener("keydown", (e) => {
+  const typing = e.target.matches("input, textarea, select");
+  if (e.key === "?" && !typing) { $("help").classList.add("open"); return; }
+  if (e.key === "Escape") { $("help").classList.remove("open"); if (e.target.id === "q") e.target.blur(); return; }
+  if (typing || e.ctrlKey || e.metaKey || e.altKey) return;
+  const takes = [...document.querySelectorAll(".take")];
+  const k = e.key.toLowerCase();
+  if (/^[1-9]$/.test(e.key)) {
+    const el = takes.find((t) => t.dataset.key === e.key);
+    if (el) { chooseTake(el.dataset.file); play(el.dataset.file); e.preventDefault(); }
+  } else if (k === "b") {
+    const el = takes.find((t) => t.dataset.key === "B") || takes.find((t) => t.querySelector(".badge.warn"));
+    if (el) { play(el.dataset.file); e.preventDefault(); }
+  } else if (e.key === " ") { play(state.take); e.preventDefault(); }
+  else if (k === "g") { verdict("ok"); e.preventDefault(); }
+  else if (k === "r") { verdict("retake"); e.preventDefault(); }
+  else if (k === "s") { verdict("skip"); e.preventDefault(); }
+  else if (k === "j" || e.key === "ArrowDown") { next(); e.preventDefault(); }
+  else if (k === "k" || e.key === "ArrowUp") { prev(); e.preventDefault(); }
+  else if (e.key === "/") { $("q").focus(); e.preventDefault(); }
+});
+
+$("group").addEventListener("change", (e) => { state.group = e.target.value; renderList(); const f = filtered()[0]; if (f) select(f.id, { autoplay: false }); });
+$("kind").addEventListener("change", (e) => { state.kind = e.target.value; renderList(); const f = filtered()[0]; if (f) select(f.id, { autoplay: false }); });
+$("q").addEventListener("input", (e) => { state.q = e.target.value.trim(); renderList(); });
+$("reload").addEventListener("click", () => load(state.current));
+$("helpBtn").addEventListener("click", () => $("help").classList.add("open"));
+$("helpClose").addEventListener("click", () => $("help").classList.remove("open"));
+$("help").addEventListener("click", (e) => { if (e.target.id === "help") $("help").classList.remove("open"); });
+for (const id of ["optAutoplay", "optAdvance", "optSlow"]) $(id).addEventListener("change", savePrefs);
+const p = prefs();
+$("optAutoplay").checked = p.autoplay ?? true;
+$("optAdvance").checked = p.advance ?? true;
+$("optSlow").checked = p.slow ?? false;
+load().catch((e) => { $("main").replaceChildren(h("div", { class: "empty" }, `Could not load clips: ${e.message}. Is tools/review.py running?`)); });
+</script>
+</body>
+</html>

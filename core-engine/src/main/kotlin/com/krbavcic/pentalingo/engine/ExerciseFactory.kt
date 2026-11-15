@@ -600,9 +600,16 @@ class ExerciseFactory(
 
     fun breakdown(mdc: String): String = signsOf(mdc).joinToString(" + ") { signShort(it) }
 
+    /** A word's signs, each with the value it has in that word: the throne is ws in wsjr, not st. */
+    fun breakdown(word: WordItem): String = readingsInWord(course, word).joinToString(" + ") { reading ->
+        val sign = course.signFor(reading.code)
+        val sound = soundIn(course, reading)
+        if (sign != null && sound != null) "${sign.name} ${Translit.display(sound)}" else signShort(reading.code)
+    }
+
     /** How a word is written; when it is not read straight off its signs, its note says why. */
     fun wordExplanation(word: WordItem): String =
-        "${Translit.display(word.translit)} “${word.gloss}” is written ${breakdown(word.mdc)}." +
+        "${Translit.display(word.translit)} “${word.gloss}” is written ${breakdown(word)}." +
             (word.note?.takeIf { !readsInOrder(course, word) }?.let { " $it" } ?: "")
 
     /**
@@ -654,7 +661,7 @@ class ExerciseFactory(
             prompt = Display(mdc = word.mdc),
             choices = choices,
             correct = correct,
-            explain = "${breakdown(word.mdc)} → ${Translit.display(word.translit)}, “${word.gloss}”.",
+            explain = "${breakdown(word)} → ${Translit.display(word.translit)}, “${word.gloss}”.",
             credits = phonetic.map { it.id }.distinct(),
             tallies = listOf(TALLY_SOUNDED_OUT, soundedOut(word.id)),
         )

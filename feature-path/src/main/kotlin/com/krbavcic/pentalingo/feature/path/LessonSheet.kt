@@ -58,7 +58,7 @@ fun LessonSheet(
         Text(lesson.title, style = Type.display)
         Text(lesson.focus, style = Type.bodySoft)
 
-        val previews = lesson.teach.mapNotNull { id ->
+        fun spellings(ids: List<String>) = ids.mapNotNull { id ->
             when (val item = course[id]) {
                 is SignItem -> item.code
                 is WordItem -> item.mdc
@@ -66,16 +66,24 @@ fun LessonSheet(
                 is ConceptItem -> null
                 null -> null
             }
-        }.take(8)
-        if (previews.isNotEmpty()) {
-            FlowRow(horizontalArrangement = Arrangement.spacedBy(14.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                previews.forEach { mdc ->
-                    Glyphs(mdc, quadrat = 40.dp, color = { s ->
-                        val sign = course.signFor(s.glyph.code)
-                        if (sign != null && progress.isIntroduced(sign.id)) Palette.paint(sign.paint) else Palette.ink
-                    })
-                }
+        }
+        @Composable
+        fun Spellings(mdcs: List<String>) = FlowRow(horizontalArrangement = Arrangement.spacedBy(14.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+            mdcs.forEach { mdc ->
+                Glyphs(mdc, quadrat = 40.dp, color = { s ->
+                    val sign = course.signFor(s.glyph.code)
+                    if (sign != null && progress.isIntroduced(sign.id)) Palette.paint(sign.paint) else Palette.ink
+                })
             }
+        }
+        val previews = spellings(lesson.teach).take(8)
+        if (previews.isNotEmpty()) Spellings(previews)
+        // What the lesson drills again from before: "The four h's" teaches three and practises the
+        // plain h, which a learner missed on the sheet when only the new signs were shown.
+        val practised = spellings(lesson.practice).take(6)
+        if (practised.isNotEmpty()) {
+            Text("Also practised", style = Type.small)
+            Spellings(practised)
         }
         val learned = lesson.teach.count(progress::isIntroduced)
         if (lesson.teach.isNotEmpty()) {

@@ -106,7 +106,18 @@ data class Token(
     val translit: String,
     val gloss: String,
     val wordId: String? = null,
-)
+) {
+    /**
+     * The clip of this word as written here — `jt=f` "itef", where the dictionary form `jt` is
+     * only "it". The course records one only where the form sounds different from its word, so a
+     * player falls back to the word's own clip ([wordId]) when there is none.
+     */
+    val clipId: String get() = formClipId(translit)
+
+    companion object {
+        fun formClipId(translit: String): String = "f:$translit"
+    }
+}
 
 data class PhraseItem(
     override val id: String,

@@ -1,5 +1,8 @@
 package com.krbavcic.pentalingo.core.ui
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import com.krbavcic.pentalingo.model.Paint
 import com.krbavcic.pentalingo.model.UnitColor
@@ -17,20 +20,27 @@ import com.krbavcic.pentalingo.model.UnitColor
  * - **turquoise** is "right";
  * - **ochre** is "nearly" and things in progress;
  * - **rubric** red is "not this" — the colour scribes used for headings, not a scolding.
+ *
+ * With [Contrast.high] (Settings → High contrast) the sheet turns plain and pale and every ink
+ * and paint darkens to at least 4.5:1 against it: learners found brown on light brown hard to
+ * read (the codex, Nov 2026). The faint ink of unlearned signs and the gold, malachite and ochre
+ * paints fell below 3:1 on the papyrus.
  */
 object Palette {
-    val sheet = Color(0xFFEFE2BF)
-    val sheetLight = Color(0xFFF7EED6)
-    val sheetDeep = Color(0xFFE2D0A2)
-    val fiber = Color(0xFFC7AB72)
-    val edge = Color(0xFFB9975A)
+    private val high get() = Contrast.high
 
-    val ink = Color(0xFF2B2118)
-    val inkSoft = Color(0xFF5B4935)
-    val inkFaint = Color(0xFF9A8463)
+    val sheet get() = if (high) Color(0xFFFFFCF5) else Color(0xFFEFE2BF)
+    val sheetLight get() = if (high) Color(0xFFFFFFFF) else Color(0xFFF7EED6)
+    val sheetDeep get() = if (high) Color(0xFFF0E9DA) else Color(0xFFE2D0A2)
+    val fiber = Color(0xFFC7AB72)
+    val edge get() = if (high) Color(0xFF8C7246) else Color(0xFFB9975A)
+
+    val ink get() = if (high) Color(0xFF110D09) else Color(0xFF2B2118)
+    val inkSoft get() = if (high) Color(0xFF2E241A) else Color(0xFF5B4935)
+    val inkFaint get() = if (high) Color(0xFF6A5A43) else Color(0xFF9A8463)
     val inkGhost = Color(0x332B2118)
 
-    val rubric = Color(0xFFB3382B)
+    val rubric get() = if (high) Color(0xFF8A2A20) else Color(0xFFB3382B)
     val rubricDeep = Color(0xFF8A2A20)
 
     val gold = Color(0xFFDDAA2E)
@@ -53,8 +63,16 @@ object Palette {
     val malachiteDeep = Color(0xFF2C6A42)
     val carnelian = Color(0xFFB9472F)
 
-    /** The paint a learned sign is drawn in. */
-    fun paint(p: Paint): Color = when (p) {
+    /** The paint a learned sign is drawn in; darker under high contrast. */
+    fun paint(p: Paint): Color = if (high) when (p) {
+        Paint.CARNELIAN -> Color(0xFF8E3220)
+        Paint.OCHRE -> Color(0xFF8A4A10)
+        Paint.LAPIS -> Color(0xFF1C4791)
+        Paint.TURQUOISE -> Color(0xFF0F5A50)
+        Paint.MALACHITE -> Color(0xFF24603A)
+        Paint.GOLD -> Color(0xFF7A5600)
+        Paint.INK -> ink
+    } else when (p) {
         Paint.CARNELIAN -> carnelian
         Paint.OCHRE -> ochreDeep
         Paint.LAPIS -> lapis
@@ -91,4 +109,12 @@ object Palette {
         blue = a.blue + (b.blue - a.blue) * t,
         alpha = a.alpha + (b.alpha - a.alpha) * t,
     )
+}
+
+/**
+ * Reading options that change how everything is drawn: set once from the learner's settings and
+ * read wherever colour is chosen, so a change repaints the whole app.
+ */
+object Contrast {
+    var high: Boolean by mutableStateOf(false)
 }

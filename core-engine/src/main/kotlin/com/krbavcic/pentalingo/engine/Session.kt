@@ -35,6 +35,11 @@ data class SessionResult(
     val near: Int,
     val completed: Boolean,
     val textRead: String?,
+    /**
+     * Time spent on the session's pages, each pause counted up to [Session.MAX_PAUSE_MS]: a lesson
+     * left open while the phone lay on the table is not study. -1 when unknown.
+     */
+    val activeSeconds: Long = -1,
 ) {
     val accuracy: Double get() = if (graded == 0) 1.0 else (correct + 0.5 * near) / graded
 }
@@ -83,6 +88,16 @@ class Session private constructor(
     private var near = 0
     private var done = 0
     private var textRead: String? = null
+    private var activeMs = 0L
+    private var lastActive = startedAt
+
+    /** Counts the time since the last page turn or answer, a long pause only up to [MAX_PAUSE_MS]. */
+    private fun tick(): Long {
+        val now = clock()
+        activeMs += (now - lastActive).coerceIn(0, MAX_PAUSE_MS)
+        lastActive = now
+        return now
+    }
 
     var current: Exercise? = null
         private set
@@ -107,6 +122,7 @@ class Session private constructor(
 
     /** Moves to the next exercise. Returns null when the session is over. */
     fun advance(): Exercise? {
+        tick()
         if (current != null) done++
         current = null
         verdict = null
@@ -132,12 +148,12 @@ class Session private constructor(
         check(verdict == null) { "Already answered" }
         val checked = checker.check(ex, answer)
         val v = if (hinted && checked.outcome == Outcome.CORRECT) {
-            checked.copy(outcome = Outcome.NEAR, note = listOfNotNull("Right — with a hint.", checked.note).joinToString(" "))
+            checked.copy(outcome = Outcome.NEAR, hinted = true)
         } else checked
         verdict = v
+        val now = tick()
         if (ex is Teach || ex is ReadText) return v
 
-        val now = clock()
         graded++
         when (v.outcome) {
             Outcome.CORRECT -> correct++
@@ -267,9 +283,12 @@ class Session private constructor(
         near = near,
         completed = isFinished,
         textRead = textRead.takeIf { isFinished },
+        activeSeconds = (activeMs + (clock() - lastActive).coerceIn(0, MAX_PAUSE_MS)) / 1000,
     )
 
     companion object {
+        /** The longest pause counted as study: reading a long text page can take a few minutes. */
+        const val MAX_PAUSE_MS = 5 * 60_000L
         const val MAX_REASKS = 2
         const val MAX_APPEARANCES = 4
         const val MAX_LENGTH = 26

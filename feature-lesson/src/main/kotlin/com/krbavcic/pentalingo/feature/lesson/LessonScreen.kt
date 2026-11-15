@@ -49,6 +49,7 @@ import com.krbavcic.pentalingo.core.ui.Palette
 import com.krbavcic.pentalingo.core.ui.RoundIconButton
 import com.krbavcic.pentalingo.core.ui.Scrim
 import com.krbavcic.pentalingo.core.ui.Type
+import com.krbavcic.pentalingo.core.ui.Voice
 import com.krbavcic.pentalingo.core.ui.page
 import com.krbavcic.pentalingo.core.ui.papyrus
 import com.krbavcic.pentalingo.core.ui.rememberHaptics
@@ -135,15 +136,8 @@ fun LessonScreen(
             Outcome.NEAR -> { sfx.near(); haptics.correct() }
             Outcome.WRONG -> { sfx.wrong(); haptics.wrong() }
         }
-        val ex = session.current
-        // Pairs say each pair as it is matched; replaying the exercise's own item here would talk
-        // over the last pair with a different word. A number's item is one of its numeral signs,
-        // whose clip says the sign's sound, not the number.
-        if (autoplay && ex != null && ex !is Pairs && ex !is ReadNumber && ex !is BuildNumber) {
-            // Hearing the right answer after every question is how the sounds stick.
-            val audioId = (ex as? MultipleChoice)?.prompt?.audio ?: ex.itemId
-            if (voice.has(audioId)) voice.play(audioId)
-        }
+        // Hearing the right answer after every question is how the sounds stick.
+        if (autoplay) answerClip(session.current, voice)?.let { voice.play(it) }
     }
 
     BackHandler { confirmLeave = true }
@@ -210,6 +204,7 @@ fun LessonScreen(
                     exercise = current,
                     verdict = verdict,
                     pending = pending,
+                    replay = answerClip(current, voice)?.let { id -> { slow: Boolean -> voice.play(id, slow) } },
                     onCheck = { pending?.let(::check) },
                     onContinue = {
                         if (current is Teach || current is ReadText) session.submit(Answer.Seen)
@@ -266,6 +261,7 @@ private fun BottomBar(
     exercise: Exercise,
     verdict: Verdict?,
     pending: Answer?,
+    replay: ((slow: Boolean) -> Unit)?,
     onCheck: () -> Unit,
     onContinue: () -> Unit,
 ) {
@@ -284,16 +280,16 @@ private fun BottomBar(
             enter = slideInVertically(tween(220)) { it } + fadeIn(),
             exit = slideOutVertically { it } + fadeOut(),
         ) {
-            if (verdict != null) Feedback(verdict, onContinue)
+            if (verdict != null) Feedback(verdict, replay, onContinue)
         }
     }
 }
 
 @Composable
-private fun Feedback(verdict: Verdict, onContinue: () -> Unit) {
+private fun Feedback(verdict: Verdict, replay: ((slow: Boolean) -> Unit)?, onContinue: () -> Unit) {
     val (band, title, pigment) = when (verdict.outcome) {
         Outcome.CORRECT -> Triple(Palette.turquoiseLight, praise(verdict), Palette.unit(UnitColor.TURQUOISE))
-        Outcome.NEAR -> Triple(Palette.ochreLight, "Nearly", Palette.unit(UnitColor.OCHRE))
+        Outcome.NEAR -> Triple(Palette.ochreLight, if (verdict.hinted) "Right — with a hint" else "Nearly", Palette.unit(UnitColor.OCHRE))
         Outcome.WRONG -> Triple(androidx.compose.ui.graphics.Color(0xFFF3D5CD), "Not quite", Palette.unit(UnitColor.CARNELIAN))
     }
     Column(
@@ -304,8 +300,15 @@ private fun Feedback(verdict: Verdict, onContinue: () -> Unit) {
             .padding(horizontal = 20.dp, vertical = 16.dp),
         verticalArrangement = Arrangement.spacedBy(6.dp),
     ) {
-        Text(title, style = Type.title, color = pigment.deep)
-        if (verdict.outcome != Outcome.CORRECT) {
+        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+            Text(title, style = Type.title, color = pigment.deep, modifier = Modifier.weight(1f))
+            // Right or wrong, the answer can be heard again, as often as wanted.
+            replay?.let { play ->
+                SlowButton { play(true) }
+                RoundIconButton(IconKind.SPEAKER, { play(false) }, size = 44.dp, description = "Hear it again")
+            }
+        }
+        if (verdict.outcome != Outcome.CORRECT && !verdict.hinted) {
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 verdict.solutionMdc?.let { com.krbavcic.pentalingo.core.ui.Glyphs(it, quadrat = 40.dp) }
                 verdict.solution?.let { Text("Answer: ${Translit.display(it)}", style = Type.heading, color = Palette.ink) }
@@ -343,4 +346,15 @@ private fun LeaveDialog(onStay: () -> Unit, onLeave: () -> Unit, modifier: Modif
             pigment = Palette.Pigment(Palette.sheetDeep, Palette.edge, Palette.sheet), textColor = Palette.rubric,
         )
     }
+}
+
+/**
+ * The clip that says an exercise's answer, if it has one. Pairs say each pair as it is matched,
+ * so a replay of the exercise's own item would be a different word; a number's item is one of
+ * its numeral signs, whose clip says the sign's sound, not the number.
+ */
+private fun answerClip(ex: Exercise?, voice: Voice): String? {
+    if (ex == null || ex is Pairs || ex is ReadNumber || ex is BuildNumber || ex is Teach || ex is ReadText) return null
+    val id = (ex as? MultipleChoice)?.prompt?.audio ?: ex.itemId
+    return id.takeIf(voice::has)
 }

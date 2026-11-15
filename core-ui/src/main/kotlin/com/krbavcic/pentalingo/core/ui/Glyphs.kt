@@ -4,10 +4,13 @@ import android.content.Context
 import android.graphics.Typeface
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
@@ -87,10 +90,11 @@ fun Glyphs(
 ) {
     BoxWithConstraints(modifier) {
         val density = LocalDensity.current
-        val fitted = if (inscription.width <= 0f) quadrat else {
-            val maxQ = maxWidth / inscription.width
-            if (maxWidth == Dp.Infinity || maxQ >= quadrat) quadrat else maxQ
-        }
+        // Shrink to fit the space, across and, where the box has a height, down too: a cartouche
+        // is taller than a quadrat with its ring, and overflowed the fixed-height pair tiles.
+        var fitted = quadrat
+        if (inscription.width > 0f && maxWidth != Dp.Infinity) fitted = minOf(fitted, maxWidth / inscription.width)
+        if (inscription.height > 0f && maxHeight != Dp.Infinity) fitted = minOf(fitted, maxHeight / inscription.height)
         val w = fitted * inscription.width
         val h = fitted * inscription.height
         val context = LocalContext.current
@@ -166,6 +170,68 @@ fun Glyphs(
                         s.box.x * qPx - ink.xMin * k,
                         s.box.y * qPx + ink.yMax * k,
                         paint,
+                    )
+                }
+            }
+        }
+    }
+}
+
+/**
+ * The smallest a quadrat of running text is drawn. Below it a line wraps between words instead
+ * of shrinking: a long sentence was scaled down to one row, to a few dp per sign. The size is
+ * the reference a tester gave: a four-word line of Ptahhotep in an arrange exercise on a phone.
+ */
+val MinQuadrat = 34.dp
+
+/**
+ * A line of words, wrapped between words where it would otherwise be drawn below [minQuadrat].
+ * All rows share one size; a row is never wider than the space, and tokens keep their indices in
+ * the whole line, so [color], [highlightToken], [onToken] and [onSign] work as on one row.
+ */
+@Composable
+fun GlyphLine(
+    words: List<String>,
+    modifier: Modifier = Modifier,
+    quadrat: Dp = 48.dp,
+    minQuadrat: Dp = MinQuadrat,
+    mirrored: Boolean = false,
+    color: (PlacedSign) -> Color = { Palette.ink },
+    highlightToken: Int? = null,
+    onToken: ((Int) -> Unit)? = null,
+    onSign: ((PlacedSign) -> Unit)? = null,
+) {
+    BoxWithConstraints(modifier) {
+        val whole = lineOf(words)
+        val floor = minOf(quadrat, minQuadrat)
+        if (maxWidth == Dp.Infinity || whole.width <= 0f || maxWidth / whole.width >= floor || words.size < 2) {
+            Glyphs(whole, quadrat = quadrat, mirrored = mirrored, color = color, highlightToken = highlightToken, onToken = onToken, onSign = onSign)
+        } else {
+            val budget = maxWidth / floor
+            val rows = mutableListOf<IntRange>()
+            var start = 0
+            while (start < words.size) {
+                var end = start + 1
+                while (end < words.size && lineOf(words.subList(start, end + 1)).width <= budget) end++
+                rows += start until end
+                start = end
+            }
+            val widest = rows.maxOf { lineOf(words.subList(it.first, it.last + 1)).width }
+            val size = minOf(quadrat, maxWidth / widest)
+            Column(
+                verticalArrangement = Arrangement.spacedBy(size * 0.3f),
+                horizontalAlignment = if (mirrored) Alignment.End else Alignment.Start,
+            ) {
+                for (row in rows) {
+                    val offset = row.first
+                    Glyphs(
+                        lineOf(words.subList(row.first, row.last + 1)),
+                        quadrat = size,
+                        mirrored = mirrored,
+                        color = { s -> color(s.copy(token = s.token + offset)) },
+                        highlightToken = highlightToken?.minus(offset)?.takeIf { it in 0..(row.last - row.first) },
+                        onToken = onToken?.let { f -> { i: Int -> f(i + offset) } },
+                        onSign = onSign?.let { f -> { s: PlacedSign -> f(s.copy(token = s.token + offset)) } },
                     )
                 }
             }

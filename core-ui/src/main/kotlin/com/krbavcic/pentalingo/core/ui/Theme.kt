@@ -24,15 +24,15 @@ val Serif = FontFamily(
 )
 
 object Type {
-    val display = TextStyle(fontFamily = Serif, fontWeight = FontWeight.Bold, fontSize = 28.sp, lineHeight = 34.sp, color = Palette.ink)
-    val title = TextStyle(fontFamily = Serif, fontWeight = FontWeight.Bold, fontSize = 21.sp, lineHeight = 27.sp, color = Palette.ink)
-    val heading = TextStyle(fontFamily = Serif, fontWeight = FontWeight.Bold, fontSize = 17.sp, lineHeight = 22.sp, color = Palette.ink)
-    val body = TextStyle(fontFamily = Serif, fontSize = 16.sp, lineHeight = 23.sp, color = Palette.ink)
-    val bodySoft = body.copy(color = Palette.inkSoft)
-    val small = TextStyle(fontFamily = Serif, fontSize = 13.sp, lineHeight = 18.sp, color = Palette.inkSoft)
-    val label = TextStyle(fontFamily = Serif, fontWeight = FontWeight.Bold, fontSize = 15.sp, letterSpacing = 0.6.sp, color = Palette.ink)
-    val translit = TextStyle(fontFamily = Serif, fontStyle = FontStyle.Italic, fontSize = 18.sp, lineHeight = 24.sp, color = Palette.ink)
-    val rubric = TextStyle(fontFamily = Serif, fontWeight = FontWeight.Bold, fontSize = 13.sp, letterSpacing = 1.4.sp, color = Palette.rubric)
+    val display get() = TextStyle(fontFamily = Serif, fontWeight = FontWeight.Bold, fontSize = 28.sp, lineHeight = 34.sp, color = Palette.ink)
+    val title get() = TextStyle(fontFamily = Serif, fontWeight = FontWeight.Bold, fontSize = 21.sp, lineHeight = 27.sp, color = Palette.ink)
+    val heading get() = TextStyle(fontFamily = Serif, fontWeight = FontWeight.Bold, fontSize = 17.sp, lineHeight = 22.sp, color = Palette.ink)
+    val body get() = TextStyle(fontFamily = Serif, fontSize = 16.sp, lineHeight = 23.sp, color = Palette.ink)
+    val bodySoft get() = body.copy(color = Palette.inkSoft)
+    val small get() = TextStyle(fontFamily = Serif, fontSize = 13.sp, lineHeight = 18.sp, color = Palette.inkSoft)
+    val label get() = TextStyle(fontFamily = Serif, fontWeight = FontWeight.Bold, fontSize = 15.sp, letterSpacing = 0.6.sp, color = Palette.ink)
+    val translit get() = TextStyle(fontFamily = Serif, fontStyle = FontStyle.Italic, fontSize = 18.sp, lineHeight = 24.sp, color = Palette.ink)
+    val rubric get() = TextStyle(fontFamily = Serif, fontWeight = FontWeight.Bold, fontSize = 13.sp, letterSpacing = 1.4.sp, color = Palette.rubric)
 }
 
 @Composable

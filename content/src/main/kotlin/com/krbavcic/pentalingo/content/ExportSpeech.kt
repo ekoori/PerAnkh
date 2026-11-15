@@ -5,6 +5,7 @@ import com.krbavcic.pentalingo.model.Course
 import com.krbavcic.pentalingo.model.PhraseItem
 import com.krbavcic.pentalingo.model.SignItem
 import com.krbavcic.pentalingo.model.SignRole
+import com.krbavcic.pentalingo.model.Token
 import com.krbavcic.pentalingo.model.WordItem
 import com.krbavcic.pentalingo.script.Pronounce
 import java.io.File
@@ -81,7 +82,11 @@ private fun letterClip(id: String, letter: String): Clip {
     )
 }
 
-/** Every clip the course needs. */
+/**
+ * Every clip the course needs: one per item, and one per word form that a phrase writes and that
+ * sounds different from its dictionary word — tapping `jt=f` in a phrase must say "itef", not
+ * the "it" of `jt`.
+ */
 fun clips(course: Course): List<Clip> = course.items.mapNotNull { item ->
     when (item) {
         is SignItem -> item.spoken?.let { spoken ->
@@ -92,12 +97,49 @@ fun clips(course: Course): List<Clip> = course.items.mapNotNull { item ->
         is ConceptItem -> item.said?.let { wordClip(item.id, it) }
         else -> null
     }
+} + formsToRecord(course).map { wordClip(Token.formClipId(it), it) }
+
+/** The word forms phrases write that do not sound like their word's own clip, each once, in course order. */
+fun formsToRecord(course: Course): List<String> =
+    course.items.filterIsInstance<PhraseItem>().flatMap { it.tokens }
+        .filter { token ->
+            val word = token.wordId?.let { course[it] } as? WordItem ?: return@filter false
+            Pronounce.arabic(token.translit) != Pronounce.arabic(word.translit)
+        }
+        .map { it.translit }
+        .distinct()
+
+/** What a clip is for, shown to whoever reviews it by ear (`tools/review.py`): its signs, its meaning, where it is first heard. */
+private data class Context(
+    val mdc: String?,
+    val meaning: String?,
+    val lesson: String?,
+    val usedIn: PhraseItem? = null,
+    val tokens: List<Token> = emptyList(),
+)
+
+private fun contextOf(course: Course, id: String): Context {
+    fun lessonOf(itemId: String) = course.lessonTeaching(itemId)?.let { "${it.id} · ${it.title}" }
+    if (id.startsWith("f:")) {
+        val translit = id.removePrefix("f:")
+        val phrase = course.items.filterIsInstance<PhraseItem>().firstOrNull { p -> p.tokens.any { it.translit == translit } }
+        val token = phrase?.tokens?.first { it.translit == translit }
+        return Context(token?.mdc, token?.gloss, phrase?.let { lessonOf(it.id) }, phrase)
+    }
+    return when (val item = course[id]) {
+        is SignItem -> Context(item.code, listOfNotNull(item.name, item.meaning).joinToString(": "), lessonOf(id))
+        is WordItem -> Context(item.mdc, item.gloss, lessonOf(id))
+        is PhraseItem -> Context(item.tokens.joinToString(" ") { it.mdc }, item.translation, lessonOf(id), tokens = item.tokens)
+        is ConceptItem -> Context(item.mdc, "${item.title}: ${item.answer}", lessonOf(id))
+        else -> Context(null, null, null)
+    }
 }
 
 /**
- * Writes [clips] as JSON for `tools/voice.py`, which records them with ElevenLabs, and for
- * `tools/tla.py`, which counts the words in real texts (it uses each word's part of speech to
- * tell homographs apart). Run with `gradlew :content:run`.
+ * Writes [clips] as JSON for `tools/voice.py`, which records them with ElevenLabs, for
+ * `tools/review.py`, where they are checked by ear, and for `tools/tla.py`, which counts the
+ * words in real texts (it uses each word's part of speech to tell homographs apart). Run with
+ * `gradlew :content:run`.
  */
 fun main(args: Array<String>) {
     val out = File(args.firstOrNull() ?: "tools/out/speech.json")
@@ -108,6 +150,25 @@ fun main(args: Array<String>) {
                 (MIDDLE_EGYPTIAN[clip.id] as? WordItem)?.let { word ->
                     put("pos", JsonPrimitive(word.pos.name))
                     put("gloss", JsonPrimitive(word.gloss))
+                }
+                val context = contextOf(MIDDLE_EGYPTIAN, clip.id)
+                context.mdc?.let { put("mdc", JsonPrimitive(it)) }
+                context.meaning?.let { put("meaning", JsonPrimitive(it)) }
+                context.lesson?.let { put("lesson", JsonPrimitive(it)) }
+                context.usedIn?.let { phrase ->
+                    put("usedIn", JsonPrimitive(phrase.id))
+                    put("usedInText", JsonPrimitive("${phrase.translit} — ${phrase.translation}"))
+                }
+                if (context.tokens.isNotEmpty()) {
+                    put("tokens", buildJsonArray {
+                        for (t in context.tokens) {
+                            add(buildJsonObject {
+                                put("mdc", JsonPrimitive(t.mdc))
+                                put("translit", JsonPrimitive(t.translit))
+                                put("gloss", JsonPrimitive(t.gloss))
+                            })
+                        }
+                    })
                 }
                 put("id", JsonPrimitive(clip.id))
                 put("spoken", JsonPrimitive(clip.spoken))

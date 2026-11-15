@@ -29,8 +29,11 @@ fun Modifier.papyrus(base: Color = Palette.sheet, seed: Int = 7): Modifier = dra
     )
     onDrawBehind {
         drawRect(base)
-        fibres.forEach { it.draw(this) }
-        drawRect(vignette)
+        // High contrast reads on a plain sheet: the weave and the shadowed edges cost legibility.
+        if (!Contrast.high) {
+            fibres.forEach { it.draw(this) }
+            drawRect(vignette)
+        }
     }
 }
 

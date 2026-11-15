@@ -31,6 +31,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.krbavcic.pentalingo.core.ui.Chip
+import com.krbavcic.pentalingo.core.ui.GlyphLine
 import com.krbavcic.pentalingo.core.ui.Glyphs
 import com.krbavcic.pentalingo.core.ui.IconKind
 import com.krbavcic.pentalingo.core.ui.Palette
@@ -40,6 +41,10 @@ import com.krbavcic.pentalingo.core.ui.Type
 import com.krbavcic.pentalingo.core.ui.Voice
 import com.krbavcic.pentalingo.core.ui.lineOf
 import com.krbavcic.pentalingo.engine.Numerals
+import com.krbavcic.pentalingo.engine.SignReading
+import com.krbavcic.pentalingo.engine.distinctReadings
+import com.krbavcic.pentalingo.engine.readingsInWord
+import com.krbavcic.pentalingo.engine.soundIn
 import com.krbavcic.pentalingo.model.ConceptItem
 import com.krbavcic.pentalingo.model.Course
 import com.krbavcic.pentalingo.model.Item
@@ -137,9 +142,12 @@ private fun SignCard(sign: SignItem, voice: Voice, firstTime: Boolean) {
 }
 
 /** How one sign works inside a word: its sound, or what it classifies. */
-fun signRoleInWord(course: Course, code: String): String {
-    val s = course.signFor(code) ?: return code
+/** What a sign does in one word, for its sign-by-sign breakdown: "ws · throne" in wsjr, "silent · god". */
+fun signRoleInWord(course: Course, reading: SignReading): String {
+    val s = course.signFor(reading.code) ?: return reading.code
+    val sound = soundIn(course, reading)
     return when {
+        sound != null -> "${Translit.display(sound)} · ${s.name}"
         s.role == SignRole.DETERMINATIVE -> "silent · ${s.meaning}"
         s.role == SignRole.NUMERAL -> "stroke: “this sign means what it shows”"
         s.sounds.isNotEmpty() -> "${Translit.display(s.sounds[0])} · ${s.name}"
@@ -148,7 +156,7 @@ fun signRoleInWord(course: Course, code: String): String {
 }
 
 @Composable
-private fun Breakdown(mdc: String, course: Course) {
+private fun Breakdown(word: WordItem, course: Course) {
     Column(
         Modifier
             .fillMaxWidth()
@@ -158,10 +166,10 @@ private fun Breakdown(mdc: String, course: Course) {
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         Rubric("Sign by sign", color = Palette.inkSoft)
-        for (code in Mdc.parse(mdc).signs.distinct()) {
+        for (reading in distinctReadings(readingsInWord(course, word))) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Box(Modifier.width(56.dp), contentAlignment = Alignment.Center) { Glyphs(code, quadrat = 34.dp) }
-                Text(signRoleInWord(course, code), style = Type.body, modifier = Modifier.padding(start = 8.dp))
+                Box(Modifier.width(56.dp), contentAlignment = Alignment.Center) { Glyphs(reading.code, quadrat = 34.dp) }
+                Text(signRoleInWord(course, reading), style = Type.body, modifier = Modifier.padding(start = 8.dp))
             }
         }
     }
@@ -175,7 +183,7 @@ private fun WordCard(word: WordItem, course: Course, voice: Voice, firstTime: Bo
     }
     Text(word.gloss.replaceFirstChar { it.uppercase() }, style = Type.display)
     SoundLine(word.translit, Pronounce.latin(word.translit), word.id, voice)
-    Breakdown(word.mdc, course)
+    Breakdown(word, course)
     word.note?.let { Text(Translit.display(it), style = Type.bodySoft.copy(fontStyle = FontStyle.Italic)) }
 }
 
@@ -194,8 +202,8 @@ fun Interlinear(phrase: PhraseItem, voice: Voice, course: Course? = null) {
                     .widthIn(min = 64.dp)
                     .clip(RoundedCornerShape(12.dp))
                     .then(
-                        if (token.wordId != null && voice.has(token.wordId)) {
-                            Modifier.clickable { voice.play(token.wordId) }
+                        if (voice.tokenClip(token) != null) {
+                            Modifier.clickable { voice.playToken(token) }
                         } else Modifier,
                     )
                     .padding(6.dp),
@@ -254,14 +262,14 @@ fun ReadTextCard(course: Course, textId: String, lines: List<String>, voice: Voi
                     .padding(14.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                Glyphs(
-                    lineOf(phrase.tokens.map { it.mdc }),
+                GlyphLine(
+                    phrase.tokens.map { it.mdc },
                     quadrat = 46.dp,
                     color = { s -> course.signFor(s.glyph.code)?.let { Palette.paint(it.paint) } ?: Palette.ink },
                     highlightToken = tapped?.takeIf { it.first == lineId }?.second,
                     onToken = { i ->
                         tapped = lineId to i
-                        voice.play(phrase.tokens[i].wordId)
+                        voice.playToken(phrase.tokens[i])
                     },
                 )
                 Row(verticalAlignment = Alignment.CenterVertically) {

@@ -36,6 +36,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
@@ -185,7 +186,7 @@ fun Chip(text: String, modifier: Modifier = Modifier, color: Color = Palette.she
     }
 }
 
-enum class IconKind { SPEAKER, CLOSE, BACK, CHECK, BACKSPACE, GEAR, SLOW, FLAG }
+enum class IconKind { SPEAKER, CLOSE, BACK, CHECK, BACKSPACE, GEAR, SLOW, FLAG, HOME, UP, DOWN, HERE }
 
 /** The handful of icons the app needs, drawn rather than imported. */
 @Composable
@@ -216,6 +217,26 @@ fun DrawnIcon(kind: IconKind, modifier: Modifier = Modifier.size(24.dp), color: 
                     lineTo(s * 0.82f, s * 0.54f); lineTo(s * 0.26f, s * 0.5f); close()
                 }
                 drawPath(p, color)
+            }
+            IconKind.HOME -> {
+                val p = Path().apply {
+                    moveTo(s * 0.14f, s * 0.48f); lineTo(s * 0.5f, s * 0.16f); lineTo(s * 0.86f, s * 0.48f)
+                }
+                drawPath(p, color, style = Stroke(w * 1.2f, cap = StrokeCap.Round, join = StrokeJoin.Round))
+                val body = Path().apply {
+                    moveTo(s * 0.26f, s * 0.44f); lineTo(s * 0.26f, s * 0.84f); lineTo(s * 0.74f, s * 0.84f); lineTo(s * 0.74f, s * 0.44f)
+                }
+                drawPath(body, color, style = Stroke(w * 1.2f, cap = StrokeCap.Round, join = StrokeJoin.Round))
+            }
+            IconKind.UP, IconKind.DOWN -> {
+                val (tip, wing) = if (kind == IconKind.UP) s * 0.3f to s * 0.66f else s * 0.7f to s * 0.34f
+                drawLine(color, Offset(s * 0.2f, wing), Offset(s * 0.5f, tip), w * 1.4f, StrokeCap.Round)
+                drawLine(color, Offset(s * 0.5f, tip), Offset(s * 0.8f, wing), w * 1.4f, StrokeCap.Round)
+            }
+            IconKind.HERE -> {
+                // "You are here": a ring with a dot, where the learner's next lesson is.
+                drawCircle(color, s * 0.32f, style = Stroke(w * 1.2f))
+                drawCircle(color, s * 0.12f)
             }
             IconKind.CLOSE -> {
                 drawLine(color, Offset(s * 0.22f, s * 0.22f), Offset(s * 0.78f, s * 0.78f), w * 1.2f, StrokeCap.Round)

@@ -46,14 +46,16 @@ private fun sign(
 private fun uni(code: String, sound: String, name: String, hint: String, note: String? = null, like: List<String> = emptyList()) =
     sign(code, SignRole.UNILITERAL, name, listOf(sound), hint = hint, note = note, like = like)
 
-private fun det(code: String, name: String, meaning: String, note: String? = null, like: List<String> = emptyList()) =
-    sign(code, SignRole.DETERMINATIVE, name, meaning = meaning, note = note, like = like)
+/** [reading]: the word the sign is read as when it stands alone, not as a determinative (O49 njwt, "town"). */
+private fun det(code: String, name: String, meaning: String, note: String? = null, like: List<String> = emptyList(), reading: String? = null) =
+    sign(code, SignRole.DETERMINATIVE, name, meaning = meaning, reading = reading, note = note, like = like)
 
-private fun multi(code: String, sound: String, name: String, meaning: String? = null, hint: String? = null, note: String? = null, like: List<String> = emptyList()) =
-    sign(code, if (sound.length == 2) SignRole.BILITERAL else SignRole.TRILITERAL, name, listOf(sound), meaning, null, hint, note, like)
+/** [also]: the sign's other values, which some words read it as (the throne Q1 is st, and ws in wsjr). */
+private fun multi(code: String, sound: String, name: String, meaning: String? = null, hint: String? = null, note: String? = null, like: List<String> = emptyList(), also: List<String> = emptyList()) =
+    sign(code, if (sound.length == 2) SignRole.BILITERAL else SignRole.TRILITERAL, name, listOf(sound) + also, meaning, null, hint, note, like)
 
-private fun logo(code: String, sound: String, name: String, meaning: String, hint: String? = null, note: String? = null, like: List<String> = emptyList()) =
-    sign(code, SignRole.LOGOGRAM, name, listOf(sound), meaning, null, hint, note, like)
+private fun logo(code: String, sound: String, name: String, meaning: String, hint: String? = null, note: String? = null, like: List<String> = emptyList(), also: List<String> = emptyList()) =
+    sign(code, SignRole.LOGOGRAM, name, listOf(sound) + also, meaning, null, hint, note, like)
 
 private fun numeral(code: String, name: String, reading: String, note: String) =
     sign(code, SignRole.NUMERAL, name, reading = reading, note = note)
@@ -98,7 +100,7 @@ internal val SIGNS: List<SignItem> = listOf(
         listOf("V13", "D21")),
     uni("D21", "r", "mouth",
         "An “r”. On its own it writes r, “to, towards”.",
-        "Egyptian has no l; the mouth stands in for it in foreign names like Cleopatra.",
+        "The script has no sign of its own for l: foreign names write it with the mouth, r, or with n. Only Ptolemaic scribes gave l a sign, the lion, as in the names of Ptolemy and Cleopatra.",
         listOf("N35", "N37")),
     uni("O4", "h", "reed shelter",
         "A plain “h”, as in “house”.",
@@ -172,7 +174,7 @@ internal val SIGNS: List<SignItem> = listOf(
     det("H8", "egg", "goddess, female being", "An egg after a name marks a goddess or a woman."),
     det("O49", "village crossroads", "town, inhabited place",
         "A round settlement crossed by two streets. Also the word njwt, “town”.",
-        listOf("Aa1", "N5")),
+        listOf("Aa1", "N5"), reading = "njwt"),
     det("E20", "Seth animal", "Seth; chaos, storm",
         "An animal no zoologist has identified, with a forked tail and squared ears: Seth’s creature.",
         listOf("E16")),
@@ -230,7 +232,8 @@ internal val SIGNS: List<SignItem> = listOf(
     multi("T22", "sn", "arrowhead", null,
         "An arrowhead: it writes sn, as in sn, “brother”."),
     multi("Q1", "st", "throne", "seat, place",
-        "A carrying chair seen from the side. It begins the names of Isis and Osiris."),
+        "A carrying chair seen from the side: st, “seat”. In the names of the gods it reads otherwise: ws in wsjr, “Osiris”, and ꜣs in ꜣst, “Isis”.",
+        also = listOf("ws", "ꜣs")),
     multi("D4", "jr", "eye", "do, make; eye",
         "The human eye, with brow. It writes jr — and jrj, “to do, to make”."),
     logo("G5", "ḥr", "falcon", "Horus",
@@ -238,8 +241,9 @@ internal val SIGNS: List<SignItem> = listOf(
     logo("G26", "ḏḥwtj", "ibis on a standard", "Thoth",
         "The sacred ibis on its perch: Thoth, god of writing, counting and wisdom."),
     logo("H6", "mꜣꜥt", "feather", "truth, order, Maat",
-        "An ostrich feather: the feather of Maat, weighed against the heart.",
-        "Maat is not just truth but the right order of everything: justice, balance, the sun rising."),
+        "An ostrich feather: the feather of Maat, weighed against the heart. It also writes šw, as in Šw, “Shu”, the god of air.",
+        "Maat is not just truth but the right order of everything: justice, balance, the sun rising.",
+        also = listOf("šw")),
     logo("D28", "kꜣ", "two raised arms", "ka, life force",
         "Two arms raised to embrace: the ka, the vital force each person is born with.",
         "Offerings were made “for the ka” of the dead."),

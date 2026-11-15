@@ -118,6 +118,24 @@ class HintTest {
         while (ex is Teach) { s.submit(Answer.Seen); ex = s.advance() }
         val v = s.submit(ex!!.solution(), hinted = true)
         org.junit.Assert.assertEquals(Outcome.NEAR, v.outcome)
-        org.junit.Assert.assertTrue(v.note!!.startsWith("Right"))
+        // ...and is shown as right, with a hint: a "Nearly" over a right answer read as "wrong".
+        org.junit.Assert.assertTrue(v.hinted)
+    }
+}
+
+class StudyTimeTest {
+    @Test
+    fun `a lesson left open does not count as study time`() {
+        var now = 0L
+        val s = Session.forLesson(Fixture.course, com.krbavcic.pentalingo.model.Progress(), Fixture.lesson1, 0L, seed = 1, clock = { now })
+        var ex = s.advance()
+        now += 20_000 // twenty seconds on the first page
+        while (ex is Teach) { s.submit(Answer.Seen); ex = s.advance() }
+        now += 60 * 60_000 // an hour with the phone on the table
+        s.submit(ex!!.solution())
+        val result = s.result()
+        org.junit.Assert.assertEquals(20 + Session.MAX_PAUSE_MS / 1000, result.activeSeconds)
+        val progress = Recording.apply(Fixture.course, com.krbavcic.pentalingo.model.Progress(), result)
+        org.junit.Assert.assertEquals(result.activeSeconds, progress.progress.secondsStudied)
     }
 }

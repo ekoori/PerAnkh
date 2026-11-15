@@ -29,6 +29,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import com.krbavcic.pentalingo.core.ui.Contrast
+import androidx.compose.ui.unit.Density
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -121,8 +124,24 @@ private sealed interface Overlay {
  * Navigation is a few pieces of state rather than a navigation library — there are four tabs,
  * one lesson flow and a reader, and the back stack is never deeper than two.
  */
+/**
+ * The reading options, around the whole app: high contrast repaints every colour drawn from
+ * [Palette], and the text size scales every text (the phone's own font size still applies).
+ */
 @Composable
 fun AppHost() {
+    val context = LocalContext.current
+    val store = remember(context) { ProgressStore(context) }
+    val settings by store.settings.collectAsState(initial = Settings())
+    LaunchedEffect(settings.highContrast) { Contrast.high = settings.highContrast }
+    val base = LocalDensity.current
+    CompositionLocalProvider(LocalDensity provides Density(base.density, base.fontScale * settings.textScale / 100f)) {
+        AppScreens()
+    }
+}
+
+@Composable
+private fun AppScreens() {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val store = remember(context) { ProgressStore(context) }
@@ -389,6 +408,8 @@ fun AppHost() {
                         settings,
                         onSounds = { scope.launch { store.setSounds(it) } },
                         onAutoplay = { scope.launch { store.setAutoplay(it) } },
+                        onHighContrast = { scope.launch { store.setHighContrast(it) } },
+                        onTextScale = { scope.launch { store.setTextScale(it) } },
                         onReset = {
                             scope.launch { store.reset() }
                             overlay = null

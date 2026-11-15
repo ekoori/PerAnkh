@@ -35,6 +35,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.krbavcic.pentalingo.core.ui.EvenRow
+import com.krbavcic.pentalingo.core.ui.GlyphLine
 import com.krbavcic.pentalingo.core.ui.Glyphs
 import com.krbavcic.pentalingo.core.ui.IconKind
 import com.krbavcic.pentalingo.core.ui.Palette
@@ -112,7 +113,7 @@ internal fun Prompt(
         verticalArrangement = Arrangement.spacedBy(10.dp),
     ) {
         if (display.words.isNotEmpty()) {
-            Glyphs(lineOf(display.words), quadrat = 50.dp, mirrored = display.mirrored, onSign = onSign)
+            GlyphLine(display.words, quadrat = 50.dp, mirrored = display.mirrored, onSign = onSign)
         } else display.mdc?.let { mdc ->
             val single = Mdc.parse(mdc).signs.size == 1
             Glyphs(mdc, quadrat = quadrat ?: if (single) 104.dp else 64.dp, mirrored = display.mirrored, highlight = display.highlight, onSign = onSign)

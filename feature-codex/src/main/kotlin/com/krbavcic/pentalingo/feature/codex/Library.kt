@@ -35,6 +35,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.dp
 import com.krbavcic.pentalingo.core.ui.Chip
+import com.krbavcic.pentalingo.core.ui.GlyphLine
 import com.krbavcic.pentalingo.core.ui.Glyphs
 import com.krbavcic.pentalingo.core.ui.IconKind
 import com.krbavcic.pentalingo.core.ui.PageMargin
@@ -179,6 +180,7 @@ fun ReaderScreen(knowledge: Knowledge, text: ReadingText, voice: Voice, onBack: 
                     out += describeItem(course, lineId, voice, "line")
                     (course[lineId] as? PhraseItem)?.tokens?.getOrNull(i)?.let { t ->
                         out["token"] = "${i + 1}: [${t.mdc}] ${t.translit} = ${t.gloss}"
+                        voice.tokenClip(t)?.let { out["token.clip"] = "$it, ${voice.fileFor(it)}" }
                         out += describeItem(course, t.wordId, voice, "word")
                     }
                 }
@@ -202,9 +204,8 @@ fun ReaderScreen(knowledge: Knowledge, text: ReadingText, voice: Voice, onBack: 
                     .padding(14.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                val inscription = lineOf(phrase.tokens.map { it.mdc })
-                Glyphs(
-                    inscription,
+                GlyphLine(
+                    phrase.tokens.map { it.mdc },
                     quadrat = 46.dp,
                     color = { s ->
                         if (readable[s.token]) course.signFor(s.glyph.code)?.let { signColor(knowledge, it) } ?: Palette.ink
@@ -213,7 +214,7 @@ fun ReaderScreen(knowledge: Knowledge, text: ReadingText, voice: Voice, onBack: 
                     highlightToken = sel,
                     onToken = { i ->
                         selected = lineId to i
-                        if (readable[i]) voice.play(phrase.tokens[i].wordId)
+                        if (readable[i]) voice.playToken(phrase.tokens[i])
                     },
                 )
                 sel?.let { i ->

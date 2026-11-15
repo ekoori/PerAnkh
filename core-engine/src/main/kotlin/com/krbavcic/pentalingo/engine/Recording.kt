@@ -77,7 +77,9 @@ object Recording {
             textsRead = result.textRead?.let { progress.textsRead + it } ?: progress.textsRead,
             answered = progress.answered + result.graded,
             correct = progress.correct + result.correct,
-            secondsStudied = progress.secondsStudied + ((result.finishedAt - result.startedAt) / 1000).coerceIn(0, 3 * 3600),
+            nearlyRight = progress.nearlyRight + result.near,
+            secondsStudied = progress.secondsStudied +
+                (if (result.activeSeconds >= 0) result.activeSeconds else (result.finishedAt - result.startedAt) / 1000).coerceIn(0, 3 * 3600),
         )
 
         val earned = Awards.newlyEarned(course, updated, result.finishedAt)

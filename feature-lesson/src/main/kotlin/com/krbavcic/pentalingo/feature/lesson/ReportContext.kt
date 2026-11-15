@@ -112,7 +112,7 @@ internal fun lessonReport(
         })
     }
     verdict?.let { v ->
-        put("verdict", v.outcome.name)
+        put("verdict", if (v.hinted) "${v.outcome.name} (right, with a hint)" else v.outcome.name)
         put("verdict.solution", v.solution)
         put("verdict.solutionMdc", v.solutionMdc)
         put("verdict.note", v.note)

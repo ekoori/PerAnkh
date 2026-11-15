@@ -49,8 +49,6 @@ object Pronounce {
         "m" to "ɛ m", "n" to "ɛ n", "r" to "ɛ r",
         // ...except these nouns, said with it after.
         "z" to "s ɛ", "t" to "t ɛ",
-        // jj, "to come", as two clear syllables: a single long i ran together into "eh".
-        "jj" to "i ji",
     )
 
     /** The phones of one word. Suffix pronouns (=f) and morpheme dots join the word they follow. */
@@ -78,7 +76,14 @@ object Pronounce {
                     units += c("ʕ")
                     units += A_SHORT
                 }
-                'j' -> units += I_LONG
+                // The second of two reeds is the glide y: two long i's run together into one
+                // "ee", which lost jj "come" ("iyi", "iyet") and the =j "I, my" of dj=j ("diyi").
+                'j' -> if (letters.getOrNull(i - 1) == 'j') {
+                    units += c("j")
+                    if (next == null) units += I_LONG
+                } else {
+                    units += I_LONG
+                }
                 'y' -> units += if (next != null && isVowelLetter(next)) c("j") else I_LONG
                 // A w that starts a word or meets a vowel is a consonant ("wen", "waas");
                 // between consonants or at the end it is the vowel u ("nesut", "ḥeru").

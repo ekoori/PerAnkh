@@ -11,6 +11,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import kotlinx.coroutines.launch
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -144,8 +146,13 @@ fun PathScreen(
 ) {
     val knowledge = remember(progress, now / 60_000) { Knowledge(course, progress, now) }
     val listState = rememberLazyListState()
+    val scope = rememberCoroutineScope()
     val next = course.lessons.firstOrNull { !progress.isCompleted(it.id) }
     val rows = remember(course, progress, revealAll) { pathRows(course, progress, revealAll) }
+    // Where things are in the list: the header and the review card come first, then the rows.
+    val bannerItems = remember(rows) { rows.indices.filter { rows[it] is PathRow.Banner }.map { it + ROWS_START } }
+    val nextItem = rows.indexOfFirst { it is PathRow.Node && it.lesson == next }.takeIf { it >= 0 }?.plus(ROWS_START)
+    fun scrollTo(item: Int) = scope.launch { listState.animateScrollToItem(item.coerceAtLeast(0)) }
 
     // Open on the learner's place in the course rather than at the top of unit one. The header
     // and the review card come before the rows.
@@ -172,7 +179,17 @@ fun PathScreen(
                 when (row) {
                     is PathRow.Heading -> SectionHeading(row.number, row.section)
                     is PathRow.Door -> SealedDoor(row.number, row.section, row.lessonsLeft)
-                    is PathRow.Banner -> UnitBanner(row.number, row.unit, progress)
+                    is PathRow.Banner -> {
+                        val here = bannerItems.indexOf(rows.indexOf(row) + ROWS_START)
+                        UnitBanner(row.number, row.unit, progress)
+                        UnitNav(
+                            onTop = { scrollTo(0) },
+                            onUp = { scrollTo(bannerItems.getOrNull(here - 1) ?: 0) },
+                            onDown = bannerItems.getOrNull(here + 1)?.let { { scrollTo(it) } },
+                            // A little above the lesson, so the unit it belongs to shows too.
+                            onCurrent = nextItem?.let { { scrollTo(it - 2) } },
+                        )
+                    }
                     is PathRow.Node -> LessonNode(
                         lesson = row.lesson,
                         unit = row.unit,
@@ -364,6 +381,33 @@ private fun UnitBanner(number: Int, unit: CourseUnit, progress: Progress) {
         Text(unit.subtitle, style = Type.body.copy(color = onFace.copy(alpha = 0.9f)))
         Text(unit.intro, style = Type.small.copy(color = onFace.copy(alpha = 0.85f)))
         Text("$done of ${unit.lessons.size} lessons", style = Type.small.copy(color = onFace))
+    }
+}
+
+/** The first list item that is a path row: the header and the review card come before them. */
+private const val ROWS_START = 2
+
+/**
+ * Small buttons under each unit's banner, for a path too long to scroll by hand: back to the top
+ * (where the fading count and review wait), the units before and after, and the learner's
+ * current lesson.
+ */
+@Composable
+private fun UnitNav(onTop: () -> Unit, onUp: () -> Unit, onDown: (() -> Unit)?, onCurrent: (() -> Unit)?) {
+    Row(
+        Modifier.padding(bottom = 6.dp),
+        horizontalArrangement = Arrangement.spacedBy(10.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        @Composable
+        fun Nav(kind: IconKind, description: String, onClick: (() -> Unit)?) {
+            if (onClick == null) Spacer(Modifier.size(32.dp))
+            else RoundIconButton(kind, onClick, size = 32.dp, fill = Palette.sheetDeep, tint = Palette.inkSoft, description = description)
+        }
+        Nav(IconKind.HOME, "To the top: what is fading, and review", onTop)
+        Nav(IconKind.UP, "Previous unit", onUp)
+        Nav(IconKind.DOWN, "Next unit", onDown)
+        Nav(IconKind.HERE, "Your current lesson", onCurrent)
     }
 }
 

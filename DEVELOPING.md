@@ -129,9 +129,21 @@ About never asks and links to Per Ankh on Google Play instead.
   takes are retried with other seeds and spellings, and short words that still fail are said inside
   an Arabic frame ("qul: …") and cut out at the pause (needs ffmpeg). Takes are content-addressed,
   so nothing is billed twice; `rescore` re-judges them for free, `report` lists every clip with what
-  was heard, and `prune` moves unused takes to `tools/out/takes`. The key comes from
+  was heard, and `prune` moves unused takes to `tools/out/takes`. Takes are made with the model
+  told the text is Arabic (`language_code`), which keeps lines from drifting into an English accent
+  and ḏ from coming out as a hard g; the clips recorded before that keep their takes. `generate
+  --takes N` records several takes to choose from, `--new-takes N` caps what one run may pay for,
+  `takes ID` lists a clip's takes, and `pin ID FILE` ships a take chosen by ear
+  (`tools/voice_pins.json`), whatever the check says. Besides items, word forms get clips (`f:jt=f`):
+  tapping a word in a phrase plays the form as written there. The key comes from
   `$ELEVENLABS_API_KEY`, or from a file outside the repository (`$ELEVENLABS_KEY_FILE`, default
   `~/dev/11labs/.env`), read by path and never stored here.
+- `tools/review.py` — the clips checked by ear, in a browser (`python -X utf8 tools/review.py`,
+  localhost only): every clip that needs a listener first (reported, changed by a pronunciation
+  rule, failing the check, new word forms), with what it should say and every take recorded for
+  it. A verdict, tags and a comment per clip go to `tools/out/review/review.json`; `review.py
+  apply` pins the takes approved by ear and lists the retakes asked for. Clips flagged while
+  triaging are in `tools/out/review/flags.json` (not committed: it quotes testers' reports).
 - `tools/reports.sh` — triages problem reports on the server over SSH: `list`, `show`, `resolve`,
   `export` (see [server/README.md](server/README.md)). BushLines reports to the same server, so
   `list` shows both apps' reports; `--app perankh` keeps to Per Ankh's.

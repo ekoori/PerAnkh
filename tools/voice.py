@@ -4,7 +4,11 @@
     python -X utf8 tools/voice.py plan           # what is missing, and what it would cost
     python -X utf8 tools/voice.py generate       # record, check, retake; asks first
     python -X utf8 tools/voice.py generate --retry   # also give failed clips their remaining takes
+    python -X utf8 tools/voice.py generate --only p:ptah5,c:future --takes 3   # retake these; 3 to choose from
+    python -X utf8 tools/voice.py generate --retry --new-takes 2   # failed clips: at most 2 new takes each
     python -X utf8 tools/voice.py report         # every clip, what it should say, what was heard
+    python -X utf8 tools/voice.py takes p:ptah5  # every recorded take of a clip, and which one ships
+    python -X utf8 tools/voice.py pin p:ptah5 FILE.mp3   # ship this take, chosen by ear, whatever the check says
     python -X utf8 tools/voice.py rescore        # judge recorded takes again after a rule change; free
     python -X utf8 tools/voice.py prune          # move clips nothing points at out of the app
 
@@ -25,8 +29,12 @@ the transcriber from hearing a real word ("هم") in place of the nonsense one (
 when every hard consonant is heard; otherwise the next seed, candidate or frame is tried, and the
 best take is kept.
 
-Takes are content-addressed (text, voice, model, settings, seed, frame), so nothing is billed
-twice. The key is read by path (see eleven.py) and never printed. ffmpeg cuts framed takes.
+Takes are content-addressed (text, voice, model, settings, seed, frame, language), so nothing is
+billed twice. The key is read by path (see eleven.py) and never printed. ffmpeg cuts framed takes.
+
+The check hears consonants, not accents. When a listener finds a take wrong anyway (an English r,
+ḏ said as g), retake the clip with --takes, listen, and pin the good take: a pin outranks the
+check, and survives rescore, until the clip's text changes.
 """
 from __future__ import annotations
 
@@ -50,6 +58,8 @@ AUDIO = os.path.join(ROOT, "app", "src", "main", "assets", "audio")
 MANIFEST = os.path.join(AUDIO, "manifest.json")
 # Which take was chosen for each clip, with its transcripts: committed, so the choice is reviewable.
 CHOICES = os.path.join(ROOT, "tools", "voice_choices.json")
+# Takes chosen by ear over the check's choice, {clip id: {"file", "text"}}: committed.
+PINS = os.path.join(ROOT, "tools", "voice_pins.json")
 TRANSCRIPTS = os.path.join(ROOT, "tools", "out", "transcripts.json")
 # Framed takes as recorded, before the word is cut out: kept for checking, never shipped.
 FRAMES = os.path.join(ROOT, "tools", "out", "frames")
@@ -66,6 +76,11 @@ VOICE_ID = "G1HOkzin3NMwRHSq60UI"
 MODEL_ID = "eleven_v4"
 SETTINGS = {"stability": 0.5, "similarity_boost": 0.75}
 SEEDS = (None, 11, 23)
+# The language the model is told it is speaking, best first. Told "ar", it stops drifting into
+# English-accented readings of lines and says ج as dj, not the Egyptian g that turned ḏd.t into
+# "gedet" (reported, Nov 2026). None is how the clips before that were recorded: their takes keep
+# their names, so they are still found, and still chosen where nothing better has been recorded.
+LANGS = ("ar", None)
 MAX_TAKES = 6
 # "qul:" — "say:". Short, and the colon makes the voice pause before the word.
 FRAME = "قُلْ:"
@@ -89,12 +104,14 @@ def take_path(name: str) -> str:
     return cached if os.path.exists(cached) else shipped
 
 
-def take_key(text: str, seed: int | None, framed: bool = False) -> str:
+def take_key(text: str, seed: int | None, framed: bool = False, lang: str | None = None) -> str:
     spec = {"text": spoken_text(text), "voice": VOICE_ID, "model": MODEL_ID, "settings": SETTINGS}
     if seed is not None:
         spec["seed"] = seed
     if framed:
         spec["frame"] = FRAME
+    if lang:
+        spec["language"] = lang
     blob = json.dumps(spec, sort_keys=True, ensure_ascii=False)
     return hashlib.sha256(blob.encode("utf-8")).hexdigest()[:32] + ".mp3"
 
@@ -213,8 +230,8 @@ class Recorder:
         self.transcripts: dict = load(TRANSCRIPTS, {})
         self.spent = 0
 
-    def take(self, text: str, seed: int | None, framed: bool) -> str:
-        name = take_key(text, seed, framed)
+    def take(self, text: str, seed: int | None, framed: bool, lang: str | None) -> str:
+        name = take_key(text, seed, framed, lang)
         path = os.path.join(AUDIO, name)
         if os.path.exists(path):
             return name
@@ -223,13 +240,13 @@ class Recorder:
             return name
         os.makedirs(AUDIO, exist_ok=True)
         if not framed:
-            audio = self.client.tts(VOICE_ID, spoken_text(text), MODEL_ID, SETTINGS, seed=seed)
+            audio = self.client.tts(VOICE_ID, spoken_text(text), MODEL_ID, SETTINGS, seed=seed, language_code=lang)
             with open(path, "wb") as f:
                 f.write(audio)
             self.spent += len(spoken_text(text))
             return name
         whole = framed_text(text)
-        data = self.client.tts_timed(VOICE_ID, whole, MODEL_ID, SETTINGS, seed=seed)
+        data = self.client.tts_timed(VOICE_ID, whole, MODEL_ID, SETTINGS, seed=seed, language_code=lang)
         self.spent += len(whole)
         os.makedirs(FRAMES, exist_ok=True)
         full = os.path.join(FRAMES, name)
@@ -260,36 +277,49 @@ class Recorder:
                 t["framed"] = self.client.transcribe(f.read(), "scribe_v2", "ar")
         return t
 
-    def record(self, clip: dict) -> dict:
-        best = None
-        for text, seed, framed in tries(clip):
-            name = self.take(text, seed, framed)
+    def record(self, clip: dict, at_least: int = 1, new_takes: int | None = None) -> dict:
+        """Takes in try order until one passes and at least [at_least] were heard; the first that passed, else the best.
+
+        [new_takes] caps how many takes this call may pay for; takes already recorded are free and always judged.
+        """
+        results = []
+        fresh = 0
+        for text, seed, framed, lang in tries(clip):
+            recorded_before = os.path.exists(take_path(take_key(text, seed, framed, lang)))
+            if not recorded_before:
+                if new_takes is not None and fresh >= new_takes:
+                    continue
+                fresh += 1
+            name = self.take(text, seed, framed, lang)
             heard = self.hear(name, clip["hasP"], framed)
-            result = judge(clip, name, text, seed, framed, heard)
-            if result["passed"]:
-                return result
-            if best is None or result["score"] > best["score"]:
-                best = result
-        return best
+            results.append(judge(clip, name, text, seed, framed, lang, heard))
+            if len(results) >= at_least and any(r["passed"] for r in results):
+                break
+        return pick(results)
 
 
-def tries(clip: dict) -> list[tuple[str, int | None, bool]]:
+def tries(clip: dict) -> list[tuple[str, int | None, bool, str | None]]:
     """The takes to try, in order.
 
-    First the word on its own, candidates alternating across seeds so each spelling gets a turn
-    early; then, for words rather than phrases, the same inside the frame.
+    For each language, best first: the word on its own, candidates alternating across seeds so
+    each spelling gets a turn early; then, for words rather than phrases (whose tokens have no
+    frame to be cut from), the same inside the frame.
     """
-    alone = [(c, s, False) for s in SEEDS for c in clip["candidates"]][:MAX_TAKES]
-    if clip["id"].startswith("p:"):
-        return alone
-    return alone + [(c, s, True) for s in SEEDS[:2] for c in clip["candidates"]]
+    out = []
+    for lang in LANGS:
+        out += [(c, s, False, lang) for s in SEEDS for c in clip["candidates"]][:MAX_TAKES]
+        if not clip["id"].startswith("p:"):
+            out += [(c, s, True, lang) for s in SEEDS[:2] for c in clip["candidates"]]
+    return out
 
 
-def judge(clip: dict, name: str, text: str, seed: int | None, framed: bool, heard: dict) -> dict:
+def judge(clip: dict, name: str, text: str, seed: int | None, framed: bool, lang: str | None, heard: dict) -> dict:
     value, passed = score(clip, heard)
     result = {"file": name, "text": text, "seed": seed, "score": round(value, 2), "passed": passed,
               "heard_ar": heard.get("ar", ""), "heard_en": heard.get("en", ""),
               "latin": clip["latin"], "ipa": clip["ipa"]}
+    if lang:
+        result["lang"] = lang
     if framed:
         result["framed"] = True
         result["heard_framed"] = heard.get("framed", "")
@@ -297,15 +327,34 @@ def judge(clip: dict, name: str, text: str, seed: int | None, framed: bool, hear
 
 
 def recorded(clip: dict, transcripts: dict) -> list[dict]:
-    """Judgements of the takes already recorded, in try order, up to the first one missing."""
+    """Judgements of the takes already recorded, in try order (a take not recorded is skipped)."""
     out = []
-    for text, seed, framed in tries(clip):
-        name = take_key(text, seed, framed)
+    for text, seed, framed, lang in tries(clip):
+        name = take_key(text, seed, framed, lang)
         heard = transcripts.get(name)
         if heard is None or "ar" not in heard or not os.path.exists(take_path(name)):
-            break
-        out.append(judge(clip, name, text, seed, framed, heard))
+            continue
+        out.append(judge(clip, name, text, seed, framed, lang, heard))
     return out
+
+
+def pinned(clip: dict, pins: dict, transcripts: dict) -> dict | None:
+    """The take pinned for a clip, judged — if the pin is for the clip's current text and its take exists."""
+    pin = pins.get(clip["id"])
+    if not pin or pin["text"] not in clip["candidates"]:
+        return None
+    for r in recorded(clip, transcripts):
+        if r["file"] == pin["file"]:
+            return {**r, "pinned": True}
+    return None
+
+
+def apply_pins(clips: list[dict], choices: dict, transcripts: dict) -> None:
+    pins = load(PINS, {})
+    for clip in clips:
+        p = pinned(clip, pins, transcripts)
+        if p:
+            choices[clip["id"]] = p
 
 
 def pick(results: list[dict]) -> dict | None:
@@ -333,6 +382,7 @@ def cmd_rescore() -> None:
         if (old.get("file"), old.get("passed")) != (best["file"], best["passed"]):
             changed += 1
         choices[clip["id"]] = best
+    apply_pins(clips, choices, transcripts)
     save(CHOICES, choices)
     write_manifest()
     passed = sum(1 for c in clips if choices.get(c["id"], {}).get("passed"))
@@ -341,11 +391,17 @@ def cmd_rescore() -> None:
 
 def to_record(clips: list[dict], choices: dict, retry: bool, only: set[str] | None) -> list[dict]:
     if only:
+        missing = only - {c["id"] for c in clips}
+        if missing:
+            raise SystemExit(f"no such clips: {', '.join(sorted(missing))}")
         return [c for c in clips if c["id"] in only]
     transcripts = load(TRANSCRIPTS, {})
+    pins = load(PINS, {})
     out = []
     for c in clips:
         chosen = choices.get(c["id"])
+        if pinned(c, pins, transcripts):
+            continue
         if chosen is None or chosen["text"] not in c["candidates"]:
             out.append(c)
         elif retry and not chosen["passed"] and len(recorded(c, transcripts)) < len(tries(c)):
@@ -355,7 +411,7 @@ def to_record(clips: list[dict], choices: dict, retry: bool, only: set[str] | No
 
 def cost(clip: dict) -> tuple[int, int]:
     """Characters for the first take, and for every take."""
-    every = sum(len(framed_text(t) if framed else spoken_text(t)) for t, _, framed in tries(clip))
+    every = sum(len(framed_text(t) if framed else spoken_text(t)) for t, _, framed, _ in tries(clip))
     return len(spoken_text(clip["candidates"][0])), every
 
 
@@ -368,14 +424,15 @@ def cmd_plan(retry: bool) -> None:
           f"(up to {sum(cost(c)[1] for c in todo)} if every check fails)")
 
 
-def cmd_generate(assume_yes: bool, retry: bool, only: set[str] | None = None) -> None:
+def cmd_generate(assume_yes: bool, retry: bool, only: set[str] | None = None, at_least: int = 1,
+                 new_takes: int | None = None) -> None:
     clips = load(SPEECH, [])
     choices = load(CHOICES, {})
     todo = to_record(clips, choices, retry, only)
     rec = Recorder()
     sub = rec.client.get("/v1/user/subscription")
     left = sub["character_limit"] - sub["character_count"]
-    first = sum(cost(c)[0] for c in todo)
+    first = sum(cost(c)[0] * at_least for c in todo)
     worst = sum(cost(c)[1] for c in todo)
     print(f"{len(todo)} clips to record; first takes ~{first} chars, worst case ~{worst}; account has {left} left")
     if worst > left:
@@ -389,7 +446,7 @@ def cmd_generate(assume_yes: bool, retry: bool, only: set[str] | None = None) ->
         return
     try:
         for i, clip in enumerate(todo, 1):
-            result = rec.record(clip)
+            result = rec.record(clip, at_least, new_takes)
             choices[clip["id"]] = result
             mark = "ok " if result["passed"] else "?? "
             print(f"{mark}[{i}/{len(todo)}] {clip['id']:14} {clip['latin']:30} heard {result['heard_ar']!r}"
@@ -399,6 +456,7 @@ def cmd_generate(assume_yes: bool, retry: bool, only: set[str] | None = None) ->
                 save(CHOICES, choices)
                 save(TRANSCRIPTS, rec.transcripts)
     finally:
+        apply_pins(clips, choices, rec.transcripts)
         save(CHOICES, choices)
         save(TRANSCRIPTS, rec.transcripts)
         write_manifest()
@@ -429,6 +487,51 @@ def cmd_prune() -> None:
     print(f"moved {len(gone)} unused files to {TAKES}")
 
 
+def cmd_takes(ids: list[str]) -> None:
+    """Every recorded take of these clips, with what was heard, and which one the app plays."""
+    clips = {c["id"]: c for c in load(SPEECH, [])}
+    choices = load(CHOICES, {})
+    pins = load(PINS, {})
+    transcripts = load(TRANSCRIPTS, {})
+    for cid in ids:
+        clip = clips.get(cid)
+        if clip is None:
+            print(f"-- {cid}: no such clip")
+            continue
+        chosen = choices.get(cid, {}).get("file")
+        print(f"{cid}  {clip['latin']}  ({clip['ipa']})" + ("  [pinned]" if pinned(clip, pins, transcripts) else ""))
+        for r in recorded(clip, transcripts):
+            mark = "->" if r["file"] == chosen else "  "
+            print(f"  {mark} {r['file']}  {'ok' if r['passed'] else '??'} {r['score']:.2f}  lang={r.get('lang') or '-':2} "
+                  f"seed={r['seed']!s:4} {'framed ' if r.get('framed') else ''}{r['text']}  heard {r['heard_ar']!r}"
+                  + (f" / {r['heard_en']!r}" if r["heard_en"] else ""))
+
+
+def cmd_pin(cid: str, name: str | None) -> None:
+    """Pins a take by ear (or, without a file, removes the pin), and ships it."""
+    clips = {c["id"]: c for c in load(SPEECH, [])}
+    clip = clips.get(cid) or sys.exit(f"no such clip {cid}")
+    pins = load(PINS, {})
+    transcripts = load(TRANSCRIPTS, {})
+    if name is None:
+        pins.pop(cid, None)
+    else:
+        take = next((r for r in recorded(clip, transcripts) if r["file"] == name), None)
+        if take is None:
+            sys.exit(f"{name} is not a recorded take of {cid}; see `voice.py takes {cid}`")
+        pins[cid] = {"file": name, "text": take["text"]}
+    save(PINS, pins)
+    choices = load(CHOICES, {})
+    if name is None:
+        best = pick(recorded(clip, transcripts))
+        if best:
+            choices[cid] = best
+    apply_pins(list(clips.values()), choices, transcripts)
+    save(CHOICES, choices)
+    write_manifest()
+    print(f"{cid} -> {choices.get(cid, {}).get('file')}" + (" (pinned)" if name else " (unpinned)"))
+
+
 def cmd_report() -> None:
     clips = load(SPEECH, [])
     choices = load(CHOICES, {})
@@ -452,9 +555,17 @@ if __name__ == "__main__":
         only = None
         if "--only" in args:
             only = set(args[args.index("--only") + 1].split(","))
-        cmd_generate("--yes" in args, "--retry" in args, only)
+        at_least = int(args[args.index("--takes") + 1]) if "--takes" in args else 1
+        new_takes = int(args[args.index("--new-takes") + 1]) if "--new-takes" in args else None
+        cmd_generate("--yes" in args, "--retry" in args, only, at_least, new_takes)
     elif cmd == "report":
         cmd_report()
+    elif cmd == "takes":
+        cmd_takes(args[1].split(","))
+    elif cmd == "pin":
+        cmd_pin(args[1], args[2])
+    elif cmd == "unpin":
+        cmd_pin(args[1], None)
     elif cmd == "rescore":
         cmd_rescore()
     elif cmd == "manifest":

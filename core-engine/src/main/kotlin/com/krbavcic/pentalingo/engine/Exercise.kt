@@ -235,4 +235,9 @@ data class Verdict(
     val confusedWith: String? = null,
     /** When the answer is hieroglyphs, its spelling, so it can be drawn rather than named. */
     val solutionMdc: String? = null,
+    /**
+     * The answer was right, but the learner looked up a sign first: it counts as a near miss for
+     * memory, and is shown as right — "Nearly" read as "wrong" to learners who had answered well.
+     */
+    val hinted: Boolean = false,
 )

@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
+import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
@@ -26,6 +27,10 @@ data class Settings(
     val openAnyLesson: Boolean = false,
     /** Tester mode: a button that answers the current exercise correctly. */
     val answerButton: Boolean = false,
+    /** Darker ink and paint on a plain, pale sheet. */
+    val highContrast: Boolean = false,
+    /** Text size, in percent of normal (the phone's own font size still applies on top). */
+    val textScale: Int = 100,
 )
 
 /**
@@ -51,6 +56,8 @@ class ProgressStore(private val context: Context) {
             tester = it[TESTER] ?: false,
             openAnyLesson = it[OPEN_ANY] ?: false,
             answerButton = it[ANSWER_BUTTON] ?: false,
+            highContrast = it[HIGH_CONTRAST] ?: false,
+            textScale = it[TEXT_SCALE] ?: 100,
         )
     }
 
@@ -81,6 +88,14 @@ class ProgressStore(private val context: Context) {
         context.store.edit { it[ANSWER_BUTTON] = on }
     }
 
+    suspend fun setHighContrast(on: Boolean) {
+        context.store.edit { it[HIGH_CONTRAST] = on }
+    }
+
+    suspend fun setTextScale(percent: Int) {
+        context.store.edit { it[TEXT_SCALE] = percent }
+    }
+
     suspend fun reset() {
         context.store.edit { it.remove(PROGRESS) }
     }
@@ -100,5 +115,7 @@ class ProgressStore(private val context: Context) {
         val TESTER = booleanPreferencesKey("tester")
         val OPEN_ANY = booleanPreferencesKey("tester-open-any-lesson")
         val ANSWER_BUTTON = booleanPreferencesKey("tester-answer-button")
+        val HIGH_CONTRAST = booleanPreferencesKey("high-contrast")
+        val TEXT_SCALE = intPreferencesKey("text-scale")
     }
 }

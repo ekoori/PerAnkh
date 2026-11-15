@@ -39,6 +39,9 @@ import com.krbavcic.pentalingo.core.ui.describeItem
 import com.krbavcic.pentalingo.engine.Awards
 import com.krbavcic.pentalingo.engine.Knowledge
 import com.krbavcic.pentalingo.engine.Numerals
+import com.krbavcic.pentalingo.engine.distinctReadings
+import com.krbavcic.pentalingo.engine.readingsInWord
+import com.krbavcic.pentalingo.engine.soundIn
 import com.krbavcic.pentalingo.model.Award
 import com.krbavcic.pentalingo.model.Memory
 import com.krbavcic.pentalingo.model.SignItem
@@ -151,13 +154,16 @@ fun WordDetail(k: Knowledge, word: WordItem, voice: Voice) {
         MemoryLine(k, word.id)
         course.frequency[word.id]?.let { Text(frequencyLine(it), style = Type.small) }
         Rubric("Sign by sign")
-        for (code in Mdc.parse(word.mdc).signs.distinct()) {
+        for (reading in distinctReadings(readingsInWord(course, word))) {
+            val code = reading.code
             val s = course.signFor(code)
+            val sound = soundIn(course, reading)
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Box(Modifier.width(52.dp), contentAlignment = Alignment.Center) { Glyphs(code, quadrat = 30.dp) }
                 Text(
                     when {
                         s == null -> code
+                        sound != null -> "${s.name} — ${Translit.display(sound)}"
                         s.role == SignRole.DETERMINATIVE -> "${s.name} — silent, marks ${s.meaning}"
                         s.sounds.isNotEmpty() -> "${s.name} — ${Translit.display(s.sounds[0])}"
                         else -> s.name

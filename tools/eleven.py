@@ -94,13 +94,16 @@ class Client:
         )
 
     def tts_timed(self, voice_id: str, text: str, model_id: str, voice_settings: dict,
-                  output_format: str = "mp3_44100_128", seed: int | None = None) -> dict:
+                  output_format: str = "mp3_44100_128", seed: int | None = None,
+                  language_code: str | None = None) -> dict:
         """Speech plus the start and end time of every character, for cutting a word out of a phrase.
 
         Returns the API's JSON: `audio_base64` and `alignment` with `characters`,
         `character_start_times_seconds` and `character_end_times_seconds`.
         """
         body: dict = {"text": text, "model_id": model_id, "voice_settings": voice_settings}
+        if language_code:
+            body["language_code"] = language_code
         if seed is not None:
             body["seed"] = seed
         return json.loads(self._request(

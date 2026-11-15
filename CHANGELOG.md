@@ -1,5 +1,33 @@
 # Changelog
 
+## Unreleased
+
+- Tapping a word in a phrase or a text says the word as it is written there: jt=f is "itef",
+  not just the "it" of jt. 556 word forms have their own recordings.
+- The doubled reed is heard as two sounds: jj "come" is "iyi", jj.t "iyet", and the "my" of
+  dj=j "diyi" no longer disappears into one long "ee". 27 recordings redone.
+- Recordings are made with the voice told it is speaking Arabic, which stops it reading some
+  lines with an English accent and saying ḏ as a hard g ("gedet" for ḏd.t). The reported clips
+  and every clip that failed its check have new takes.
+- A word's sign-by-sign breakdown gives each sign the reading it has in that word: the throne is
+  ws in Osiris and ꜣs in Isis, the feather šw in Shu, and the village sign is the word njwt,
+  "town", not a silent determinative.
+- The mouth sign's note: foreign l is written with r or n; the lion writes it only in Ptolemaic
+  names such as Cleopatra's.
+- After every answer, right or wrong, the answer can be heard again, also slowly.
+- A right answer given after tapping a sign for a hint says "Right — with a hint", not
+  "Nearly", which read as wrong.
+- Long lines of hieroglyphs wrap onto the next row instead of shrinking; signs are never drawn
+  smaller than a readable size. A cartouche fits its tile in the pairs exercise.
+- Settings → Reading: High contrast (darker text and signs on a plain, pale page) and text size
+  (Normal, Large, Larger).
+- The path has small buttons under each unit: to the top, the previous and next unit, and the
+  current lesson.
+- A lesson's preview also shows what it practises again: "The four h's" shows all four.
+- The Treasury's ledger: "% right" no longer counts near misses as wrong (they are shown
+  apart), "Mastered" counts signs and words that are not fading, as the lines above it do, and
+  study time leaves out long pauses with a lesson open.
+
 ## 0.4.1 (2026-11-05)
 
 - Lessons no longer freeze for several seconds after Continue, sometimes long enough for Android

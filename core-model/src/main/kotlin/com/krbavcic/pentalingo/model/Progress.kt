@@ -39,6 +39,9 @@ data class Progress(
     val revealed: Set<String> = emptySet(),
     val answered: Int = 0,
     val correct: Int = 0,
+    /** Answers that were nearly right, or right after looking up a sign (counted from 0.4.2 on). */
+    val nearlyRight: Int = 0,
+    /** Time spent answering and reading, without pauses longer than a few minutes. */
     val secondsStudied: Long = 0,
 ) {
     fun memory(itemId: String): Memory? = memories[itemId]
