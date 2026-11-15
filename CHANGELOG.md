@@ -1,7 +1,11 @@
 # Changelog
 
-## Unreleased
+## 0.5.0 (2026-11-16)
 
+- Recordings a listener flagged were checked by ear, and 93 are now chosen by ear. Those found
+  wrong were recorded again, some by another ElevenLabs model that keeps the short vowels the
+  usual one drops: ḏ said as a hard g, jṯ said like the English letter H, the q of mj-qj=f said
+  as g.
 - Tapping a word in a phrase or a text says the word as it is written there: jt=f is "itef",
   not just the "it" of jt. 556 word forms have their own recordings.
 - The doubled reed is heard as two sounds: jj "come" is "iyi", jj.t "iyet", and the "my" of

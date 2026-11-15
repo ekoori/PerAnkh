@@ -50,7 +50,11 @@ update each other and keep progress.
   (its texts come from AES), and reports name their app now that BushLines shares the server.
 - **0.4.1, GitHub release and Play open testing (2026-11-05).** One fix: with 0.4.0's 629 words,
   choosing the wrong answers for a word question froze lessons for seconds on a phone.
-- **0.4.x, open testing.** Anyone can join the test from the Play listing. Fix what testers
+- **0.5.0, GitHub release and Play open testing (2026-11-16).** Grammar tables, a codex with
+  search and categories, hieroglyphs coloured by what each sign does, twelve culture cards, words
+  said as written when tapped, recordings checked by ear, high contrast and text size, and
+  new-version notices for the GitHub build.
+- **0.5.x, open testing.** Anyone can join the test from the Play listing. Fix what testers
   report; re-record the weak clips. A couple of weeks of testing before production (new
   *personal* Play accounts would need 12 testers for 14 days in closed testing; LOVI Tech's
   organisation account does not).
