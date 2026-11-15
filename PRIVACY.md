@@ -1,6 +1,6 @@
 # Per Ankh privacy policy
 
-Effective 3 November 2026. Per Ankh is published by LOVI Tech. This policy is also served at
+Effective 15 November 2026. Per Ankh is published by LOVI Tech. This policy is also served at
 https://perankh.hrana.app/privacy.
 
 ## In short
@@ -52,9 +52,11 @@ In Per Ankh from GitHub (version 0.3.0 and later), the About page in the setting
 newer version is out. To find out, the app asks GitHub (github.com, a Microsoft service, where
 Per Ankh's releases are published) for the newest release; if GitHub cannot be reached, it asks
 our server at perankh.hrana.app, which answers from its own copy of GitHub's answer. The app asks
-only when you open About, and not again until it is restarted once it has an answer. The question
-carries the app's name and version and nothing else. Per Ankh from Google Play does not ask:
-Google Play keeps it up to date.
+when you open About, and not again until it is restarted once it has an answer. If you turn on
+"Tell me when a new version is out" on the About page (off unless you turn it on), it also asks
+about once a day in the background, and shows one notification for each new release; turning it
+off stops this. The question carries the app's name and version and nothing else. Per Ankh from
+Google Play does not ask: Google Play keeps it up to date.
 
 Like any connection, it shows the server your phone's network address. GitHub handles that under
 the [GitHub General Privacy Statement](https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement).

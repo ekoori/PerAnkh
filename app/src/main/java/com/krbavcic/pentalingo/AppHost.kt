@@ -29,7 +29,12 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.compose.rememberLauncherForActivityResult
+import android.os.Build
+import android.Manifest
 import com.krbavcic.pentalingo.core.ui.Contrast
+import com.krbavcic.pentalingo.core.ui.LocalGlyphColours
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.runtime.LaunchedEffect
@@ -71,6 +76,8 @@ import com.krbavcic.pentalingo.engine.Session
 import com.krbavcic.pentalingo.engine.SessionResult
 import com.krbavcic.pentalingo.feature.codex.AwardDetail
 import com.krbavcic.pentalingo.feature.codex.CodexScreen
+import com.krbavcic.pentalingo.feature.codex.ConceptDetail
+import com.krbavcic.pentalingo.model.ConceptItem
 import com.krbavcic.pentalingo.feature.codex.LibraryScreen
 import com.krbavcic.pentalingo.feature.codex.ReaderScreen
 import com.krbavcic.pentalingo.feature.codex.SignDetail
@@ -113,6 +120,7 @@ private sealed interface Overlay {
     data class Preview(val lesson: Lesson) : Overlay
     data class SignInfo(val sign: SignItem) : Overlay
     data class WordInfo(val word: WordItem) : Overlay
+    data class ConceptInfo(val concept: ConceptItem) : Overlay
     data class AwardInfo(val award: Award) : Overlay
     data object SettingsSheet : Overlay
     data class Message(val text: String) : Overlay
@@ -135,7 +143,10 @@ fun AppHost() {
     val settings by store.settings.collectAsState(initial = Settings())
     LaunchedEffect(settings.highContrast) { Contrast.high = settings.highContrast }
     val base = LocalDensity.current
-    CompositionLocalProvider(LocalDensity provides Density(base.density, base.fontScale * settings.textScale / 100f)) {
+    CompositionLocalProvider(
+        LocalDensity provides Density(base.density, base.fontScale * settings.textScale / 100f),
+        LocalGlyphColours provides settings.glyphColours,
+    ) {
         AppScreens()
     }
 }
@@ -184,7 +195,13 @@ private fun AppScreens() {
     // Anyone can report a problem with the flag on a page. The report is kept on the phone and sent
     // at once; if the server cannot be reached it waits, and goes out the next time the app starts
     // or another report is sent.
-    val build = "${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE}${if (BuildConfig.DEBUG) ", debug" else ""})"
+    // The release version, its code and the commit it was built from: a test build between releases
+    // carries the last release's version, and its reports must still say which build they came from.
+    val build = "${BuildConfig.VERSION_NAME} (" + listOfNotNull(
+        BuildConfig.VERSION_CODE.toString(),
+        BuildConfig.BUILD_COMMIT.ifEmpty { null },
+        "debug".takeIf { BuildConfig.DEBUG },
+    ).joinToString(", ") + ")"
     val uploader = remember { ReportUploader(BuildConfig.REPORTS_URL, BuildConfig.REPORTS_APP, build) }
     var reportCount by remember { mutableIntStateOf(0) }
     var unsentCount by remember { mutableIntStateOf(0) }
@@ -244,6 +261,14 @@ private fun AppScreens() {
         )
     }
     var latestRelease by remember { mutableStateOf<LatestRelease>(LatestRelease.NotChecked) }
+
+    // "Tell me when a new version is out" (GitHub build): Android 13 and later ask first; a refusal
+    // leaves it off. The daily look follows the setting, and is scheduled once, not on every start.
+    val askToNotify = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
+        scope.launch { store.setUpdateNotices(granted) }
+        if (!granted) overlay = Overlay.Message("Notifications for Per Ankh are turned off in Android's settings, so it cannot tell you about new versions.")
+    }
+    LaunchedEffect(settings.updateNotices) { UpdateNotices.set(context, settings.updateNotices) }
 
     fun openPage(url: String) {
         try {
@@ -374,6 +399,7 @@ private fun AppScreens() {
                             knowledge,
                             onSign = { overlay = Overlay.SignInfo(it) },
                             onWord = { overlay = Overlay.WordInfo(it) },
+                            onConcept = { overlay = Overlay.ConceptInfo(it) },
                             hidden = hidden,
                         )
                         Tab.LIBRARY -> LibraryScreen(knowledge, onOpen = { screen = Screen.Reading(it) }, hidden = hidden)
@@ -403,6 +429,7 @@ private fun AppScreens() {
                     )
                     is Overlay.SignInfo -> SignDetail(knowledge, current.sign, voice)
                     is Overlay.WordInfo -> WordDetail(knowledge, current.word, voice)
+                    is Overlay.ConceptInfo -> ConceptDetail(knowledge, current.concept)
                     is Overlay.AwardInfo -> AwardDetail(knowledge, current.award)
                     is Overlay.SettingsSheet -> SettingsSheet(
                         settings,
@@ -410,6 +437,7 @@ private fun AppScreens() {
                         onAutoplay = { scope.launch { store.setAutoplay(it) } },
                         onHighContrast = { scope.launch { store.setHighContrast(it) } },
                         onTextScale = { scope.launch { store.setTextScale(it) } },
+                        onGlyphColours = { scope.launch { store.setGlyphColours(it) } },
                         onReset = {
                             scope.launch { store.reset() }
                             overlay = null
@@ -467,6 +495,16 @@ private fun AppScreens() {
                         about = AboutOptions(
                             version = BuildConfig.VERSION_NAME,
                             build = build,
+                            buildCommit = BuildConfig.BUILD_COMMIT,
+                            buildDay = BuildConfig.BUILD_DAY,
+                            notices = settings.updateNotices.takeIf { UpdateNotices.AVAILABLE },
+                            onNotices = { on ->
+                                if (on && Build.VERSION.SDK_INT >= 33 && !UpdateNotices.allowed(context)) {
+                                    askToNotify.launch(Manifest.permission.POST_NOTIFICATIONS)
+                                } else {
+                                    scope.launch { store.setUpdateNotices(on) }
+                                }
+                            },
                             latest = latestRelease,
                             onCheck = {
                                 if (latestRelease !is LatestRelease.Checking) {

@@ -50,6 +50,10 @@ import com.krbavcic.pentalingo.core.ui.lineOf
 import com.krbavcic.pentalingo.core.ui.page
 import com.krbavcic.pentalingo.engine.Knowledge
 import com.krbavcic.pentalingo.model.PhraseItem
+import com.krbavcic.pentalingo.model.GlyphColours
+import com.krbavcic.pentalingo.engine.LineTints
+import com.krbavcic.pentalingo.core.ui.glyphPaint
+import com.krbavcic.pentalingo.core.ui.LocalGlyphColours
 import com.krbavcic.pentalingo.model.ReadingText
 import com.krbavcic.pentalingo.script.Translit
 
@@ -204,12 +208,19 @@ fun ReaderScreen(knowledge: Knowledge, text: ReadingText, voice: Voice, onBack: 
                     .padding(14.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
+                val tints = remember(phrase) { LineTints.grammar(course, phrase.tokens) }
+                val mode = LocalGlyphColours.current
+                val byRole = glyphPaint(course) { s -> tints.at(s.token, s.index) }
                 GlyphLine(
                     phrase.tokens.map { it.mdc },
                     quadrat = 46.dp,
                     color = { s ->
-                        if (readable[s.token]) course.signFor(s.glyph.code)?.let { signColor(knowledge, it) } ?: Palette.ink
-                        else Palette.inkFaint
+                        when {
+                            !readable[s.token] -> Palette.inkFaint
+                            // The tomb paints here fade with memory, as in the codex.
+                            mode == GlyphColours.PAINT -> course.signFor(s.glyph.code)?.let { signColor(knowledge, it) } ?: Palette.ink
+                            else -> byRole(s)
+                        }
                     },
                     highlightToken = sel,
                     onToken = { i ->

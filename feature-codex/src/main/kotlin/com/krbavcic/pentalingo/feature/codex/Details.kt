@@ -43,6 +43,7 @@ import com.krbavcic.pentalingo.engine.distinctReadings
 import com.krbavcic.pentalingo.engine.readingsInWord
 import com.krbavcic.pentalingo.engine.soundIn
 import com.krbavcic.pentalingo.model.Award
+import com.krbavcic.pentalingo.model.ConceptItem
 import com.krbavcic.pentalingo.model.Memory
 import com.krbavcic.pentalingo.model.SignItem
 import com.krbavcic.pentalingo.model.SignRole
@@ -201,5 +202,21 @@ fun AwardDetail(k: Knowledge, award: Award) {
         }
         if (!earned && at.target > 1) Measured(at.fraction, "${at.current.coerceAtMost(at.target)} of ${at.target}")
         Text(Translit.display(award.lore), style = Type.body.copy(fontStyle = FontStyle.Italic))
+    }
+}
+
+/** A grammar card or a note, opened from the codex: as it was taught, with its table. */
+@Composable
+fun ConceptDetail(k: Knowledge, concept: ConceptItem) {
+    SheetColumn {
+        com.krbavcic.pentalingo.core.ui.Rubric(if (concept.table != null) "Grammar" else "Note")
+        Text(concept.title, style = Type.display)
+        concept.mdc?.let { Glyphs(it, quadrat = 56.dp, mirrored = concept.mirrored) }
+        Text(Translit.display(concept.body), style = Type.body)
+        concept.table?.let { com.krbavcic.pentalingo.core.ui.GrammarTableView(it) }
+        k.course.lessonTeaching(concept.id)?.let { lesson ->
+            Text("From lesson ${lesson.id.removePrefix("l")}, ${lesson.title}", style = Type.small)
+        }
+        MemoryLine(k, concept.id)
     }
 }

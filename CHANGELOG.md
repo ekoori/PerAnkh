@@ -27,6 +27,28 @@
 - The Treasury's ledger: "% right" no longer counts near misses as wrong (they are shown
   apart), "Mastered" counts signs and words that are not fading, as the lines above it do, and
   study time leaves out long pauses with a lesson open.
+- Grammar at a glance: sixteen grammar cards have a table (the suffix, dependent and
+  independent pronouns, sḏm=f and sḏm.n=f, negation, the stative's endings, masculine and
+  feminine, numbers, the king's five names, the seasons, "of"), and a lesson that teaches one
+  opens with it.
+- The codex has a third shelf, Grammar, with every card met so far; a search field for signs
+  (by code, name, sound or meaning), words and grammar; and categories: the alphabet,
+  determinatives and so on, or nouns, verbs and pronouns. On a tablet they stand in a panel
+  beside the shelf.
+- Hieroglyphs are coloured by what each sign does, with a key: in a word, signs that are read,
+  read another way, repeat a sound, classify (determinatives) or are not read; in a sentence,
+  the kind of word, with endings and suffix pronouns marked. Settings → Reading → Hieroglyph
+  colours brings back the tomb paints, or plain ink. The codex keeps its paints, which show
+  what you remember.
+- Twelve new culture cards in the later units: letters to the dead, the cobra on the crown, the
+  appeal to the living, Itjtawy, the sailor's fire, gods of gold and lapis lazuli, myrrh from
+  Punt, sailing south, the colophon, Ptahhotep's staff of old age, the rowers' bead nets and the
+  lector priest.
+- About shows the build beside the version (the commit it was made from, and its day), and
+  problem reports carry it too, so a test build between releases can be told apart.
+- Per Ankh from GitHub can tell you when a new version is out: turn it on in About, and it looks
+  once a day and sends one notification per release. Off unless turned on; the Play version
+  leaves updates to Google Play.
 
 ## 0.4.1 (2026-11-05)
 

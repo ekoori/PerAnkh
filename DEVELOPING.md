@@ -117,6 +117,17 @@ That is the `github` flavour. A Google Play build must not offer updates from ou
 Device and Network Abuse policy), so in the `play` flavour, where `BuildConfig.STORE_URL` is set,
 About never asks and links to Per Ankh on Google Play instead.
 
+The `github` flavour also offers "Tell me when a new version is out" (off by default): a daily
+`JobScheduler` job asks the same question and posts one notification per new release
+(`app/src/github`: `UpdateNotices`, its manifest with the notification permission and the job).
+The `play` flavour has a stand-in that offers nothing (`app/src/play`).
+
+Every build carries the commit it was made from (`BuildConfig.BUILD_COMMIT`, with `+` when the
+working tree had uncommitted changes) and that commit's day (`BUILD_DAY`), read from git when
+Gradle configures the app. About shows them under the version, and problem reports send them
+with it ("0.4.1 (401, 2ce2a2b)"): a test build installed between releases carries the last
+release's version.
+
 ## Tools
 
 - `tools/gen_signs.py` — regenerates `signs.tsv` (Gardiner code → codepoint → ink box) from the

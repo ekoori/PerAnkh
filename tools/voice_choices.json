@@ -16206,6 +16206,18 @@
   "seed": null,
   "text": "إِياتْ"
  },
+ "s:O49": {
+  "file": "0fd9defa588465d4e69e776c1e4b4c4f.mp3",
+  "heard_ar": "Newt",
+  "heard_en": "",
+  "ipa": "niut",
+  "lang": "ar",
+  "latin": "niut",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "نِيوتْ"
+ },
  "s:O50": {
   "file": "01d884c3fd762921a767e7655fb9ab12.mp3",
   "heard_ar": "Sip",

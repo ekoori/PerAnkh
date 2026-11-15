@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.krbavcic.pentalingo.core.ui.Chip
 import com.krbavcic.pentalingo.core.ui.GlyphLine
+import com.krbavcic.pentalingo.core.ui.GrammarTableView
 import com.krbavcic.pentalingo.core.ui.Glyphs
 import com.krbavcic.pentalingo.core.ui.IconKind
 import com.krbavcic.pentalingo.core.ui.Palette
@@ -46,6 +47,14 @@ import com.krbavcic.pentalingo.engine.distinctReadings
 import com.krbavcic.pentalingo.engine.readingsInWord
 import com.krbavcic.pentalingo.engine.soundIn
 import com.krbavcic.pentalingo.model.ConceptItem
+import com.krbavcic.pentalingo.model.GlyphColours
+import com.krbavcic.pentalingo.engine.soundTints
+import com.krbavcic.pentalingo.engine.soundTint
+import com.krbavcic.pentalingo.engine.grammarTints
+import com.krbavcic.pentalingo.engine.LineTints
+import com.krbavcic.pentalingo.core.ui.glyphPaint
+import com.krbavcic.pentalingo.core.ui.TintLegend
+import com.krbavcic.pentalingo.core.ui.LocalGlyphColours
 import com.krbavcic.pentalingo.model.Course
 import com.krbavcic.pentalingo.model.Item
 import com.krbavcic.pentalingo.model.PhraseItem
@@ -168,7 +177,9 @@ private fun Breakdown(word: WordItem, course: Course) {
         Rubric("Sign by sign", color = Palette.inkSoft)
         for (reading in distinctReadings(readingsInWord(course, word))) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Box(Modifier.width(56.dp), contentAlignment = Alignment.Center) { Glyphs(reading.code, quadrat = 34.dp) }
+                Box(Modifier.width(56.dp), contentAlignment = Alignment.Center) {
+                    Glyphs(reading.code, quadrat = 34.dp, color = glyphPaint(course) { soundTint(course, reading) })
+                }
                 Text(signRoleInWord(course, reading), style = Type.body, modifier = Modifier.padding(start = 8.dp))
             }
         }
@@ -178,9 +189,11 @@ private fun Breakdown(word: WordItem, course: Course) {
 @Composable
 private fun WordCard(word: WordItem, course: Course, voice: Voice, firstTime: Boolean) {
     Rubric(if (firstTime) "New word" else "A word to remember")
+    val tints = remember(word) { soundTints(course, word) }
     Framed {
-        Glyphs(word.mdc, quadrat = 84.dp, color = { s -> course.signFor(s.glyph.code)?.let { Palette.paint(it.paint) } ?: Palette.ink })
+        Glyphs(word.mdc, quadrat = 84.dp, color = glyphPaint(course) { s -> tints.getOrNull(s.index) })
     }
+    if (LocalGlyphColours.current == GlyphColours.BY_ROLE) TintLegend(tints)
     Text(word.gloss.replaceFirstChar { it.uppercase() }, style = Type.display)
     SoundLine(word.translit, Pronounce.latin(word.translit), word.id, voice)
     Breakdown(word, course)
@@ -209,9 +222,8 @@ fun Interlinear(phrase: PhraseItem, voice: Voice, course: Course? = null) {
                     .padding(6.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                Glyphs(token.mdc, quadrat = 46.dp, color = { s ->
-                    course?.signFor(s.glyph.code)?.let { Palette.paint(it.paint) } ?: Palette.ink
-                })
+                val tints = remember(token, course) { course?.let { grammarTints(it, token) }.orEmpty() }
+                Glyphs(token.mdc, quadrat = 46.dp, color = glyphPaint(course) { s -> tints.getOrNull(s.index) })
                 Spacer(Modifier.height(4.dp))
                 Text(Translit.display(token.translit), style = Type.translit.copy(fontSize = 17.sp))
                 Text(token.gloss, style = Type.small, textAlign = TextAlign.Center)
@@ -224,6 +236,9 @@ fun Interlinear(phrase: PhraseItem, voice: Voice, course: Course? = null) {
 private fun PhraseCard(phrase: PhraseItem, course: Course, voice: Voice) {
     Rubric("New phrase")
     Framed { Interlinear(phrase, voice, course) }
+    if (LocalGlyphColours.current == GlyphColours.BY_ROLE) {
+        TintLegend(remember(phrase) { phrase.tokens.flatMap { grammarTints(course, it) }.toSet() })
+    }
     Text(phrase.translation.replaceFirstChar { it.uppercase() }, style = Type.title)
     SoundLine(phrase.translit, Pronounce.latin(phrase.translit), phrase.id, voice)
     phrase.literal?.let { Text("Word for word: $it", style = Type.bodySoft.copy(fontStyle = FontStyle.Italic)) }
@@ -239,6 +254,7 @@ private fun ConceptCard(concept: ConceptItem) {
         Framed { Glyphs(mdc, quadrat = 64.dp, mirrored = concept.mirrored) }
     }
     Text(Translit.display(concept.body), style = Type.body.copy(fontSize = 17.sp, lineHeight = 26.sp))
+    concept.table?.let { GrammarTableView(it) }
 }
 
 /** The finale of a reading lesson: a real text, as far as it has been learned, with every word tappable. */
@@ -251,6 +267,10 @@ fun ReadTextCard(course: Course, textId: String, lines: List<String>, voice: Voi
         Rubric("You can read this")
         Text(text.title, style = Type.display)
         Text(text.source, style = Type.small)
+        val phrases = remember(lines) { lines.mapNotNull { course[it] as? PhraseItem } }
+        if (LocalGlyphColours.current == GlyphColours.BY_ROLE) {
+            TintLegend(remember(phrases) { phrases.flatMap { p -> p.tokens.flatMap { grammarTints(course, it) } }.toSet() })
+        }
         for (lineId in lines) {
             val phrase = course[lineId] as? PhraseItem ?: continue
             Column(
@@ -262,10 +282,11 @@ fun ReadTextCard(course: Course, textId: String, lines: List<String>, voice: Voi
                     .padding(14.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
+                val tints = remember(phrase) { LineTints.grammar(course, phrase.tokens) }
                 GlyphLine(
                     phrase.tokens.map { it.mdc },
                     quadrat = 46.dp,
-                    color = { s -> course.signFor(s.glyph.code)?.let { Palette.paint(it.paint) } ?: Palette.ink },
+                    color = glyphPaint(course) { s -> tints.at(s.token, s.index) },
                     highlightToken = tapped?.takeIf { it.first == lineId }?.second,
                     onToken = { i ->
                         tapped = lineId to i

@@ -224,14 +224,16 @@ fun GlyphLine(
             ) {
                 for (row in rows) {
                     val offset = row.first
+                    // Signs are numbered across the whole line, as on one row.
+                    val signOffset = if (offset == 0) 0 else lineOf(words.subList(0, offset)).signs.size
                     Glyphs(
                         lineOf(words.subList(row.first, row.last + 1)),
                         quadrat = size,
                         mirrored = mirrored,
-                        color = { s -> color(s.copy(token = s.token + offset)) },
+                        color = { s -> color(s.copy(token = s.token + offset, index = s.index + signOffset)) },
                         highlightToken = highlightToken?.minus(offset)?.takeIf { it in 0..(row.last - row.first) },
                         onToken = onToken?.let { f -> { i: Int -> f(i + offset) } },
-                        onSign = onSign?.let { f -> { s: PlacedSign -> f(s.copy(token = s.token + offset)) } },
+                        onSign = onSign?.let { f -> { s: PlacedSign -> f(s.copy(token = s.token + offset, index = s.index + signOffset)) } },
                     )
                 }
             }

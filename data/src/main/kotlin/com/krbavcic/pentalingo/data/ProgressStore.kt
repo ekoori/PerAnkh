@@ -9,6 +9,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.krbavcic.pentalingo.model.Progress
+import com.krbavcic.pentalingo.model.GlyphColours
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.serialization.SerializationException
@@ -31,6 +32,10 @@ data class Settings(
     val highContrast: Boolean = false,
     /** Text size, in percent of normal (the phone's own font size still applies on top). */
     val textScale: Int = 100,
+    /** How hieroglyphs are coloured outside the codex. */
+    val glyphColours: GlyphColours = GlyphColours.BY_ROLE,
+    /** Per Ankh from GitHub: look once a day for a new release, and say when there is one. */
+    val updateNotices: Boolean = false,
 )
 
 /**
@@ -58,6 +63,9 @@ class ProgressStore(private val context: Context) {
             answerButton = it[ANSWER_BUTTON] ?: false,
             highContrast = it[HIGH_CONTRAST] ?: false,
             textScale = it[TEXT_SCALE] ?: 100,
+            glyphColours = it[GLYPH_COLOURS]?.let { name -> GlyphColours.entries.firstOrNull { c -> c.name == name } }
+                ?: GlyphColours.BY_ROLE,
+            updateNotices = it[UPDATE_NOTICES] ?: false,
         )
     }
 
@@ -96,6 +104,14 @@ class ProgressStore(private val context: Context) {
         context.store.edit { it[TEXT_SCALE] = percent }
     }
 
+    suspend fun setGlyphColours(colours: GlyphColours) {
+        context.store.edit { it[GLYPH_COLOURS] = colours.name }
+    }
+
+    suspend fun setUpdateNotices(on: Boolean) {
+        context.store.edit { it[UPDATE_NOTICES] = on }
+    }
+
     suspend fun reset() {
         context.store.edit { it.remove(PROGRESS) }
     }
@@ -117,5 +133,7 @@ class ProgressStore(private val context: Context) {
         val ANSWER_BUTTON = booleanPreferencesKey("tester-answer-button")
         val HIGH_CONTRAST = booleanPreferencesKey("high-contrast")
         val TEXT_SCALE = intPreferencesKey("text-scale")
+        val GLYPH_COLOURS = stringPreferencesKey("glyph-colours")
+        val UPDATE_NOTICES = booleanPreferencesKey("update-notices")
     }
 }

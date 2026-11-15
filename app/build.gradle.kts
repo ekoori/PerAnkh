@@ -17,6 +17,22 @@ val appVersion = "0.4.1"
 val appVersionCode = appVersion.split(".").map(String::toInt)
     .let { (major, minor, patch) -> major * 10_000 + minor * 100 + patch }
 
+// Which source a build was made from. A test build installed between releases carries the last
+// release's version, so About and problem reports also give the commit ("+" when there were
+// uncommitted changes) and the commit's day. Outside a git checkout both are left empty.
+fun git(vararg args: String): String = try {
+    providers.exec {
+        commandLine("git", *args)
+        isIgnoreExitValue = true
+    }.standardOutput.asText.get().trim()
+} catch (e: Exception) {
+    ""
+}
+val buildCommit = git("rev-parse", "--short=7", "HEAD").let { commit ->
+    if (commit.isEmpty()) "" else commit + if (git("status", "--porcelain", "--untracked-files=no").isNotEmpty()) "+" else ""
+}
+val buildDay = git("log", "-1", "--format=%cs")
+
 android {
     namespace = "com.krbavcic.pentalingo"
     compileSdk = 36
@@ -29,6 +45,8 @@ android {
         versionCode = appVersionCode
         versionName = appVersion
 
+        buildConfigField("String", "BUILD_COMMIT", "\"$buildCommit\"")
+        buildConfigField("String", "BUILD_DAY", "\"$buildDay\"")
         buildConfigField("String", "REPORTS_URL", "\"https://perankh.hrana.app/v1/reports\"")
         // BushLines reports to the same server; each report says which app sent it (server/README.md).
         buildConfigField("String", "REPORTS_APP", "\"perankh\"")

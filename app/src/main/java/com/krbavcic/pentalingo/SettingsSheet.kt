@@ -40,6 +40,8 @@ import com.krbavcic.pentalingo.core.ui.PaintButton
 import com.krbavcic.pentalingo.core.ui.Palette
 import com.krbavcic.pentalingo.core.ui.Rubric
 import com.krbavcic.pentalingo.core.ui.Type
+import androidx.compose.ui.text.style.TextAlign
+import com.krbavcic.pentalingo.model.GlyphColours
 import com.krbavcic.pentalingo.data.Release
 import com.krbavcic.pentalingo.data.Settings
 import com.krbavcic.pentalingo.data.compareVersions
@@ -81,8 +83,15 @@ sealed interface LatestRelease {
 class AboutOptions(
     /** The version installed, as released: "0.3.0". */
     val version: String,
-    /** The same with its build number, as shown: "0.3.0 (300)". */
+    /** The same with its build number and commit, as shown and sent with reports: "0.3.0 (300, 2ce2a2b)". */
     val build: String,
+    /** The commit the app was built from, "+" if it had uncommitted changes; empty outside a git checkout. */
+    val buildCommit: String = "",
+    /** That commit's day, "2026-11-15". */
+    val buildDay: String = "",
+    /** "Tell me when a new version is out": on or off, or null where it is not offered (Google Play's build). */
+    val notices: Boolean? = null,
+    val onNotices: (Boolean) -> Unit = {},
     val latest: LatestRelease,
     val onCheck: () -> Unit,
     /** Opens a web page in the browser. */
@@ -107,6 +116,7 @@ fun SettingsSheet(
     onAutoplay: (Boolean) -> Unit,
     onHighContrast: (Boolean) -> Unit,
     onTextScale: (Int) -> Unit,
+    onGlyphColours: (GlyphColours) -> Unit,
     onReset: () -> Unit,
     reports: ReportOptions,
     tester: TesterOptions,
@@ -132,7 +142,7 @@ fun SettingsSheet(
                 verticalArrangement = Arrangement.spacedBy(14.dp),
             ) {
                 when (page) {
-                    Page.SETTINGS -> SettingsPage(settings, onSounds, onAutoplay, onHighContrast, onTextScale, onReset, reports)
+                    Page.SETTINGS -> SettingsPage(settings, onSounds, onAutoplay, onHighContrast, onTextScale, onGlyphColours, onReset, reports)
                     Page.TESTING -> TestingPage(settings, reports, tester)
                     Page.ABOUT -> AboutPage(about)
                 }
@@ -192,6 +202,7 @@ private fun SettingsPage(
     onAutoplay: (Boolean) -> Unit,
     onHighContrast: (Boolean) -> Unit,
     onTextScale: (Int) -> Unit,
+    onGlyphColours: (GlyphColours) -> Unit,
     onReset: () -> Unit,
     reports: ReportOptions,
 ) {
@@ -203,6 +214,13 @@ private fun SettingsPage(
     Toggle("High contrast", "Darker text and signs on a plain, pale page", settings.highContrast, onHighContrast)
     Text("Text size", style = Type.heading)
     TextSizes(settings.textScale, onTextScale)
+    Text("Hieroglyph colours", style = Type.heading)
+    Text(
+        "By role: in a word, how each sign is read; in a sentence, what kind of word it belongs to. " +
+            "The codex keeps its paints, which show what you remember.",
+        style = Type.small,
+    )
+    Choices(GLYPH_COLOURS, settings.glyphColours, onGlyphColours)
 
     // Reports go out as soon as they are written; this shows only while some are still waiting.
     if (reports.unsent > 0) {
@@ -280,8 +298,22 @@ private fun AboutPage(about: AboutOptions) {
         Glyphs("O1-S34", quadrat = 44.dp, description = "pr-ꜥnḫ")
         Column(Modifier.padding(start = 14.dp)) {
             Text("Per Ankh", style = Type.display)
-            Text("Version ${about.build}", style = Type.small)
+            Text("Version ${about.version}", style = Type.small)
+            if (about.buildCommit.isNotEmpty()) {
+                Text(
+                    "Build ${about.buildCommit}" + about.buildDay.takeIf { it.isNotEmpty() }?.let { " · ${formatDay(it)}" }.orEmpty() +
+                        if (about.buildCommit.endsWith("+")) " (with changes not yet committed)" else "",
+                    style = Type.small,
+                )
+            }
         }
+    }
+    about.notices?.let { on ->
+        Toggle(
+            "Tell me when a new version is out",
+            "Looks for a new release about once a day, as this page does, and sends one notification for each",
+            on, about.onNotices,
+        )
     }
     if (store != null) {
         Text("Google Play keeps Per Ankh up to date.", style = Type.body)
@@ -394,6 +426,30 @@ private fun Link(text: String, onClick: () -> Unit) {
 /** Text sizes on offer, in percent: larger ones still fit every screen of the app. */
 private val TEXT_SIZES = listOf(100 to "Normal", 115 to "Large", 130 to "Larger")
 
+private val GLYPH_COLOURS = listOf(GlyphColours.BY_ROLE to "By role", GlyphColours.PAINT to "Tomb paints", GlyphColours.INK to "Plain ink")
+
+/** One choice among a few, as a row of segments. */
+@Composable
+private fun <T> Choices(options: List<Pair<T, String>>, selected: T, onSelect: (T) -> Unit) {
+    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        for ((value, label) in options) {
+            val on = value == selected
+            Box(
+                Modifier
+                    .weight(1f)
+                    .clip(RoundedCornerShape(14.dp))
+                    .background(if (on) Palette.lapis.copy(alpha = 0.14f) else Palette.sheet)
+                    .border(1.5.dp, if (on) Palette.lapis else Palette.edge.copy(alpha = 0.6f), RoundedCornerShape(14.dp))
+                    .selectable(selected = on, role = Role.RadioButton) { onSelect(value) }
+                    .padding(vertical = 10.dp, horizontal = 6.dp),
+                contentAlignment = Alignment.Center,
+            ) {
+                Text(label, style = Type.heading.copy(color = if (on) Palette.lapisDeep else Palette.ink), textAlign = TextAlign.Center)
+            }
+        }
+    }
+}
+
 @Composable
 private fun TextSizes(selected: Int, onSelect: (Int) -> Unit) {
     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -433,4 +489,11 @@ private fun Toggle(title: String, detail: String, on: Boolean, onChange: (Boolea
             ),
         )
     }
+}
+
+/** "2026-11-15" as "15 Nov 2026"; anything else as it is. */
+private fun formatDay(iso: String): String = try {
+    java.time.LocalDate.parse(iso).format(java.time.format.DateTimeFormatter.ofPattern("d MMM yyyy", java.util.Locale.ENGLISH))
+} catch (e: java.time.format.DateTimeParseException) {
+    iso
 }

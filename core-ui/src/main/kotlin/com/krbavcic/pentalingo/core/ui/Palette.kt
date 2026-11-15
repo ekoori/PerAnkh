@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import com.krbavcic.pentalingo.model.Paint
+import com.krbavcic.pentalingo.model.SignTint
 import com.krbavcic.pentalingo.model.UnitColor
 
 /**
@@ -101,6 +102,22 @@ object Palette {
         !introduced -> inkFaint
         !known -> ink
         else -> lerp(ink, paint(paint), recall.toFloat().coerceIn(0.35f, 1f))
+    }
+
+    /** Ink for a sign that is not read; a repeated sound's gold, dark enough to read. */
+    val silentInk get() = if (high) Color(0xFF6A5A43) else Color(0xFF8A7558)
+    val goldInk get() = if (high) Color(0xFF6E4E00) else Color(0xFF8C6200)
+
+    /** The colour for what a sign does where it is written (see [SignTint]). */
+    fun tint(t: SignTint): Color = when (t) {
+        SignTint.READ, SignTint.NOUN -> ink
+        SignTint.READ_OTHER, SignTint.VERB -> rubricDeep
+        SignTint.ECHO, SignTint.ENDING -> goldInk
+        SignTint.DETERMINATIVE, SignTint.PRONOUN -> lapis
+        SignTint.SILENT -> silentInk
+        SignTint.ADJECTIVE -> turquoiseDeep
+        SignTint.LITTLE_WORD -> ochreDeep
+        SignTint.NAME -> malachiteDeep
     }
 
     fun lerp(a: Color, b: Color, t: Float): Color = Color(

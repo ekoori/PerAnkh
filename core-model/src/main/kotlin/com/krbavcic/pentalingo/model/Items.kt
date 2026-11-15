@@ -154,6 +154,28 @@ data class ConceptItem(
     val mirrored: Boolean = false,
     /** The illustration read aloud, as a transliteration, when it is Egyptian to be heard. */
     val said: String? = null,
+    /**
+     * The pattern at a glance — a table of the pronouns, the endings, the forms — shown at the start
+     * of the lesson that teaches it and kept in the codex's grammar shelf.
+     */
+    val table: GrammarTable? = null,
 ) : Item {
     override val kind get() = ItemKind.CONCEPT
+}
+
+/** A grammar card's table: a header row, then rows of cells, each column one [Cell] kind. */
+data class GrammarTable(
+    val columns: List<String>,
+    val kinds: List<Cell>,
+    val rows: List<List<String>>,
+    /** A line under the table: an example, or what to notice. */
+    val note: String? = null,
+) {
+    /** What a column holds: a spelling in Manuel de Codage, a transliteration, or plain words. */
+    enum class Cell { GLYPHS, TRANSLIT, TEXT }
+
+    init {
+        require(columns.size == kinds.size) { "a kind for every column" }
+        require(rows.all { it.size == columns.size }) { "every row fills every column" }
+    }
 }

@@ -37,8 +37,30 @@ class CourseTest {
             is SignItem -> add(item.id to item.code)
             is WordItem -> { add(item.id to item.mdc); item.variants.forEach { add(item.id to it) } }
             is PhraseItem -> item.tokens.forEach { add(item.id to it.mdc) }
-            is ConceptItem -> item.mdc?.let { add(item.id to it) }
+            is ConceptItem -> {
+                item.mdc?.let { add(item.id to it) }
+                tableSpellings(item).forEach { add(item.id to it) }
+            }
         }
+    }
+
+    private fun tableSpellings(concept: ConceptItem): List<String> {
+        val table = concept.table ?: return emptyList()
+        val columns = table.kinds.indices.filter { table.kinds[it] == com.krbavcic.pentalingo.model.GrammarTable.Cell.GLYPHS }
+        return table.rows.flatMap { row -> columns.map { row[it] } }.filter { it.isNotBlank() }
+    }
+
+    @Test
+    fun `a grammar table writes only signs met by the lesson that shows it`() {
+        val order = course.lessons.map { it.id }
+        val taughtIn = course.lessons.flatMap { l -> l.teach.map { it to order.indexOf(l.id) } }.toMap()
+        val late = course.items.filterIsInstance<ConceptItem>().flatMap { concept ->
+            val at = taughtIn[concept.id] ?: return@flatMap emptyList()
+            tableSpellings(concept).flatMap { Mdc.parse(it).signs }.distinct()
+                .filter { code -> (taughtIn["s:$code"] ?: Int.MAX_VALUE) > at }
+                .map { "$it in ${concept.id}" }
+        }
+        assertTrue("signs not yet taught: $late", late.isEmpty())
     }
 
     @Test

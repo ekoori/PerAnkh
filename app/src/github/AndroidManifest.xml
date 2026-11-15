@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Only in Per Ankh from GitHub: the daily look for a new release, when the learner turns on
+     "Tell me when a new version is out". Google Play updates its own copies, and its build has none
+     of this. -->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- To say that a new version is out (asked for when the setting is turned on). -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <!-- To keep the daily look scheduled after the device restarts. -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
+    <application>
+        <service
+            android:name=".UpdateCheckJob"
+            android:exported="false"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
+    </application>
+
+</manifest>
