@@ -4,6 +4,7 @@
     python -X utf8 tools/review.py --port 8800 --no-browser
     python -X utf8 tools/review.py status        # how far the review has got
     python -X utf8 tools/review.py apply         # pin the takes approved by ear; list the retakes asked for
+    python -X utf8 tools/review.py again f:jt=f --note "why"   # back in the queue for another listen
 
 The page lists every clip that needs a listener, most urgent first: clips flagged while triaging
 (a problem report, a pronunciation rule that changed: tools/out/review/flags.json), clips with a
@@ -61,6 +62,14 @@ GROUPS = ["changed", "reported", "rule", "flagged", "failing", "form", "other"]
 
 LOCK = threading.Lock()
 _cache: dict = {}
+# The code this server runs, as it was when it started. A server older than the voice tool lists
+# old takes and misses new ones: it did, for hours, after the tool learnt to name another model.
+CODE = {p: os.path.getmtime(p) for p in (os.path.abspath(__file__), os.path.abspath(voice.__file__))}
+
+
+def stale_code() -> list[str]:
+    """The tool's files that changed on disk since this server started: restart it to see their effect."""
+    return [os.path.basename(p) for p, t in CODE.items() if mtime(p) != t]
 
 
 def now() -> str:
@@ -150,7 +159,7 @@ def rows_for_page() -> dict:
         status, group = status_of(row, f, r)
         out.append({**row, "flags": f, "review": r, "status": status, "group": group})
     out.sort(key=lambda r: (GROUPS.index(r["group"]), r["lessonNo"]))
-    return {"clips": out, "groups": GROUPS}
+    return {"clips": out, "groups": GROUPS, "stale": stale_code()}
 
 
 def save_review(body: dict) -> dict:
@@ -322,9 +331,37 @@ def cmd_apply() -> None:
             print(f"  {cid:16} {row['latin']:32} {', '.join(r.get('tags') or [])}" + (f" — {r['comment']}" if r.get("comment") else ""))
 
 
+def cmd_again(ids: list[str], note: str) -> None:
+    """Puts reviewed clips back in the queue for another listen. Each verdict joins the clip's
+    earlier verdicts, which the page shows, and a flag says why the clip is back.
+
+    New takes after a retake bring a clip back on their own ("changed"); this is for the rest:
+    a skipped clip whose question was answered, or an approved one to hear again."""
+    known = {r["id"] for r in base_rows()}
+    with LOCK:
+        data = voice.load(REVIEWS, {"clips": {}})
+        flags = voice.load(FLAGS, {})
+        for cid in ids:
+            if cid not in known:
+                print(f"-- {cid}: no such clip")
+                continue
+            old = data["clips"].get(cid)
+            was = (old or {}).get("verdict")
+            if was:
+                history = old.pop("history", [])
+                data["clips"][cid] = {"verdict": None, "take": None, "tags": [], "comment": "",
+                                      "history": history + [old], "at": now()}
+            flags.setdefault(cid, []).append({"reason": "suspect", "note": note or "Back for another listen."})
+            print(f"{cid}: back in the queue" + (f" (was {was})" if was else ""))
+        voice.save(REVIEWS, data)
+        voice.save(FLAGS, flags)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Review Per Ankh's pronunciation clips by ear")
-    parser.add_argument("command", nargs="?", default="serve", choices=["serve", "status", "apply"])
+    parser.add_argument("command", nargs="?", default="serve", choices=["serve", "status", "apply", "again"])
+    parser.add_argument("ids", nargs="?", help="again: the clips, comma-separated")
+    parser.add_argument("--note", default="", help="again: why the clips are back, shown on the page")
     parser.add_argument("--port", type=int, default=8765)
     parser.add_argument("--no-browser", action="store_true")
     args = parser.parse_args()
@@ -333,6 +370,11 @@ def main() -> None:
         return
     if args.command == "apply":
         cmd_apply()
+        return
+    if args.command == "again":
+        if not args.ids:
+            parser.error("again needs the clip ids, comma-separated")
+        cmd_again(args.ids.split(","), args.note)
         return
     os.makedirs(REVIEW_DIR, exist_ok=True)
     httpd = ThreadingHTTPServer(("127.0.0.1", args.port), Handler)

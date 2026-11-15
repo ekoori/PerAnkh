@@ -1,7 +1,23 @@
 {
+ "c:complements": {
+  "file": "7f8b122bd47ebe40d0c3326225b0fc53.mp3",
+  "text": "مِنْ |model:eleven_v3"
+ },
  "c:dependent": {
   "file": "39be120329e22fd667e6c4939a02fc6d.mp3",
   "text": "سِجِمِفْ وِي"
+ },
+ "c:future": {
+  "file": "d4388b3e39e853082d5a3a036aba65c5.mp3",
+  "text": "إِيو دِپِتْ إِرْ إِي يِتْ |model:eleven_v3"
+ },
+ "c:heh": {
+  "file": "a286cf8eaf73879c5de432e525371471.mp3",
+  "text": "حِحْ"
+ },
+ "c:jwtj": {
+  "file": "075df03d2e86372bb6168ecc7272dfcf.mp3",
+  "text": "إِيوتِي سِجِمِيفْ"
  },
  "c:sdmtf": {
   "file": "ca09f35e479b525f5a5fd2798618317f.mp3",
@@ -11,21 +27,125 @@
   "file": "a78c40c2081bd4fbcdd5d1e51783ddfd.mp3",
   "text": "إِييْكُو"
  },
+ "f:jb=f": {
+  "file": "2765bad28292800542a8043ed7395794.mp3",
+  "text": "إِيبِفْ |model:eleven_v3"
+ },
+ "f:jb=k": {
+  "file": "29481cb09f2cadfafa025ea52f106c4f.mp3",
+  "text": "إِيبِكْ"
+ },
+ "f:jmꜣḫy": {
+  "file": "f4365928269ff59fd5ee090feffb937d.mp3",
+  "text": "إِيمَاخِي"
+ },
+ "f:jn": {
+  "file": "3c7f3f37122482c456637cb942c32180.mp3",
+  "text": "إِينْ |model:eleven_v3"
+ },
  "f:jn.n=j": {
   "file": "870346b88545657ea6cdfef6372c60fc.mp3",
   "text": "إِينْنِي"
+ },
+ "f:jt=f": {
+  "file": "9e79de3d2a86a74aca32aa2f885065a5.mp3",
+  "text": "إِيتِفْ"
+ },
+ "f:jt=j": {
+  "file": "63ae37f7da25c4ed5c521f4b28e7e270.mp3",
+  "text": "إِيتِي"
+ },
+ "f:jw": {
+  "file": "70ccf5b38c996e3589a8f749217be061.mp3",
+  "text": "إِيو"
+ },
+ "f:jw=f": {
+  "file": "ee7689b2e506c9e436cab572a23ad428.mp3",
+  "text": "إِيوفْ"
+ },
+ "f:jṯ": {
+  "file": "91f7cf4c757e881a723fb2f5d0d28fb2.mp3",
+  "text": "إِيچْ |model:eleven_v3"
+ },
+ "f:jṯ=f": {
+  "file": "69e0a3a65306351a174ce2340d1ae74b.mp3",
+  "text": "إِچِفْ |model:eleven_v3"
+ },
+ "f:jṯt": {
+  "file": "e5295bc582df956d5c36df1938fca2df.mp3",
+  "text": "إِيچِتْ |model:eleven_v3"
+ },
+ "f:mj-qj=f": {
+  "file": "fbf975d757ad20d19a6477e0ff08b096.mp3",
+  "text": "مِي قِفْ"
+ },
+ "f:pr": {
+  "file": "d31bbb27fa058092ffd2c260b19b5310.mp3",
+  "text": "پِرْ"
+ },
+ "f:pr=k": {
+  "file": "3a00c2970e5c2c20088a7b3456297373.mp3",
+  "text": "پِرِكْ"
+ },
+ "f:rn=f": {
+  "file": "0c6f0e14bdafe2588e58c5d1bef72ccd.mp3",
+  "text": "رِنِفْ"
+ },
+ "f:sꜣ=k": {
+  "file": "048a2ca14c96917d9a3e108f926860b8.mp3",
+  "text": "سَاكْ"
  },
  "f:šns wꜥ": {
   "file": "70430ed6e7ecc9e5352ccf9957ea744b.mp3",
   "text": "شِنِسْ وَعْ"
  },
+ "f:ḏd.jn": {
+  "file": "f6835a3859a1564d825d8eda1249b9bc.mp3",
+  "text": "جِدِينْ"
+ },
+ "f:ꜥḥꜥw": {
+  "file": "e0f7f08917d8e3c2bf367bf383f3d7c5.mp3",
+  "text": "عَحَعُو"
+ },
  "f:ꜥḫm=j": {
   "file": "543551938ba6c8b0f98ebc9da47c1ac4.mp3",
   "text": "عَخْمِي"
  },
+ "p:an1": {
+  "file": "c83944af9da7876e6e76a950a4ea54b3.mp3",
+  "text": "إِيخْ جِدْ سِرُو سِوَاتِيسِنْ |model:eleven_v3"
+ },
+ "p:an10": {
+  "file": "d88217293cb4980c8a68e7eaa6ab1f08.mp3",
+  "text": "إِينِتْ جِرُو رِخْ إِمْ إِيخُوتْ |model:eleven_v3"
+ },
+ "p:an2": {
+  "file": "aed3fc4ca62ffff239c5ca13e5c00873.mp3",
+  "text": "إِيخْ دِيسِنْ نِي آخْ"
+ },
  "p:an25": {
   "file": "eeeb151cdf2ce82cd26d1f3444983d6d.mp3",
   "text": "إِييْنِي إِرْ نِيوتِي هَانِي إِمْ سِپَاتِي"
+ },
+ "p:an27": {
+  "file": "fe4e797ad095982d92c5c9dfc41fddfe.mp3",
+  "text": "إِينْ حِمْ إِنْ نِسُوتْ بِيتِي خِپِرْ كَا رَعْ"
+ },
+ "p:an30": {
+  "file": "4a809f8a1afe6c9726d013a41896eebc.mp3",
+  "text": "إِيمَاخُو إِيمِي رَا عَخْنُوتِي إِينِي إِيتِفْ إِيرِنْ سِنِتْ |model:eleven_v3"
+ },
+ "p:ch109a": {
+  "file": "fe1356e8feded6bcb0a0c5e5ab0f8e14.mp3",
+  "text": "إِيرْ قِنِكْ رُوجْ إِيبِكْ |model:eleven_v3"
+ },
+ "p:good2": {
+  "file": "67a36218dc6c08195e05e25cc4d0308d.mp3",
+  "text": "إِنْ إِيرِيْيِي إِيوِيتْ إِرْ رِمِچْ مِسِجِجِتْ نِچِرْ پُو |model:eleven_v3"
+ },
+ "p:good3": {
+  "file": "b232e33761a2670669081f66c65406ec.mp3",
+  "text": "إِيرْنِي مَاعَتْ مِرِرِتِنْ نِسُوتْ |model:eleven_v3"
  },
  "p:hall4": {
   "file": "c10d6e1190fce53efa11b44f14fad4ce.mp3",
@@ -39,9 +159,21 @@
   "file": "f2f46c181ee12a0d1638af1c5ea02cd5.mp3",
   "text": "حَاتِييِي إِنْ خِپِرِوِي"
  },
+ "p:heart4": {
+  "file": "2bd98596a1a1891d260c05c72225e0d3.mp3",
+  "text": "إِمْ عَحَعْ رِي إِمْ مِتِرُو"
+ },
+ "p:im6": {
+  "file": "64a7bac921a401959d0f3733b3fa0a2c.mp3",
+  "text": "پِرِرِفْ حَرِفْ إِرْ حَبُوفْ نُو جِتْ"
+ },
  "p:jjkw": {
   "file": "a78c40c2081bd4fbcdd5d1e51783ddfd.mp3",
   "text": "إِييْكُو"
+ },
+ "p:jmAxyxrnTraA": {
+  "file": "6f82eb57ba2f61239c6f368e0dc9a3e1.mp3",
+  "text": "إِيمَاخُو خِرْ نِچِرْ عَا"
  },
  "p:jrjjmAat": {
   "file": "fc6660553e01763d64fbb7e84a4d60fe.mp3",
@@ -54,6 +186,30 @@
  "p:nsDmf": {
   "file": "026f891c1a51e0be36cee3e17f30d123.mp3",
   "text": "إِنْ سِجِمِفْ"
+ },
+ "p:offering3": {
+  "file": "01edf9d7fc26fede02619565dbfba21a.mp3",
+  "text": "إِنْ كَا إِنْ إِيمَاخُو"
+ },
+ "p:pt340": {
+  "file": "eecf8dafde39dfb2d47238edb866b746.mp3",
+  "text": "إِيو سَاافْ نِبْ إِرْ جِتْ"
+ },
+ "p:pt366a": {
+  "file": "d8723f197c4d6f1c90bb98fb49ee6a9d.mp3",
+  "text": "إِيرْ شِسِپْ سَا سِ جِدْ إِيتِفْ |model:eleven_v3"
+ },
+ "p:pt386b": {
+  "file": "e07de9543f690971b2893176683a7c57.mp3",
+  "text": "إِيخْ جِدْ رِمِچْ مَااتِيسِنْ مِيتِتْ إِيسْ پِفَا پُو |model:eleven_v3"
+ },
+ "p:pt402": {
+  "file": "c7dc7f70bcda190da85d32661c7cdc24.mp3",
+  "text": "إِيخْ جِدْ سِرُو سِجِمِتِيسِنْ |model:eleven_v3"
+ },
+ "p:pt411b": {
+  "file": "944fcdc19efa6944fff2cb0216fe0a80.mp3",
+  "text": "إِنْ جِجْ نِي نِسُوتْ حِسُوتْ خِنِتْ تِپِيو عَوِي"
  },
  "p:ptah5": {
   "file": "fc2e5f71cc97a2f608fc5f420ab693a4.mp3",
@@ -75,6 +231,10 @@
   "file": "9b9b9c1048a5398a5d9908190c6fbd2e.mp3",
   "text": "عَحَعَنْ دِپِتْ تِفْ إِييْتِي مِي سِرِتِنِفْ خِنِتْ"
  },
+ "p:pu142": {
+  "file": "7d3dbd7ff73ac94229b0fb59d62ef155.mp3",
+  "text": "عَوِيْيِي خَامْ إِمْبَاحِفْ"
+ },
  "p:sDmfwj": {
   "file": "39be120329e22fd667e6c4939a02fc6d.mp3",
   "text": "سِجِمِفْ وِي"
@@ -83,9 +243,41 @@
   "file": "2afaa568fabdab3d44e886a9ba9e0e41.mp3",
   "text": "مِكْ رِفْ إِنْ إِييِنْ إِمْ حِتِپْ"
  },
+ "p:sa9": {
+  "file": "848b344ff64e3026beb0b7cba018acad.mp3",
+  "text": "إِيسُوتِنْ إِييْتِي عَجْتِي |model:eleven_v3"
+ },
+ "p:serpent1": {
+  "file": "114bd08ed6301da47563f3f7e922e14a.mp3",
+  "text": "إِيو دِپِتْ إِرْ إِي يِتْ إِمْ خِنُو |model:eleven_v3"
+ },
+ "p:serpent2": {
+  "file": "c7fe1539dbc72323aa4b277d95d1ddbc.mp3",
+  "text": "سِقِدُو إِيمِسْ رِخِنِكْ"
+ },
+ "p:snake13": {
+  "file": "4572dd146f3e4207f2083761638ef234.mp3",
+  "text": "إِيچِفْ وِي إِرْ سِتِفْ نِتْ سِنِجِمْ |model:eleven_v3"
+ },
+ "p:snake8": {
+  "file": "44c28cea53b288b6a99dd87b054d2549.mp3",
+  "text": "رِدِيْيِي رِخِكْ چُو إِيوكْ إِمْ سِسِفْ |model:eleven_v3"
+ },
+ "p:ss74": {
+  "file": "e769c29c4427da62eb075df4b7359049.mp3",
+  "text": "عَوِيْيِي خَامْ إِمْبَاحِفْ جِدِي نِفْ |model:eleven_multilingual_v2"
+ },
+ "p:vo28": {
+  "file": "d54a50b3bfd98607c91cd2207a30c689.mp3",
+  "text": "سِقِدُو شِتْ جُوتِي إِيمِسْ إِمْ سِتِپْ إِنْ كِمِتْ |model:eleven_v3"
+ },
  "p:vo30a": {
   "file": "cc0567d46c271461d417257df40323dc.mp3",
   "text": "سِرِسِنْ جَعْ إِنْ إِييِتِفْ"
+ },
+ "p:vo40a": {
+  "file": "45a1795cda288e5e27d47f20b4dda91d.mp3",
+  "text": "سِجِرِكُو إِمْخِنُونْ كَاپْ إِنْ خِتْ"
  },
  "p:vo41a": {
   "file": "dd83c076c55e10805142d77ce6b0dc9c.mp3",
@@ -99,9 +291,37 @@
   "file": "43cb11b6193c1b8da3ef0c7347022889.mp3",
   "text": "گِمِنِي حَفَاو پُو إِيوفْ إِمْ إِييِتْ"
  },
+ "p:wc132a": {
+  "file": "5c4e5bb1e70f121603ed7c3e1d0daa50.mp3",
+  "text": "عَحَعَنْ نِخَاو إِنْ مِفِكَاتْ مَاوتْ نِتْ وَعَتْ نِتْ شِتِيتْ"
+ },
  "p:wc134": {
   "file": "3f7b7745e276399c07bc0d9fcc93943a.mp3",
   "text": "إِييِنْ حَجِنِسْ پَايسْ رِمِنْ"
+ },
+ "p:wc146": {
+  "file": "76d9a3bc32d3919bcd40e0a6bc634750.mp3",
+  "text": "عَحَعِنْ إِينِنِفْ سُو رِدِي إِنْ حِنُوتِفْ"
+ },
+ "p:wc151": {
+  "file": "aa9cb53bbbf555dde629acb77be73303.mp3",
+  "text": "وِرِشِنْ حَمِفْ حَرْ هِرُو نِفِرْ حَنَعْ پِرْ نِسُوتْ عَنْخْ وِجَا سِنِبْ مِي قِيفْ"
+ },
+ "p:wc152": {
+  "file": "5005558c35052c66db69d84e663f8b0c.mp3",
+  "text": "پِرِنْ فِقَانِفْ خِرِي حِبِتْ حِرِي تِپْ جَاجَامْعَنْخْ إِمْ بُو نِبْ نِفِرْ"
+ },
+ "p:wc153b": {
+  "file": "2f849b87a09732ba60d5514b589a0dd8.mp3",
+  "text": "إِمْ إِيرِيتْ خِرِي حَبِتْ حَرِي تِپْ سِخَاو مِجَاتْ جَاجَامْعَنْخْ"
+ },
+ "p:wc155a": {
+  "file": "f8432704da4f147367737066b4da0968.mp3",
+  "text": "إِيمِي دِيتُو مَاعَ تِ خَا حِنِقِتْ دِسْ شِتْ"
+ },
+ "p:wc86a": {
+  "file": "e2c6079c56879204706f9ce9d9d7a813.mp3",
+  "text": "دِيي سِجِمْ حَمِكْ بِيايتْ خِپِرِتْ إِمْ رِكْ إِيتِكْ سِنِفِرُو مَاعَ خِرُو"
  },
  "s:C11": {
   "file": "a286cf8eaf73879c5de432e525371471.mp3",
@@ -124,8 +344,8 @@
   "text": "عَحَعْ"
  },
  "s:V15": {
-  "file": "3941249471ec0f49d52292d496a29a07.mp3",
-  "text": "إِيچْ"
+  "file": "91f7cf4c757e881a723fb2f5d0d28fb2.mp3",
+  "text": "إِيچْ |model:eleven_v3"
  },
  "w:HAw": {
   "file": "f9ebbf0711c56d05d91350d8a1d8df4e.mp3",
@@ -135,6 +355,10 @@
   "file": "89bc4a8e0f0d5971a49151aa2bfbd20c.mp3",
   "text": "حَاي"
  },
+ "w:aHan": {
+  "file": "7bf01287d7a43940a56f0b3875189243.mp3",
+  "text": "عَاحَعِنْ"
+ },
  "w:aXnwtj": {
   "file": "f6a44672953c7332d64f26e312b248c6.mp3",
   "text": "عَخْنُوتِي"
@@ -142,5 +366,9 @@
  "w:ds": {
   "file": "ec7130782d5544e66d265dc01128e000.mp3",
   "text": "دِسْ"
+ },
+ "w:jmAxy": {
+  "file": "6f52271419b67acebec7d327044ad83b.mp3",
+  "text": "إِيمَاخُو"
  }
 }

@@ -157,7 +157,9 @@ release's version.
   localhost only): every clip that needs a listener first (reported, changed by a pronunciation
   rule, failing the check, new word forms), with what it should say and every take recorded for
   it. A verdict, tags and a comment per clip go to `tools/out/review/review.json`; `review.py
-  apply` pins the takes approved by ear and lists the retakes asked for. Clips flagged while
+  apply` pins the takes approved by ear and lists the retakes asked for; `review.py again ID
+  --note "…"` puts a reviewed clip back in the queue. The server keeps the code it started with:
+  restart it after changing `voice.py` or `review.py` (the page warns when it is stale). Clips flagged while
   triaging are in `tools/out/review/flags.json` (not committed: it quotes testers' reports).
 - `tools/reports.sh` — triages problem reports on the server over SSH: `list`, `show`, `resolve`,
   `export` (see [server/README.md](server/README.md)). BushLines reports to the same server, so

@@ -131,6 +131,7 @@ details summary { cursor: pointer; color: var(--muted); }
   .take { grid-template-columns: auto 1fr; }
   .take .key { display: none; }
 }
+.stale { background: var(--bad-bg); color: var(--bad); padding: 10px 16px; font-weight: 600; }
 </style>
 </head>
 <body>
@@ -148,6 +149,7 @@ details summary { cursor: pointer; color: var(--muted); }
     <button class="btn" id="helpBtn" aria-haspopup="dialog">Keys <span class="key">?</span></button>
   </div>
 </header>
+<div id="stale" class="stale" role="alert" hidden></div>
 
 <div class="layout">
   <aside>
@@ -236,6 +238,11 @@ async function load(keepId) {
     Object.keys(state.signs).length ? state.signs : fetch("/api/signs").then((r) => r.json())]);
   state.signs = signs;
   state.clips = clips.clips;
+  // The server is older than the tool's code: it may list old takes and miss new ones.
+  const stale = clips.stale || [];
+  $("stale").hidden = !stale.length;
+  $("stale").textContent = stale.length ? `This page's server is older than ${stale.join(" and ")}, so it may show old takes and miss new ones. `
+    + "Close the review.py window, start it again, then press Reload." : "";
   state.byId = new Map(state.clips.map((c) => [c.id, c]));
   renderTabs(); renderGroups(); renderList();
   const fromHash = decodeURIComponent(location.hash.slice(1));
