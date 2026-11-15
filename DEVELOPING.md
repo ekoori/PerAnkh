@@ -145,7 +145,11 @@ release's version.
   and ḏ from coming out as a hard g; the clips recorded before that keep their takes. `generate
   --takes N` records several takes to choose from, `--new-takes N` caps what one run may pay for,
   `takes ID` lists a clip's takes, and `pin ID FILE` ships a take chosen by ear
-  (`tools/voice_pins.json`), whatever the check says. Besides items, word forms get clips (`f:jt=f`):
+  (`tools/voice_pins.json`), whatever the check says. For a clip a listener turned down,
+  `tools/voice_variants.json` lists other ways to write it for the voice, tried first: a
+  spelling (a sukun, a split syllable, commas) or another model
+  (`{"text": …, "model": "eleven_multilingual_v2"}`, which keeps short vowels Eleven v4 drops but
+  loses ʿayin). Besides items, word forms get clips (`f:jt=f`):
   tapping a word in a phrase plays the form as written there. The key comes from
   `$ELEVENLABS_API_KEY`, or from a file outside the repository (`$ELEVENLABS_KEY_FILE`, default
   `~/dev/11labs/.env`), read by path and never stored here.

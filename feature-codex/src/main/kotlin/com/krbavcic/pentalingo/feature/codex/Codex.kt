@@ -1,6 +1,20 @@
 package com.krbavcic.pentalingo.feature.codex
 
 import androidx.compose.foundation.background
+import com.krbavcic.pentalingo.core.ui.RoundIconButton
+import com.krbavcic.pentalingo.core.ui.IconKind
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.AnimatedVisibility
+import androidx.activity.compose.BackHandler
 import com.krbavcic.pentalingo.model.Pos
 import com.krbavcic.pentalingo.model.ConceptItem
 import androidx.compose.ui.unit.sp
@@ -174,38 +188,100 @@ fun CodexScreen(
                 Box(Modifier.weight(1f).fillMaxHeight()) { ShelfContent(null, 8.dp) }
             }
         } else {
-            // Where there is height to spare, the header stays above the shelf with its tabs, search
-            // and categories. On a short screen (a tablet on its side) it would leave the signs a
-            // single row, so it scrolls away with the shelf instead.
-            val pinned = maxHeight >= 600.dp
-            val listHeader: (@Composable () -> Unit)? = if (pinned) null else {
-                {
-                    Column(
-                        Modifier.windowInsetsPadding(WindowInsets.statusBars).padding(start = 4.dp, end = 4.dp, top = 12.dp, bottom = 6.dp),
-                        verticalArrangement = Arrangement.spacedBy(10.dp),
-                    ) {
-                        CodexHeader(knowledge, Modifier)
-                        FinderControls(finder, vertical = false)
-                    }
-                }
-            }
-            Column(Modifier.fillMaxSize()) {
-                if (pinned) {
-                    Column(
+            // A phone: the shelf gets the screen. A slim bar holds the menu, where the shelf is and a
+            // search; everything else (what the colours mean, how much of a page you can read, the
+            // shelves and their categories) waits in a panel that slides in from the side. The old
+            // header kept more than half of the screen for itself (reported, Nov 2026).
+            var panelOpen by rememberSaveable { mutableStateOf(false) }
+            var searching by rememberSaveable { mutableStateOf(query.isNotEmpty()) }
+            Box(Modifier.fillMaxSize()) {
+                Column(Modifier.fillMaxSize()) {
+                    CodexTopBar(
+                        finder, searching, { searching = it }, { panelOpen = true },
                         Modifier
                             .fillMaxWidth()
                             .windowInsetsPadding(WindowInsets.statusBars)
-                            .padding(start = 20.dp + margin, end = 20.dp + margin, top = 12.dp),
-                        verticalArrangement = Arrangement.spacedBy(10.dp),
-                    ) {
-                        CodexHeader(knowledge, Modifier)
-                        FinderControls(finder, vertical = false)
+                            .padding(start = 12.dp + margin, end = 12.dp + margin, top = 6.dp, bottom = 4.dp),
+                    )
+                    finder.category?.let { c ->
+                        Row(Modifier.padding(start = 16.dp + margin, bottom = 6.dp)) {
+                            CategoryChip("$c  ✕", selected = true) { finder.onCategory(null) }
+                        }
                     }
+                    ShelfContent(null, margin)
                 }
-                ShelfContent(listHeader, margin)
+                CodexPanel(panelOpen, onClose = { panelOpen = false }) {
+                    CodexHeader(knowledge, Modifier)
+                    FinderControls(
+                        Finder(
+                            finder.shelf, { finder.onShelf(it); panelOpen = false },
+                            finder.query, finder.onQuery,
+                            finder.category, { finder.onCategory(it); panelOpen = false },
+                        ),
+                        vertical = true,
+                        showSearch = false,
+                    )
+                }
             }
         }
     }
+}
+
+/** The phone's bar: the menu, where the shelf is (and its category), and a search that opens in place. */
+@Composable
+private fun CodexTopBar(finder: Finder, searching: Boolean, onSearching: (Boolean) -> Unit, onMenu: () -> Unit, modifier: Modifier) {
+    Row(modifier.heightIn(min = 52.dp), verticalAlignment = Alignment.CenterVertically) {
+        RoundIconButton(IconKind.MENU, onMenu, size = 42.dp, fill = Palette.sheetDeep, tint = Palette.ink, description = "Shelves and categories")
+        Spacer(Modifier.width(10.dp))
+        if (searching) {
+            Box(Modifier.weight(1f)) { SearchField(finder.query, finder.onQuery, searchHint(finder.shelf), focus = true) }
+            Spacer(Modifier.width(8.dp))
+            RoundIconButton(
+                IconKind.CLOSE, { finder.onQuery(""); onSearching(false) },
+                size = 42.dp, fill = Palette.sheetDeep, tint = Palette.ink, description = "Close the search",
+            )
+        } else {
+            Column(Modifier.weight(1f)) {
+                Text(finder.shelf.label, style = Type.title)
+                Text(listOfNotNull("Codex", finder.category).joinToString(" · "), style = Type.small, maxLines = 1, overflow = TextOverflow.Ellipsis)
+            }
+            RoundIconButton(IconKind.SEARCH, { onSearching(true) }, size = 42.dp, fill = Palette.sheetDeep, tint = Palette.ink, description = "Search the codex")
+        }
+    }
+}
+
+/** A panel that slides in from the side over the shelf, closed by a tap outside it, a choice or Back. */
+@Composable
+private fun CodexPanel(open: Boolean, onClose: () -> Unit, content: @Composable () -> Unit) {
+    BackHandler(enabled = open, onBack = onClose)
+    AnimatedVisibility(open, enter = fadeIn(), exit = fadeOut()) {
+        Box(
+            Modifier
+                .fillMaxSize()
+                .background(Color.Black.copy(alpha = 0.32f))
+                .clickable(interactionSource = remember { MutableInteractionSource() }, indication = null, onClick = onClose)
+                .semantics { contentDescription = "Close the panel" },
+        )
+    }
+    AnimatedVisibility(open, enter = slideInHorizontally { -it }, exit = slideOutHorizontally { -it }) {
+        Column(
+            Modifier
+                .fillMaxHeight()
+                .fillMaxWidth(0.86f)
+                .widthIn(max = 340.dp)
+                .background(Palette.sheetLight)
+                .windowInsetsPadding(WindowInsets.statusBars)
+                .verticalScroll(rememberScrollState())
+                .padding(start = 20.dp, end = 16.dp, top = 12.dp, bottom = 24.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) { content() }
+    }
+}
+
+private fun searchHint(shelf: Shelf) = when (shelf) {
+    Shelf.SIGNS -> "Search: G17, owl, m, water…"
+    Shelf.WORDS -> "Search: nfr, good, house…"
+    Shelf.GRAMMAR -> "Search: pronouns, sḏm=f, not…"
 }
 
 /** The finder's state: which shelf, what is searched for, and which category, with their setters. */
@@ -235,7 +311,7 @@ private fun CodexHeader(knowledge: Knowledge, modifier: Modifier) {
 /** The shelves, a search field and the shelf's categories: in rows on a phone, a column in the side panel. */
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-private fun FinderControls(finder: Finder, vertical: Boolean) {
+private fun FinderControls(finder: Finder, vertical: Boolean, showSearch: Boolean = true) {
     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
         if (vertical) {
             for (s in Shelf.entries) ShelfTab(s.label, finder.shelf == s, Modifier.fillMaxWidth()) { finder.onShelf(s) }
@@ -244,14 +320,7 @@ private fun FinderControls(finder: Finder, vertical: Boolean) {
                 for (s in Shelf.entries) ShelfTab(s.label, finder.shelf == s, Modifier.weight(1f)) { finder.onShelf(s) }
             }
         }
-        SearchField(
-            finder.query, finder.onQuery,
-            when (finder.shelf) {
-                Shelf.SIGNS -> "Search: G17, owl, m, water…"
-                Shelf.WORDS -> "Search: nfr, good, house…"
-                Shelf.GRAMMAR -> "Search: pronouns, sḏm=f, not…"
-            },
-        )
+        if (showSearch) SearchField(finder.query, finder.onQuery, searchHint(finder.shelf))
         val chips: @Composable () -> Unit = {
             CategoryChip("All", finder.category == null) { finder.onCategory(null) }
             for (c in categoriesOf(finder.shelf)) {
@@ -267,8 +336,10 @@ private fun FinderControls(finder: Finder, vertical: Boolean) {
 }
 
 @Composable
-private fun SearchField(value: String, onChange: (String) -> Unit, hint: String) {
+private fun SearchField(value: String, onChange: (String) -> Unit, hint: String, focus: Boolean = false) {
     val shape = RoundedCornerShape(14.dp)
+    val focusRequester = remember { FocusRequester() }
+    if (focus) LaunchedEffect(Unit) { focusRequester.requestFocus() }
     Row(
         Modifier
             .fillMaxWidth()
@@ -285,7 +356,7 @@ private fun SearchField(value: String, onChange: (String) -> Unit, hint: String)
                 singleLine = true,
                 textStyle = Type.body,
                 cursorBrush = SolidColor(Palette.lapis),
-                modifier = Modifier.fillMaxWidth().semantics { contentDescription = "Search the codex" },
+                modifier = Modifier.fillMaxWidth().focusRequester(focusRequester).semantics { contentDescription = "Search the codex" },
             )
         }
         if (value.isNotEmpty()) {

@@ -73,10 +73,10 @@ def mtime(path: str) -> float:
 
 def base_rows() -> list[dict]:
     """Every clip with its takes, from the voice tool's files; cached until one of them changes."""
-    stamp = tuple(mtime(p) for p in (voice.SPEECH, voice.CHOICES, voice.TRANSCRIPTS, voice.PINS))
+    stamp = tuple(mtime(p) for p in (voice.SPEECH, voice.CHOICES, voice.TRANSCRIPTS, voice.PINS, voice.VARIANTS))
     if _cache.get("stamp") == stamp:
         return _cache["rows"]
-    speech = voice.load(voice.SPEECH, [])
+    speech = voice.load_clips()
     choices = voice.load(voice.CHOICES, {})
     transcripts = voice.load(voice.TRANSCRIPTS, {})
     pins = voice.load(voice.PINS, {})
@@ -292,7 +292,7 @@ def cmd_apply() -> None:
     """Pins every take approved by ear, and lists the retakes asked for with their tags and comments."""
     page = {r["id"]: r for r in rows_for_page()["clips"]}
     reviews = voice.load(REVIEWS, {}).get("clips", {})
-    speech = {c["id"]: c for c in voice.load(voice.SPEECH, [])}
+    speech = {c["id"]: c for c in voice.load_clips()}
     transcripts = voice.load(voice.TRANSCRIPTS, {})
     pins = voice.load(voice.PINS, {})
     pinned = 0

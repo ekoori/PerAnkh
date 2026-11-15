@@ -151,9 +151,13 @@ data class Course(
      * Everything taught or read in sections still sealed for this learner — held back from the
      * codex, the library and the treasury, so that what a section holds stays a surprise.
      */
-    fun sealedIds(progress: Progress): Set<String> =
-        sections.filter { isSealed(it, progress) }
-            .flatMap(::unitsOf).flatMap { it.lessons }
+    fun sealedIds(progress: Progress): Set<String> {
+        val (sealed, open) = sections.partition { isSealed(it, progress) }
+        // A text read in an open section stays in sight even when a sealed one reads it again:
+        // the Sailor's opening line vanished from the library when a later section took it up.
+        val readInOpen = open.flatMap(::unitsOf).flatMap { it.lessons }.mapNotNull { it.reading }.toSet()
+        return sealed.flatMap(::unitsOf).flatMap { it.lessons }
             .flatMap { it.teach + listOfNotNull(it.reading) }
-            .toSet()
+            .toSet() - readInOpen
+    }
 }

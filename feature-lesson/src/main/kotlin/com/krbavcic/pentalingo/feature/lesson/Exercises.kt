@@ -184,6 +184,7 @@ internal fun ChoiceExercise(
     hint: SignHint? = null,
 ) {
     var picked by remember { mutableStateOf<Int?>(null) }
+    if (ex.kind == ExerciseKind.SOUND_OUT) ReadItYourself()
     Instruction(ex.instruction)
     Prompt(ex.prompt, voice, autoplayAudio = ex.kind in AUDIO_KINDS, hint = hint)
 
@@ -287,8 +288,15 @@ internal fun ArrangeExercise(
     ) {
         ex.tiles.forEachIndexed { i, tile ->
             if (i in chosen) {
-                Box(Modifier.clip(RoundedCornerShape(14.dp)).background(Palette.inkGhost)) {
-                    Box(Modifier.padding(2.dp).alpha(0f)) { TileFaceSmall(tile) }
+                // The word stays in its place, faded, so the bank keeps its shape and the eye its
+                // bearings; tapping it here sends it back from the line.
+                Box(
+                    Modifier
+                        .clip(RoundedCornerShape(14.dp))
+                        .background(Palette.inkGhost)
+                        .then(if (verdict == null) Modifier.clickable { update(chosen - i) } else Modifier),
+                ) {
+                    Box(Modifier.padding(2.dp).alpha(0.35f)) { TileFaceSmall(tile) }
                 }
             } else {
                 Tile(if (verdict == null) TileState.IDLE else TileState.DIM, if (verdict == null) ({ update(chosen + i) }) else null) {
@@ -296,6 +304,30 @@ internal fun ArrangeExercise(
                 }
             }
         }
+    }
+}
+
+/**
+ * Over a word the course has not taught: it is asked on purpose. A learner took one for a lesson
+ * that forgot to teach its word, so the exercise now says what it is, and why it is fair.
+ */
+@Composable
+private fun ReadItYourself() {
+    Column(
+        Modifier
+            .fillMaxWidth()
+            .padding(bottom = 10.dp)
+            .clip(RoundedCornerShape(16.dp))
+            .background(Palette.goldLight.copy(alpha = 0.45f))
+            .border(1.5.dp, Palette.gold, RoundedCornerShape(16.dp))
+            .padding(horizontal = 14.dp, vertical = 10.dp),
+        verticalArrangement = Arrangement.spacedBy(2.dp),
+    ) {
+        Text("Read it yourself", style = Type.heading.copy(color = Palette.goldInk))
+        Text(
+            "You have never been taught this word, but you know every sign in it. Sound it out, as Champollion read the cartouches.",
+            style = Type.body,
+        )
     }
 }
 

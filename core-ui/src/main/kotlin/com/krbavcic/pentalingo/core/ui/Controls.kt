@@ -186,7 +186,7 @@ fun Chip(text: String, modifier: Modifier = Modifier, color: Color = Palette.she
     }
 }
 
-enum class IconKind { SPEAKER, CLOSE, BACK, CHECK, BACKSPACE, GEAR, SLOW, FLAG, HOME, UP, DOWN, HERE }
+enum class IconKind { SPEAKER, CLOSE, BACK, CHECK, BACKSPACE, GEAR, SLOW, FLAG, HOME, UP, DOWN, HERE, MENU, SEARCH }
 
 /** The handful of icons the app needs, drawn rather than imported. */
 @Composable
@@ -232,6 +232,15 @@ fun DrawnIcon(kind: IconKind, modifier: Modifier = Modifier.size(24.dp), color: 
                 val (tip, wing) = if (kind == IconKind.UP) s * 0.3f to s * 0.66f else s * 0.7f to s * 0.34f
                 drawLine(color, Offset(s * 0.2f, wing), Offset(s * 0.5f, tip), w * 1.4f, StrokeCap.Round)
                 drawLine(color, Offset(s * 0.5f, tip), Offset(s * 0.8f, wing), w * 1.4f, StrokeCap.Round)
+            }
+            IconKind.MENU -> {
+                for (y in listOf(0.28f, 0.5f, 0.72f)) {
+                    drawLine(color, Offset(s * 0.18f, s * y), Offset(s * 0.82f, s * y), w * 1.2f, StrokeCap.Round)
+                }
+            }
+            IconKind.SEARCH -> {
+                drawCircle(color, s * 0.24f, Offset(s * 0.42f, s * 0.42f), style = Stroke(w * 1.2f))
+                drawLine(color, Offset(s * 0.6f, s * 0.6f), Offset(s * 0.84f, s * 0.84f), w * 1.4f, StrokeCap.Round)
             }
             IconKind.HERE -> {
                 // "You are here": a ring with a dot, where the learner's next lesson is.

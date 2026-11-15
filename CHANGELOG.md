@@ -49,6 +49,23 @@
 - Per Ankh from GitHub can tell you when a new version is out: turn it on in About, and it looks
   once a day and sends one notification per release. Off unless turned on; the Play version
   leaves updates to Google Play.
+- The codex on a phone gives the shelf the screen: a slim bar with the shelf's name and a
+  search, and the shelves, categories and what the colours mean in a panel that slides in
+  from the side. Grammar cards opened from the codex have the report flag.
+- Answers may end a word in j or y alike (ḏḥwtj, ḏḥwty); the two strokes' card says the course
+  writes j there, as the Thesaurus Linguae Aegyptiae does.
+- The offering formula reads "An offering which the king gives, and Osiris, lord of Busiris",
+  with a note on the older reading "to Osiris". jmꜣḫw, "the revered one", is spelled as Middle
+  Kingdom texts most often spell it.
+- wr and ꜥꜣ, both "great", are told apart; the basket's two words, nb "lord" and nb "every",
+  are told apart by where they stand; phonetic complements are explained before the first word
+  that uses one; and explanations name the sign that repeats a sound.
+- A word to sound out says it is one on purpose: "Read it yourself".
+- The serpent's question, asked twice in the story, says so where it comes back.
+- An arrange exercise keeps each chosen word readable in its place; tapping it there sends it
+  back.
+- A text an earlier section reads stays in the library when a later, sealed section reads it
+  again (the Sailor's opening line had disappeared).
 
 ## 0.4.1 (2026-11-05)
 

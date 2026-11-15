@@ -59,7 +59,7 @@ private val UNITS = listOf(
         "Most hieroglyphs spell two or three consonants at once, and many are also pictures of the word they spell. Alphabet signs often follow to confirm the reading.",
         listOf(
             Lesson("l14", "House and board", "pr, mn and nb", "O1",
-                teach = s("O1", "Y5", "V30") + w("pr", "nb", "mn", "jmn") + c("complements")),
+                teach = s("O1", "Y5", "V30") + c("complements") + w("pr", "nb", "mn", "jmn")),
             Lesson("l15", "Life and beauty", "ꜥnḫ, nfr and ḥtp", "S34",
                 teach = s("S34", "F35", "R4") + w("anx", "nfr", "Htp") + p("hrwnfr"), practice = w("hrw")),
             Lesson("l16", "Gods and sons", "nṯr, sꜣ and wr", "R8",

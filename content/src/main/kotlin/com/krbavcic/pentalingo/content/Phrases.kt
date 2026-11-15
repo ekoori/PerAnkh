@@ -93,10 +93,11 @@ internal val PHRASES: List<PhraseItem> = listOf(
         t("G39-S29", "sꜣ=s", "her son", "sA"), note = "The folded cloth after a noun means “her”."),
 
     // ---- the offering formula ------------------------------------------------------------------
-    phrase("offering1", "An offering which the king gives to Osiris, lord of Busiris",
-        listOf("An offering", "which the king gives", "to Osiris,", "lord of Busiris"),
+    phrase("offering1", "An offering which the king gives, and Osiris, lord of Busiris",
+        listOf("An offering", "which the king gives,", "and Osiris,", "lord of Busiris"),
         t("M23-X1:N35-R4:X1*Q3-X8", "ḥtp-dj-nswt", "an offering which the king gives", "HtpDjnswt"),
-        t("Q1:D4", "wsjr", "Osiris", "wsjr"), t("V30", "nb", "lord", "nb"), t("R11-R11-O49", "ḏdw", "Busiris", "Ddw")),
+        t("Q1:D4", "wsjr", "Osiris", "wsjr"), t("V30", "nb", "lord", "nb"), t("R11-R11-O49", "ḏdw", "Busiris", "Ddw"),
+        note = "No word for “and” or “to” is written. Older books read “gives to Osiris”; today most Egyptologists read the king and the god as giving together."),
     phrase("offering2", "that he may give an invocation offering of bread, beer, oxen and fowl",
         listOf("that he may give", "an invocation offering of", "bread,", "beer,", "oxen", "and fowl"),
         t("X8-I9", "dj=f", "that he may give", "dj"), t("O3", "prt-ḫrw", "an invocation offering", "prtxrw"),
@@ -105,7 +106,7 @@ internal val PHRASES: List<PhraseItem> = listOf(
         note = "Bread, beer, an ox head and a duck head: the menu of eternity, read aloud."),
     phrase("offering3", "for the ka of the revered one", listOf("for", "the ka", "of", "the revered one"),
         t("N35", "n", "for", "n"), t("D28-Z1", "kꜣ", "the ka", "kA"), t("N35", "n", "of", "n"),
-        t("F39-Z4", "jmꜣḫy", "the revered one", "jmAxy"),
+        t("F39-Aa1", "jmꜣḫw", "the revered one", "jmAxy"),
         note = "The two n’s are written and said alike: the first is “for”, the second “of”. Egyptologists often write the second n(j), “belonging to”, to tell them apart. On a real stela the owner’s name follows here."),
 
     // ---- literature ---------------------------------------------------------------------------
@@ -181,7 +182,7 @@ internal val PHRASES: List<PhraseItem> = listOf(
         literal = "heart-your in-hand-your",
         note = "How the Shipwrecked Sailor says to speak to a king: boldly, with your wits about you."),
     phrase("jmAxyxrnTraA", "revered before the great god", listOf("revered", "before", "the", "great", "god"),
-        t("F39-Z4", "jmꜣḫy", "revered", "jmAxy"), t("Aa1:D21", "ḫr", "before", "xr"),
+        t("F39-Aa1", "jmꜣḫw", "revered", "jmAxy"), t("Aa1:D21", "ḫr", "before", "xr"),
         t("R8-A40", "nṯr", "god", "nTr"), t("O29:D36", "ꜥꜣ", "great", "aA"),
         literal = "revered before god great",
         note = "Follows the owner’s name on stelae. The great god is usually Osiris."),
@@ -407,7 +408,8 @@ internal val PHRASES: List<PhraseItem> = listOf(
         t("D21:Z1-I9", "r=f", "his mouth", "rA"), t("D21-A1", "r=j", "to me", "r"),
         t("E9-G43-A1", "jw=j", "as I", "jw"), t("D2:Z1", "ḥr", "on", "Hr"),
         t("F32-X1:Z1-A1", "ẖt=j", "my belly", "Xt"), t("G17-D52:Z1-I9", "m-bꜣḥ=f", "before him", "mbAH"),
-        literal = "opened-he mouth-his to-me, I (being) on belly-my in-front-of-him"),
+        literal = "opened-he mouth-his to-me, I (being) on belly-my in-front-of-him",
+        note = "The papyrus tells this twice: when the serpent first speaks, and again at its lair."),
     phrase("snake2", "Then he said to me:", listOf("Then", "he said", "to me:"),
         t("P6-D36:N35", "ꜥḥꜥ.n", "then", "aHan"), t("I10:D46-N35-I9", "ḏd.n=f", "he said", "dd"),
         t("N35-A1", "n=j", "to me", "n"),
@@ -418,7 +420,7 @@ internal val PHRASES: List<PhraseItem> = listOf(
         t("O50-Z1*Z1", "nm jn ṯw", "twice: who brought you", "zp"),
         t("N35-I10-S29-G37-A1", "nḏs", "little one", "nDs"),
         literal = "who brought you (twice), little-one",
-        note = "zp 2, “two times”, tells the reader to say the words before it again."),
+        note = "zp 2, “two times”, tells the reader to say the words before it again. The serpent asks it twice in the story: when it first appears, and again once it has carried the sailor to its lair."),
 
     // ---- I have come ----------------------------------------------------------------------------
     phrase("jjkw", "I have come", listOf("I", "have", "come"),
@@ -820,7 +822,7 @@ internal val PHRASES: List<PhraseItem> = listOf(
         literal = "who-placed me among courtiers-his"),
     phrase("an30", "The revered chamberlain Antef, born of Senet.",
         listOf("The revered", "chamberlain", "Antef,", "born of", "Senet."),
-        t("F39-Z4", "jmꜣḫy", "the revered", "jmAxy"), t("G17-D21", "jmj-rꜣ", "overseer", "jmjrA"),
+        t("F39-Aa1", "jmꜣḫw", "the revered", "jmAxy"), t("G17-D21", "jmj-rꜣ", "overseer", "jmjrA"),
         t("D36-F26-N35:W24-X1-Z4-O1", "ꜥẖnwtj", "of the audience hall", "aXnwtj"),
         t("W25-N35-X1-I9-A1", "jnj-jt=f", "Antef", "jnjjtf"), t("D4-N35", "jr.n", "born of", "jrj"),
         t("O34-N35:X1-B1", "znt", "Senet", "znt"),

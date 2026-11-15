@@ -388,6 +388,7 @@ function renderClip(c) {
           t.before ? h("span", { class: "badge warn" }, "before") : null,
           t.text ? h("span", { class: `badge ${t.passed ? "ok" : "bad"}` }, t.passed ? "passes check" : `fails check ${t.score ?? ""}`) : null,
           t.text ? h("span", { class: "badge" }, t.lang === "ar" ? "told: Arabic" : "older recording") : null,
+          t.text && t.text.includes(" |model:") ? h("span", { class: "badge acc" }, t.text.split(" |model:")[1].replace("eleven_", "")) : null,
           t.seed != null ? h("span", { class: "badge" }, `seed ${t.seed}`) : null,
           t.framed ? h("span", { class: "badge" }, "cut from “qul: …”") : null),
         heardLine(t)),

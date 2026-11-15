@@ -51,6 +51,15 @@ class CourseTest {
     }
 
     @Test
+    fun `a text an open section reads stays in the library while a later section is sealed`() {
+        val hidden = course.sealedIds(Progress())
+        val openReadings = course.sections.filter { !course.isSealed(it, Progress()) }
+            .flatMap(course::unitsOf).flatMap { it.lessons }.mapNotNull { it.reading }
+        assertTrue("hidden though read in an open section: ${openReadings.filter { it in hidden }}", openReadings.none { it in hidden })
+        assertTrue("the Sailor's opening must stay visible", "t:sailor" !in hidden)
+    }
+
+    @Test
     fun `a grammar table writes only signs met by the lesson that shows it`() {
         val order = course.lessons.map { it.id }
         val taughtIn = course.lessons.flatMap { l -> l.teach.map { it to order.indexOf(l.id) } }.toMap()

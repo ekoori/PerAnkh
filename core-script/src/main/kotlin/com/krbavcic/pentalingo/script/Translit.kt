@@ -49,9 +49,18 @@ object Translit {
 
     fun letters(text: String): List<Char> = text.mapNotNull(::canonical)
 
-    /** For comparing answers: canonical letters, with z and s merged as they were by this period. */
+    /**
+     * For comparing answers: canonical letters, with z and s merged as they were by this period,
+     * and y with j, which books write either way at the end of a word (ḏḥwtj, ḏḥwty).
+     */
     fun normalize(text: String): String =
-        letters(text).joinToString("") { if (it == 'z') "s" else it.toString() }
+        letters(text).joinToString("") {
+            when (it) {
+                'z' -> "s"
+                'y' -> "j"
+                else -> it.toString()
+            }
+        }
 
     /**
      * Letters a learner can be forgiven for mixing up while still knowing the word.

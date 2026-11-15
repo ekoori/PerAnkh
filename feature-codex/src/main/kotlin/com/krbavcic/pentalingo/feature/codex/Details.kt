@@ -210,7 +210,10 @@ fun AwardDetail(k: Knowledge, award: Award) {
 fun ConceptDetail(k: Knowledge, concept: ConceptItem) {
     SheetColumn {
         com.krbavcic.pentalingo.core.ui.Rubric(if (concept.table != null) "Grammar" else "Note")
-        Text(concept.title, style = Type.display)
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text(concept.title, style = Type.display, modifier = Modifier.weight(1f))
+            ReportFlag({ mapOf("screen" to "codex") + describeItem(k.course, concept.id, null) }, Modifier.padding(start = 8.dp))
+        }
         concept.mdc?.let { Glyphs(it, quadrat = 56.dp, mirrored = concept.mirrored) }
         Text(Translit.display(concept.body), style = Type.body)
         concept.table?.let { com.krbavcic.pentalingo.core.ui.GrammarTableView(it) }

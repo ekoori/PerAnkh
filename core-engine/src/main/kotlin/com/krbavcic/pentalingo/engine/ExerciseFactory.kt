@@ -604,7 +604,12 @@ class ExerciseFactory(
     fun breakdown(word: WordItem): String = readingsInWord(course, word).joinToString(" + ") { reading ->
         val sign = course.signFor(reading.code)
         val sound = soundIn(course, reading)
-        if (sign != null && sound != null) "${sign.name} ${Translit.display(sound)}" else signShort(reading.code)
+        when {
+            sign == null || sound == null -> signShort(reading.code)
+            // A complement, named as one: learners sounding out ꜥꜣ + ꜥ did not know to read it once.
+            reading is SignReading.Repeats -> "${sign.name} ${Translit.display(sound)} (repeating the ${Translit.display(sound)})"
+            else -> "${sign.name} ${Translit.display(sound)}"
+        }
     }
 
     /** How a word is written; when it is not read straight off its signs, its note says why. */

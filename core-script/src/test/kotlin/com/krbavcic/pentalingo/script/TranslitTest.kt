@@ -39,3 +39,12 @@ class TranslitTest {
         assertEquals(Verdict.EXACT, Translit.compare("ꜥnḫ", "ʿnḫ").verdict)
     }
 }
+
+class YAndJTest {
+    @org.junit.Test
+    fun `y and j are the same letter in an answer`() {
+        // Books write the end of ḏḥwtj either way; the course writes j, a learner may write y.
+        org.junit.Assert.assertEquals(Translit.Verdict.EXACT, Translit.compare("ḏḥwtj", "ḏḥwty").verdict)
+        org.junit.Assert.assertEquals(Translit.Verdict.EXACT, Translit.compare("šꜥy", "šꜥj").verdict)
+    }
+}

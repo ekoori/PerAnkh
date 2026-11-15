@@ -60,6 +60,9 @@ MANIFEST = os.path.join(AUDIO, "manifest.json")
 CHOICES = os.path.join(ROOT, "tools", "voice_choices.json")
 # Takes chosen by ear over the check's choice, {clip id: {"file", "text"}}: committed.
 PINS = os.path.join(ROOT, "tools", "voice_pins.json")
+# Other ways to write a clip for the voice, {clip id: [Arabic text]}, tried before its own: for a
+# clip a listener asked to retake (a swallowed vowel, a lost ʿayin). Committed.
+VARIANTS = os.path.join(ROOT, "tools", "voice_variants.json")
 TRANSCRIPTS = os.path.join(ROOT, "tools", "out", "transcripts.json")
 # Framed takes as recorded, before the word is cut out: kept for checking, never shipped.
 FRAMES = os.path.join(ROOT, "tools", "out", "frames")
@@ -86,7 +89,19 @@ MAX_TAKES = 6
 FRAME = "قُلْ:"
 
 
+# A candidate may name another model than MODEL_ID, written after its text: "إِيبِفْ |model:eleven_multilingual_v2".
+# multilingual_v2 keeps short vowels Eleven v4 drops ("ibf" for ibef) but loses ʿayin: offered by ear, clip by clip.
+MODEL_MARK = " |model:"
+
+
+def split_candidate(candidate: str) -> tuple[str, str]:
+    """A candidate's text, and the model to speak it with."""
+    text, _, model = candidate.partition(MODEL_MARK)
+    return text, model or MODEL_ID
+
+
 def spoken_text(text: str) -> str:
+    text = split_candidate(text)[0]
     t = text.strip()
     return t if t[-1:] in ".!?،" else t + "."
 
@@ -105,7 +120,7 @@ def take_path(name: str) -> str:
 
 
 def take_key(text: str, seed: int | None, framed: bool = False, lang: str | None = None) -> str:
-    spec = {"text": spoken_text(text), "voice": VOICE_ID, "model": MODEL_ID, "settings": SETTINGS}
+    spec = {"text": spoken_text(text), "voice": VOICE_ID, "model": split_candidate(text)[1], "settings": SETTINGS}
     if seed is not None:
         spec["seed"] = seed
     if framed:
@@ -121,6 +136,18 @@ def load(path: str, default):
         return default
     with open(path, encoding="utf-8") as f:
         return json.load(f)
+
+
+def load_clips() -> list[dict]:
+    """The course's clips (tools/out/speech.json), each with its variants first among its candidates:
+    a variant exists because a listener turned the usual spelling's takes down."""
+    clips = load(SPEECH, [])
+    variants = load(VARIANTS, {})
+    for clip in clips:
+        # An entry is a text, or {"text", "model"} for a take spoken by another model.
+        extra = [v if isinstance(v, str) else v["text"] + MODEL_MARK + v["model"] for v in variants.get(clip["id"], [])]
+        clip["candidates"] = extra + [c for c in clip["candidates"] if c not in extra]
+    return clips
 
 
 def save(path: str, data) -> None:
@@ -240,13 +267,13 @@ class Recorder:
             return name
         os.makedirs(AUDIO, exist_ok=True)
         if not framed:
-            audio = self.client.tts(VOICE_ID, spoken_text(text), MODEL_ID, SETTINGS, seed=seed, language_code=lang)
+            audio = self.client.tts(VOICE_ID, spoken_text(text), split_candidate(text)[1], SETTINGS, seed=seed, language_code=lang)
             with open(path, "wb") as f:
                 f.write(audio)
             self.spent += len(spoken_text(text))
             return name
         whole = framed_text(text)
-        data = self.client.tts_timed(VOICE_ID, whole, MODEL_ID, SETTINGS, seed=seed, language_code=lang)
+        data = self.client.tts_timed(VOICE_ID, whole, split_candidate(text)[1], SETTINGS, seed=seed, language_code=lang)
         self.spent += len(whole)
         os.makedirs(FRAMES, exist_ok=True)
         full = os.path.join(FRAMES, name)
@@ -370,7 +397,7 @@ def pick(results: list[dict]) -> dict | None:
 
 def cmd_rescore() -> None:
     """Judges the takes already recorded again, with the current rules, without calling the API."""
-    clips = load(SPEECH, [])
+    clips = load_clips()
     choices = load(CHOICES, {})
     transcripts = load(TRANSCRIPTS, {})
     changed = 0
@@ -416,7 +443,7 @@ def cost(clip: dict) -> tuple[int, int]:
 
 
 def cmd_plan(retry: bool) -> None:
-    clips = load(SPEECH, [])
+    clips = load_clips()
     choices = load(CHOICES, {})
     todo = to_record(clips, choices, retry, None)
     first = sum(cost(c)[0] for c in todo)
@@ -426,7 +453,7 @@ def cmd_plan(retry: bool) -> None:
 
 def cmd_generate(assume_yes: bool, retry: bool, only: set[str] | None = None, at_least: int = 1,
                  new_takes: int | None = None) -> None:
-    clips = load(SPEECH, [])
+    clips = load_clips()
     choices = load(CHOICES, {})
     todo = to_record(clips, choices, retry, only)
     rec = Recorder()
@@ -465,7 +492,7 @@ def cmd_generate(assume_yes: bool, retry: bool, only: set[str] | None = None, at
 
 
 def write_manifest() -> None:
-    clips = load(SPEECH, [])
+    clips = load_clips()
     choices = load(CHOICES, {})
     for c in clips:
         chosen = choices.get(c["id"])
@@ -489,7 +516,7 @@ def cmd_prune() -> None:
 
 def cmd_takes(ids: list[str]) -> None:
     """Every recorded take of these clips, with what was heard, and which one the app plays."""
-    clips = {c["id"]: c for c in load(SPEECH, [])}
+    clips = {c["id"]: c for c in load_clips()}
     choices = load(CHOICES, {})
     pins = load(PINS, {})
     transcripts = load(TRANSCRIPTS, {})
@@ -509,7 +536,7 @@ def cmd_takes(ids: list[str]) -> None:
 
 def cmd_pin(cid: str, name: str | None) -> None:
     """Pins a take by ear (or, without a file, removes the pin), and ships it."""
-    clips = {c["id"]: c for c in load(SPEECH, [])}
+    clips = {c["id"]: c for c in load_clips()}
     clip = clips.get(cid) or sys.exit(f"no such clip {cid}")
     pins = load(PINS, {})
     transcripts = load(TRANSCRIPTS, {})
@@ -533,7 +560,7 @@ def cmd_pin(cid: str, name: str | None) -> None:
 
 
 def cmd_report() -> None:
-    clips = load(SPEECH, [])
+    clips = load_clips()
     choices = load(CHOICES, {})
     for c in clips:
         r = choices.get(c["id"])
