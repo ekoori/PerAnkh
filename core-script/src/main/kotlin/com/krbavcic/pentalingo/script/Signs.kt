@@ -64,7 +64,9 @@ class SignTable(glyphs: List<Glyph>, val unitsPerEm: Int) {
 
         /** The table generated from the bundled font, loaded once from this module's resources. */
         val bundled: SignTable by lazy {
-            val stream = SignTable::class.java.getResourceAsStream("signs.tsv")
+            // By its full path: R8 moves this class to another package in release builds, and a
+            // relative name would be looked up next to it there.
+            val stream = SignTable::class.java.getResourceAsStream("/com/krbavcic/pentalingo/script/signs.tsv")
                 ?: error("signs.tsv is missing from core-script resources")
             parse(stream.bufferedReader(Charsets.UTF_8).use { it.readText() })
         }

@@ -87,7 +87,13 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            // R8 shrinks, optimises and renames the code, and drops unused resources. Google Play
+            // checks all three for the code (Android vitals, "DEX code optimisation": under 25%
+            // in any of them can cost visibility). Renamed code makes renamed stack traces: each
+            // build's mapping.txt reads them back (DEVELOPING.md, "Release builds and R8").
+            isMinifyEnabled = true
+            isShrinkResources = true
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
             signingConfig = if (releaseKeystore != null) {
                 signingConfigs.getByName("release")
             } else {

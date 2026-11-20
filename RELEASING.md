@@ -110,12 +110,18 @@ listing instead. The donation link goes into the `github` flavour only.
    `app/build/outputs/apk/github/release/app-github-release.apk`.
 4. Check them: `apksigner verify --print-certs` on the APK and `keytool -printcert -jarfile` on the
    bundle show the release certificate, never `CN=Android Debug`; `aapt2 dump badging` shows
-   `targetSdkVersion:'36'` and the version.
+   `targetSdkVersion:'36'` and the version. Both went through R8 (DEVELOPING.md, "Release builds
+   and R8"): `unzip -p app/build/outputs/bundle/playRelease/app-play-release.aab
+   BUNDLE-METADATA/com.android.tools/r8.json` gives the scores Google Play reads, and each
+   `no…Percentage` must stay far under 75 (the first R8 build: 1.7, 2.8 and 2.2).
 5. Install on the test phone over the previous release (progress must survive); play a lesson,
    send a test report, then resolve it with `tools/reports.sh`.
 6. Upload the AAB to the Play track (Play never accepts a version code twice, even once its upload
    is deleted: replacing a bundle takes a new patch version); tag `vX.Y.Z`; create the GitHub
    release with the APK and its SHA-256 (a full release; only `-beta.N` tags are pre-releases).
+   Attach `app/build/outputs/mapping/githubRelease/mapping.txt` too, as
+   `PerAnkh-X.Y.Z-mapping.txt`: it reads that version's stack traces back. Google Play keeps the
+   bundle's own mapping.
 7. Resolve the reports fixed in this version: `tools/reports.sh resolve ID --in X.Y.Z` (find them
    with `tools/reports.sh list --app perankh`; BushLines reports to the same server).
 8. On a phone with the previous release, Settings → About offers the new version, and within half

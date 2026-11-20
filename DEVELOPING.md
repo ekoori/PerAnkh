@@ -179,6 +179,26 @@ release's version.
   proposed units would add, and passages of the great stories that are nearly readable. With
   `--show TEXT_ID` it prints a text with the words the course does not teach in brackets.
 
+## Release builds and R8
+
+Release builds (both flavours) go through R8, which shrinks, optimises and renames the code and
+drops unused resources; debug builds do not. Google Play checks this in Android vitals ("DEX code
+optimisation"): a bundle with at least 10 MB of DEX whose shrinking, optimisation or obfuscation
+share is under 25% may lose visibility. Its scores are in the bundle, in
+`BUNDLE-METADATA/com.android.tools/r8.json`. Keep rules go in `app/proguard-rules.pro`, and only
+for code that is really reached by name; see the comment there.
+
+Two things to remember with R8:
+
+- Code that looks things up by class or package name breaks quietly: Java resources are loaded by
+  their full path (`/com/krbavcic/pentalingo/script/signs.tsv`), since R8 moves classes to other
+  packages. Check every release build on a phone before it goes out.
+- Stack traces from a release build (ANRs from `adb bugreport`, crashes) name renamed classes.
+  Read them back with the build's `app/build/outputs/mapping/<variant>/mapping.txt` and `retrace`
+  (SDK cmdline-tools: `retrace mapping.txt stack.txt`). Google Play keeps the mapping that is
+  inside the bundle and does this itself; for a GitHub release, keep its `mapping.txt` with the
+  release (R8 is deterministic, so building the release's tag again gives the same file).
+
 ## Release signing
 
 Releases are signed with the project's own key, which is not in the repository: alias `per-ankh` in

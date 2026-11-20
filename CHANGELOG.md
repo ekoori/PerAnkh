@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+- The app's code is optimised when it is built (R8, as Google Play asks of apps this size): the
+  code is 3.2 MB instead of 21.2 MB, so there is less of it to load, and the APK on GitHub is
+  44 MB instead of 50 MB.
+
 ## 0.5.0 (2026-11-16)
 
 - Recordings a listener flagged were checked by ear, and 93 are now chosen by ear. Those found
