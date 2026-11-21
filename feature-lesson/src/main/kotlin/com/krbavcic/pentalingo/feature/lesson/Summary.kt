@@ -187,7 +187,7 @@ private fun LearnedChip(item: Item, course: Course) {
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        Glyphs(mdc, quadrat = 30.dp, color = { s -> course.signFor(s.glyph.code)?.let { Palette.paint(it.paint) } ?: Palette.ink })
+        Glyphs(mdc, quadrat = 30.dp, color = itemPaint(course, item.id, mdc))
         Text(caption, style = Type.small.copy(color = Palette.ink))
     }
 }

@@ -73,10 +73,10 @@ fun TeachCard(item: Item, course: Course, voice: Voice, autoplay: Boolean, first
     }
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
         when (item) {
-            is SignItem -> SignCard(item, voice, firstTime)
+            is SignItem -> SignCard(item, course, voice, firstTime)
             is WordItem -> WordCard(item, course, voice, firstTime)
             is PhraseItem -> PhraseCard(item, course, voice)
-            is ConceptItem -> ConceptCard(item)
+            is ConceptItem -> ConceptCard(item, course)
         }
     }
 }
@@ -118,10 +118,10 @@ private fun SoundLine(translit: String?, said: String?, id: String, voice: Voice
 }
 
 @Composable
-private fun SignCard(sign: SignItem, voice: Voice, firstTime: Boolean) {
+private fun SignCard(sign: SignItem, course: Course, voice: Voice, firstTime: Boolean) {
     Rubric(if (firstTime) "New sign" else "A sign to remember")
     Framed {
-        Glyphs(sign.code, quadrat = 132.dp, color = { Palette.paint(sign.paint) }, description = sign.name)
+        Glyphs(sign.code, quadrat = 132.dp, color = itemPaint(course, sign.id, sign.code), description = sign.name)
     }
     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
         Text(sign.name.replaceFirstChar { it.uppercase() }, style = Type.title, modifier = Modifier.weight(1f))
@@ -157,7 +157,7 @@ fun signRoleInWord(course: Course, reading: SignReading): String {
     val sound = soundIn(course, reading)
     return when {
         sound != null -> "${Translit.display(sound)} · ${s.name}"
-        s.role == SignRole.DETERMINATIVE -> "silent · ${s.meaning}"
+        (reading as? SignReading.Silent)?.classifies == true || s.role == SignRole.DETERMINATIVE -> "silent · ${s.meaning}"
         s.role == SignRole.NUMERAL -> "stroke: “this sign means what it shows”"
         s.sounds.isNotEmpty() -> "${Translit.display(s.sounds[0])} · ${s.name}"
         else -> s.name
@@ -247,14 +247,16 @@ private fun PhraseCard(phrase: PhraseItem, course: Course, voice: Voice) {
 }
 
 @Composable
-private fun ConceptCard(concept: ConceptItem) {
+private fun ConceptCard(concept: ConceptItem, course: Course) {
     Rubric("How it works")
     Text(concept.title, style = Type.display)
+    // A card's signs have no roles to show, so by role they stay in ink; paint follows the choice.
+    val paint = itemPaint(course, concept.id)
     concept.mdc?.let { mdc ->
-        Framed { Glyphs(mdc, quadrat = 64.dp, mirrored = concept.mirrored) }
+        Framed { Glyphs(mdc, quadrat = 64.dp, mirrored = concept.mirrored, color = paint) }
     }
     Text(Translit.display(concept.body), style = Type.body.copy(fontSize = 17.sp, lineHeight = 26.sp))
-    concept.table?.let { GrammarTableView(it) }
+    concept.table?.let { GrammarTableView(it, glyphColor = paint) }
 }
 
 /** The finale of a reading lesson: a real text, as far as it has been learned, with every word tappable. */

@@ -124,7 +124,10 @@ internal val WORDS: List<WordItem> = listOf(
     // ---- grammar words -----------------------------------------------------------------------
     word("jnk", "jnk", "M17-N35:V31-A1", "I", Pos.PRONOUN, listOf("me")),
     word("ntk", "ntk", "N35:X1-V31", "you", Pos.PRONOUN, listOf("you (to a man)")),
+    // Glossed "you" like ntk, so neither is ever offered as a wrong answer for the other.
+    word("ntT", "ntṯ", "N35:X1-V13", "you", Pos.PRONOUN, listOf("you (to a woman)")),
     word("ntf", "ntf", "N35:X1-I9", "he", Pos.PRONOUN, listOf("him")),
+    word("nts", "nts", "N35:X1-S29", "she", Pos.PRONOUN, listOf("her")),
     word("jw", "jw", "E9-G43", "is", Pos.PARTICLE,
         note = "Starts a statement of fact or situation. It has no exact English equivalent."),
     word("sw", "sw", "M23-G43", "he", Pos.PRONOUN, listOf("him", "it")),
@@ -352,7 +355,7 @@ internal val WORDS: List<WordItem> = listOf(
         note = "The herald’s name is written like ky, “another”, with the seated man to show it is a man’s.", det = "A1"),
     word("Xrthrw", "ẖrt-hrw", "T28:D21-X1-N5", "daily course", Pos.NOUN,
         listOf("course of the day", "daily needs", "daily", "the course of the day"),
-        note = "ẖrt, “what belongs to”, and hrw, “day”: what each day brings. m ẖrt-hrw nt rꜥ nb, “in the course of every day”, means always."),
+        note = "ẖrt, “what belongs to”, and hrw, “day”: what each day brings. ẖrt is spelled as usual; hrw is written with the sun disk alone. m ẖrt-hrw nt rꜥ nb, “in the course of every day”, means always."),
     word("hAj", "hꜣj", "O4-G1-D54", "to go down", Pos.VERB, listOf("descend", "go down", "come down"),
         note = "hꜣ.n=j m spꜣt=j, “I went down from my nome”: the dead man has left it for the cemetery.", det = "D54"),
     word("spAt", "spꜣt", "N24-X1:Z1", "nome", Pos.NOUN, listOf("province", "district"),

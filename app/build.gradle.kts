@@ -62,15 +62,19 @@ android {
     // Where people get the app. Google Play updates its copies itself and allows no other way (the
     // Device and Network Abuse policy), so the Play build's About page links to its Play page and
     // never looks for releases on GitHub. Same app id and key: RELEASING.md, "Where builds go".
+    // Only the GitHub build asks for support: Play allows no payment links outside Play Billing
+    // (RELEASING.md, "Donations").
     flavorDimensions += "store"
     productFlavors {
         create("play") {
             dimension = "store"
             buildConfigField("String", "STORE_URL", "\"https://play.google.com/store/apps/details?id=app.hrana.perankh\"")
+            buildConfigField("String", "SPONSOR_URL", "null")
         }
         create("github") {
             dimension = "store"
             buildConfigField("String", "STORE_URL", "null")
+            buildConfigField("String", "SPONSOR_URL", "\"https://github.com/sponsors/ekoori\"")
         }
     }
 

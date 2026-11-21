@@ -105,6 +105,8 @@ class AboutOptions(
      * in the build from GitHub, which looks up the newest release itself.
      */
     val storeUrl: String?,
+    /** Where to support Per Ankh, in the build from GitHub; null in Google Play's, which may not link to payments. */
+    val sponsorUrl: String? = null,
 )
 
 private enum class Page(val label: String) { SETTINGS("Settings"), TESTING("Testing"), ABOUT("About") }
@@ -215,12 +217,8 @@ private fun SettingsPage(
     Text("Text size", style = Type.heading)
     TextSizes(settings.textScale, onTextScale)
     Text("Hieroglyph colours", style = Type.heading)
-    Text(
-        "By role: in a word, how each sign is read; in a sentence, what kind of word it belongs to. " +
-            "The codex keeps its paints, which show what you remember.",
-        style = Type.small,
-    )
     Choices(GLYPH_COLOURS, settings.glyphColours, onGlyphColours)
+    Text(glyphColoursNote(settings.glyphColours) + " The codex keeps its own paints, which show what you remember.", style = Type.small)
 
     // Reports go out as soon as they are written; this shows only while some are still waiting.
     if (reports.unsent > 0) {
@@ -320,6 +318,17 @@ private fun AboutPage(about: AboutOptions) {
         Link("Per Ankh on Google Play") { about.onOpen(store) }
     } else {
         NewestRelease(about)
+    }
+
+    about.sponsorUrl?.let { url ->
+        Rubric("Support Per Ankh")
+        Text(
+            "Per Ankh is free, with no ads and nothing to buy, and it keeps growing: new texts, new " +
+                "lessons, better recordings. If it helps you read Egyptian, you can support its maker " +
+                "on GitHub Sponsors.",
+            style = Type.small,
+        )
+        Link("Sponsor on GitHub") { about.onOpen(url) }
     }
 
     Rubric("About the voice")
@@ -425,6 +434,26 @@ private fun Link(text: String, onClick: () -> Unit) {
 
 /** Text sizes on offer, in percent: larger ones still fit every screen of the app. */
 private val TEXT_SIZES = listOf(100 to "Normal", 115 to "Large", 130 to "Larger")
+
+/**
+ * What the chosen colours mean, and how near the tomb paints come to real painted hieroglyphs. The
+ * paints are given by [com.krbavcic.pentalingo.content.paintFor], one per group of Gardiner's list.
+ */
+private fun glyphColoursNote(colours: GlyphColours): String = when (colours) {
+    GlyphColours.BY_ROLE ->
+        "By role colours what each sign does. In a word: the signs that are read, a sound written " +
+            "twice, and the determinative, which is not read. In a sentence: the kind of word each sign " +
+            "belongs to. It is a modern reading aid, not an Egyptian custom."
+    GlyphColours.PAINT ->
+        "Tomb paints gives each sign one colour by what it shows: men, gods and the body red-brown; " +
+            "women, animals, buildings and things ochre; birds, sky and water blue; plants, reptiles " +
+            "and fish green; crowns and sacred things gold. Egyptian painters chose colours by what a " +
+            "sign showed too, but often gave one sign several colours and fine detail, and their " +
+            "choices changed with place and time, so these paints are a simplification."
+    GlyphColours.INK ->
+        "Plain ink draws every sign in black, as scribes wrote on papyrus, where red ink was kept " +
+            "for headings and words that had to stand out."
+}
 
 private val GLYPH_COLOURS = listOf(GlyphColours.BY_ROLE to "By role", GlyphColours.PAINT to "Tomb paints", GlyphColours.INK to "Plain ink")
 

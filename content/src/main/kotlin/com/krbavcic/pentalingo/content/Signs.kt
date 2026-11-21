@@ -161,8 +161,8 @@ internal val SIGNS: List<SignItem> = listOf(
         listOf("A1")),
     det("N1", "sky", "sky, above", "The sky as a flat slab held up at its ends.", listOf("N2")),
     det("N2", "night sky", "night, darkness", "The sky with a sceptre hanging from it: the dark.", listOf("N1")),
-    sign("N5", SignRole.LOGOGRAM, "sun disk", listOf("rꜥ"), "sun; day; time", null,
-        "On its own, the sun and the sun god Ra. After a word, a determinative for times and days.",
+    sign("N5", SignRole.LOGOGRAM, "sun disk", listOf("rꜥ", "hrw"), "sun; day; time", null,
+        "On its own, the sun and the sun god Ra, rꜥ, and also hrw, “day”. After a word, a determinative for times and days.",
         null, listOf("Aa1", "O49")),
     det("Y1", "papyrus roll", "writing, abstract ideas",
         "A tied papyrus scroll. It marks words for things you cannot touch: knowledge, plans, greatness.",
@@ -306,7 +306,7 @@ internal val SIGNS: List<SignItem> = listOf(
         "An ox’s ear: sḏm, “to hear”. Grammar books name the basic Egyptian verb form after it: the sḏm=f, “he hears”.",
         null, listOf("F34")),
     det("D54", "walking legs", "coming and going",
-        "Two legs striding to the right. After a verb it says the verb is about moving: come, go, walk, run.",
+        "Two legs striding forward, the way the signs face: toward the start of the line, to the left here. After a verb it says the verb is about moving: come, go, walk, run.",
         listOf("D58")),
 
     // ---- little words --------------------------------------------------------------------------

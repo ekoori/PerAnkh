@@ -202,6 +202,7 @@ fun LessonScreen(
                 }
                 BottomBar(
                     exercise = current,
+                    course = session.course,
                     verdict = verdict,
                     pending = pending,
                     replay = answerClip(current, voice)?.let { id -> { slow: Boolean -> voice.play(id, slow) } },
@@ -247,18 +248,19 @@ private fun ExerciseBody(
     when (exercise) {
         is Teach -> TeachCard(course.require(exercise.itemId), course, voice, autoplay, exercise.firstTime)
         is ReadText -> ReadTextCard(course, exercise.textId, exercise.lines, voice)
-        is MultipleChoice -> ChoiceExercise(exercise, verdict, voice, onTap, onPending, hint)
-        is Arrange -> ArrangeExercise(exercise, verdict, voice, onTap, onPending, hint)
+        is MultipleChoice -> ChoiceExercise(exercise, course, verdict, voice, onTap, onPending, hint)
+        is Arrange -> ArrangeExercise(exercise, course, verdict, voice, onTap, onPending, hint)
         is Spell -> SpellExercise(exercise, course, verdict, voice, onTap, onPending)
-        is ReadNumber -> ReadNumberExercise(exercise, verdict, onTap, onPending, hint)
+        is ReadNumber -> ReadNumberExercise(exercise, course, verdict, onTap, onPending, hint)
         is BuildNumber -> BuildNumberExercise(exercise, course, verdict, onTap, onPending)
-        is Pairs -> PairsExercise(exercise, verdict, voice, onTap, onSubmitNow)
+        is Pairs -> PairsExercise(exercise, course, verdict, voice, onTap, onSubmitNow)
     }
 }
 
 @Composable
 private fun BottomBar(
     exercise: Exercise,
+    course: com.krbavcic.pentalingo.model.Course,
     verdict: Verdict?,
     pending: Answer?,
     replay: ((slow: Boolean) -> Unit)?,
@@ -280,13 +282,20 @@ private fun BottomBar(
             enter = slideInVertically(tween(220)) { it } + fadeIn(),
             exit = slideOutVertically { it } + fadeOut(),
         ) {
-            if (verdict != null) Feedback(verdict, replay, onContinue)
+            if (verdict != null) {
+                Feedback(verdict, replay, onContinue, verdict.solutionMdc?.let { itemPaint(course, exercise.itemId, it) })
+            }
         }
     }
 }
 
 @Composable
-private fun Feedback(verdict: Verdict, replay: ((slow: Boolean) -> Unit)?, onContinue: () -> Unit) {
+private fun Feedback(
+    verdict: Verdict,
+    replay: ((slow: Boolean) -> Unit)?,
+    onContinue: () -> Unit,
+    solutionPaint: ((com.krbavcic.pentalingo.script.PlacedSign) -> androidx.compose.ui.graphics.Color)?,
+) {
     val (band, title, pigment) = when (verdict.outcome) {
         Outcome.CORRECT -> Triple(Palette.turquoiseLight, praise(verdict), Palette.unit(UnitColor.TURQUOISE))
         Outcome.NEAR -> Triple(Palette.ochreLight, if (verdict.hinted) "Right — with a hint" else "Nearly", Palette.unit(UnitColor.OCHRE))
@@ -310,7 +319,9 @@ private fun Feedback(verdict: Verdict, replay: ((slow: Boolean) -> Unit)?, onCon
         }
         if (verdict.outcome != Outcome.CORRECT && !verdict.hinted) {
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                verdict.solutionMdc?.let { com.krbavcic.pentalingo.core.ui.Glyphs(it, quadrat = 40.dp) }
+                verdict.solutionMdc?.let {
+                    com.krbavcic.pentalingo.core.ui.Glyphs(it, quadrat = 40.dp, color = solutionPaint ?: { Palette.ink })
+                }
                 verdict.solution?.let { Text("Answer: ${Translit.display(it)}", style = Type.heading, color = Palette.ink) }
             }
         }

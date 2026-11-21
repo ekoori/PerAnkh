@@ -20,6 +20,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -28,6 +29,7 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.dp
 import com.krbavcic.pentalingo.core.ui.Chip
 import com.krbavcic.pentalingo.core.ui.Glyphs
+import com.krbavcic.pentalingo.core.ui.glyphPaint
 import com.krbavcic.pentalingo.core.ui.IconKind
 import com.krbavcic.pentalingo.core.ui.Palette
 import com.krbavcic.pentalingo.core.ui.ReportFlag
@@ -41,7 +43,10 @@ import com.krbavcic.pentalingo.engine.Knowledge
 import com.krbavcic.pentalingo.engine.Numerals
 import com.krbavcic.pentalingo.engine.distinctReadings
 import com.krbavcic.pentalingo.engine.readingsInWord
+import com.krbavcic.pentalingo.engine.SignReading
 import com.krbavcic.pentalingo.engine.soundIn
+import com.krbavcic.pentalingo.engine.soundTint
+import com.krbavcic.pentalingo.engine.itemTints
 import com.krbavcic.pentalingo.model.Award
 import com.krbavcic.pentalingo.model.ConceptItem
 import com.krbavcic.pentalingo.model.Memory
@@ -129,7 +134,8 @@ fun SignDetail(k: Knowledge, sign: SignItem, voice: Voice) {
             Rubric("In words you know")
             words.take(8).forEach { w ->
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Box(Modifier.width(110.dp)) { Glyphs(w.mdc, quadrat = 30.dp) }
+                    val paint = glyphPaint(course, remember(w) { itemTints(course, w) })
+                    Box(Modifier.width(110.dp)) { Glyphs(w.mdc, quadrat = 30.dp, color = paint) }
                     Text("${Translit.display(w.translit)} — ${w.gloss}", style = Type.body)
                 }
             }
@@ -160,12 +166,15 @@ fun WordDetail(k: Knowledge, word: WordItem, voice: Voice) {
             val s = course.signFor(code)
             val sound = soundIn(course, reading)
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Box(Modifier.width(52.dp), contentAlignment = Alignment.Center) { Glyphs(code, quadrat = 30.dp) }
+                // What the sign does in this word: read, repeating a sound, or classifying it.
+                val paint = glyphPaint(course) { soundTint(course, reading) }
+                Box(Modifier.width(52.dp), contentAlignment = Alignment.Center) { Glyphs(code, quadrat = 30.dp, color = paint) }
                 Text(
                     when {
                         s == null -> code
                         sound != null -> "${s.name} — ${Translit.display(sound)}"
-                        s.role == SignRole.DETERMINATIVE -> "${s.name} — silent, marks ${s.meaning}"
+                        (reading as? SignReading.Silent)?.classifies == true || s.role == SignRole.DETERMINATIVE ->
+                            "${s.name} — silent, marks ${s.meaning}"
                         s.sounds.isNotEmpty() -> "${s.name} — ${Translit.display(s.sounds[0])}"
                         else -> s.name
                     },
@@ -214,9 +223,11 @@ fun ConceptDetail(k: Knowledge, concept: ConceptItem) {
             Text(concept.title, style = Type.display, modifier = Modifier.weight(1f))
             ReportFlag({ mapOf("screen" to "codex") + describeItem(k.course, concept.id, null) }, Modifier.padding(start = 8.dp))
         }
-        concept.mdc?.let { Glyphs(it, quadrat = 56.dp, mirrored = concept.mirrored) }
+        // A card's signs have no roles to show: by role they stay in ink, paint follows the choice.
+        val paint = glyphPaint(k.course) { null }
+        concept.mdc?.let { Glyphs(it, quadrat = 56.dp, mirrored = concept.mirrored, color = paint) }
         Text(Translit.display(concept.body), style = Type.body)
-        concept.table?.let { com.krbavcic.pentalingo.core.ui.GrammarTableView(it) }
+        concept.table?.let { com.krbavcic.pentalingo.core.ui.GrammarTableView(it, glyphColor = paint) }
         k.course.lessonTeaching(concept.id)?.let { lesson ->
             Text("From lesson ${lesson.id.removePrefix("l")}, ${lesson.title}", style = Type.small)
         }

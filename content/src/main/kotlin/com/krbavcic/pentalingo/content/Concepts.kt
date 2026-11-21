@@ -454,6 +454,12 @@ internal val CONCEPTS: List<ConceptItem> = listOf(
         mdc = "G41-G1-N37-N23-Z1", said = "pꜣ š"),
 
     // ---- culture for the later units: each tied to the text its unit reads ----------------------
+    concept("colours", "Why the signs are coloured",
+        "On tomb walls, coffins and stelae, hieroglyphs were usually painted, and painters chose a sign’s colours by what it showed: water blue, plants green, the sun red, men red-brown and women yellow. They had few pigments: black soot, white gypsum, red and yellow ochre, green malachite, and Egyptian blue, the oldest pigment known to have been made by people. On papyrus, scribes wrote in black ink and kept red for headings. In Settings, under Reading, you choose how Per Ankh colours signs: Tomb paints gives each sign one colour by the group it belongs to, By role shows what a sign does in a word, and Plain ink is the scribe’s black.",
+        "In painted hieroglyphs, what colour were men usually given?",
+        "Red-brown",
+        listOf("Yellow", "Blue", "Green"),
+        "Men were painted red-brown and women a paler yellow: a convention, not a portrait."),
     concept("lettersdead", "Letters to the dead",
         "The dead could still be asked for help. A family wrote to a dead husband, mother or father on the bowl that held the food offering, or on linen, and left it at the tomb: you, who are now among the blessed dead, help me; stop whoever is troubling our house. A handful of these letters survive, most from the centuries around the Middle Kingdom.",
         "Where did Egyptians write letters to their dead?",

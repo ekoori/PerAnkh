@@ -153,10 +153,16 @@ private fun Ledger(k: Knowledge, hidden: Set<String>) {
         Line("Fading now", "${k.fadingCount()}")
         Line("Days studied", "${p.studyDays.size}")
         Line("Answers", "${p.answered} · ${percent(p.correct)}% right" + if (p.nearlyRight > 0) ", ${percent(p.nearlyRight)}% nearly" else "")
-        Line("Time studied", "${(p.secondsStudied / 60)} min")
+        Line("Time studied", studyTime(p.secondsStudied))
         Spacer(Modifier.height(4.dp))
         Text("No streaks are kept. Memory grows between visits, not by visiting every day.", style = Type.small)
     }
+}
+
+/** "45 min", "16 h 39 min": hundreds of minutes read like a counter that has stuck, not like time. */
+internal fun studyTime(seconds: Long): String {
+    val minutes = seconds / 60
+    return if (minutes < 60) "$minutes min" else "${minutes / 60} h ${minutes % 60} min"
 }
 
 @Composable

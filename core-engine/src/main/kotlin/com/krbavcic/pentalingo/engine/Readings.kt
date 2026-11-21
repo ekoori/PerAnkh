@@ -16,8 +16,12 @@ sealed interface SignReading {
     /** Repeats [value], which a sign beside it spells too: a phonetic complement. */
     data class Repeats(override val code: String, val value: String) : SignReading
 
-    /** Not read aloud: a determinative, or a stroke. */
-    data class Silent(override val code: String) : SignReading
+    /**
+     * Not read aloud: a stroke, or a determinative when [classifies]. A sign that is read in other
+     * words classifies this one when the word names it as its determinative: the sun disk is the
+     * word rꜥ "sun", but in hrw "day" it only marks a time.
+     */
+    data class Silent(override val code: String, val classifies: Boolean = false) : SignReading
 
     /** None of its values fits the word as transliterated (written out of order, or not taught). */
     data class Unexplained(override val code: String) : SignReading
@@ -37,7 +41,7 @@ sealed interface SignReading {
  * most of it wins, then the one with fewest signs left unexplained, then the one using each
  * sign's first-listed values.
  */
-fun readingsInWord(course: Course, translit: String, mdc: String): List<SignReading> {
+fun readingsInWord(course: Course, translit: String, mdc: String, determinative: String? = null): List<SignReading> {
     val target = Translit.normalize(translit)
     val codes = Mdc.parse(mdc).signs
     val n = codes.size
@@ -55,6 +59,11 @@ fun readingsInWord(course: Course, translit: String, mdc: String): List<SignRead
         if (sign.role == SignRole.NUMERAL) return listOf(Option(SignReading.Silent(code), covered, 0, 0))
         val values = (sign.sounds + listOfNotNull(sign.reading)).map(Translit::normalize).filter { it.isNotEmpty() }.distinct()
         val out = mutableListOf<Option>()
+        // The word's own determinative may be silent even where the sign is read in other words,
+        // and silent it is when nothing more is read by reading it: listed first, it wins a tie
+        // with repeating its own sound (the beer jug in ḥnqt marks beer; it does not say ḥnqt twice).
+        val classifies = sign.role == SignRole.DETERMINATIVE || code == determinative
+        if (classifies) out += Option(SignReading.Silent(code, classifies = true), covered, 0, 0)
         values.forEachIndexed { rank, value ->
             for (start in 0..minOf(covered, target.length - value.length)) {
                 if (!target.startsWith(value, start)) continue
@@ -63,7 +72,7 @@ fun readingsInWord(course: Course, translit: String, mdc: String): List<SignRead
                 out += Option(reading, maxOf(covered, end), 0, rank)
             }
         }
-        if (sign.role == SignRole.DETERMINATIVE || values.isEmpty()) out += Option(SignReading.Silent(code), covered, 0, 0)
+        if (!classifies && values.isEmpty()) out += Option(SignReading.Silent(code), covered, 0, 0)
         out += Option(SignReading.Unexplained(code), covered, 1, 0)
         return out
     }
@@ -92,7 +101,8 @@ fun readingsInWord(course: Course, translit: String, mdc: String): List<SignRead
     return out
 }
 
-fun readingsInWord(course: Course, word: WordItem): List<SignReading> = readingsInWord(course, word.translit, word.mdc)
+fun readingsInWord(course: Course, word: WordItem): List<SignReading> =
+    readingsInWord(course, word.translit, word.mdc, word.determinative)
 
 /**
  * The one reading to show for each distinct sign of a word, in order: what it spells if it spells

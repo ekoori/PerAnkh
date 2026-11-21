@@ -1,12 +1,16 @@
 package com.krbavcic.pentalingo.engine
 
 import com.krbavcic.pentalingo.model.Course
+import com.krbavcic.pentalingo.model.Item
+import com.krbavcic.pentalingo.model.PhraseItem
 import com.krbavcic.pentalingo.model.Pos
+import com.krbavcic.pentalingo.model.SignItem
 import com.krbavcic.pentalingo.model.SignRole
 import com.krbavcic.pentalingo.model.SignTint
 import com.krbavcic.pentalingo.model.Token
 import com.krbavcic.pentalingo.model.WordItem
 import com.krbavcic.pentalingo.script.Mdc
+import com.krbavcic.pentalingo.script.PlacedSign
 import com.krbavcic.pentalingo.script.Translit
 
 /**
@@ -26,13 +30,13 @@ fun soundTint(course: Course, r: SignReading): SignTint {
             if (usual == null || usual == r.value) SignTint.READ else SignTint.READ_OTHER
         }
         is SignReading.Repeats -> SignTint.ECHO
-        is SignReading.Silent -> if (sign?.role == SignRole.DETERMINATIVE) SignTint.DETERMINATIVE else SignTint.SILENT
+        is SignReading.Silent -> if (r.classifies) SignTint.DETERMINATIVE else SignTint.SILENT
         // Written out of order (the king first, out of respect) or not matched: still a read sign.
         is SignReading.Unexplained -> SignTint.READ
     }
 }
 
-fun soundTints(course: Course, word: WordItem): List<SignTint> = soundTints(course, word.translit, word.mdc)
+fun soundTints(course: Course, word: WordItem): List<SignTint> = readingsInWord(course, word).map { soundTint(course, it) }
 
 private fun tintOf(pos: Pos): SignTint = when (pos) {
     Pos.NOUN, Pos.EXPRESSION -> SignTint.NOUN
@@ -72,6 +76,43 @@ fun grammarTints(course: Course, token: Token): List<SignTint> {
         .maxOfOrNull { it.size }
     if (stemLength != null) for (i in stemLength until suffixStart) out[i] = SignTint.ENDING
     return out
+}
+
+/** A sign drawn on its own, with no word around it: a determinative classifies, any other sign is read. */
+fun signTint(sign: SignItem): SignTint =
+    if (sign.role == SignRole.DETERMINATIVE) SignTint.DETERMINATIVE else SignTint.READ
+
+/** Signs drawn one by one (a palette to spell with, a spelling being built): each by its own role. */
+fun loneTints(course: Course): (PlacedSign) -> SignTint? = { s -> course.signFor(s.glyph.code)?.let(::signTint) }
+
+/**
+ * What each sign of an item does, to draw the item in the learner's colours wherever it appears: a
+ * word's signs by sound, a sentence's by the kind of word they belong to, a sign by its own role.
+ *
+ * [mdc] or [words] is what is actually drawn. A word drawn short of its determinative (the
+ * determinative question) keeps the roles of the signs it shows; a drawing that is not the item's
+ * own spelling gets no roles at all, rather than wrong ones.
+ */
+fun itemTints(course: Course, item: Item?, mdc: String? = null, words: List<String> = emptyList()): (PlacedSign) -> SignTint? {
+    val none: (PlacedSign) -> SignTint? = { null }
+    return when (item) {
+        is WordItem -> {
+            val own = Mdc.parse(item.mdc).signs
+            val drawn = Mdc.parse(mdc ?: words.singleOrNull() ?: item.mdc).signs
+            if (drawn.size > own.size || own.subList(0, drawn.size) != drawn) return none
+            val tints = soundTints(course, item)
+            val byIndex: (PlacedSign) -> SignTint? = { s -> tints.getOrNull(s.index) }
+            byIndex
+        }
+        is PhraseItem -> {
+            if (mdc != null || (words.isNotEmpty() && words != item.tokens.map { it.mdc })) return none
+            val tints = LineTints.grammar(course, item.tokens)
+            val byPlace: (PlacedSign) -> SignTint? = { s -> tints.at(s.token, s.index) }
+            byPlace
+        }
+        is SignItem -> loneTints(course)
+        else -> none
+    }
 }
 
 /**

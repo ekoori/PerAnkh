@@ -25,7 +25,7 @@ private val UNITS = listOf(
             Lesson("l2", "Birds and reeds", "The vulture, the reed, the arm and the chick", "G1",
                 teach = s("G1", "M17", "D36", "G43", "Z4") + c("direction"), practice = s("G17")),
             Lesson("l3", "Body and basket", "Foot, viper, hand, basket, stand and shelter", "D58",
-                teach = s("D58", "I9", "D46", "V31", "W11", "O4"), practice = s("X1", "G43")),
+                teach = s("D58", "I9", "D46", "V31", "W11", "O4") + c("colours"), practice = s("X1", "G43")),
             Lesson("l4", "The four h’s", "Telling ḥ, ḫ and ẖ from h", "V28",
                 teach = s("V28", "Aa1", "F32") + c("sounds"), practice = s("O4")),
             Lesson("l5", "Snakes, bolts and pools", "The last six letters", "I10",
@@ -120,7 +120,7 @@ private val UNITS = listOf(
         "Middle Egyptian sentences are short and logical: no verb “to be”, adjectives first, and pronouns glued to the words they belong to.",
         listOf(
             Lesson("l34", "I, you, he", "Independent pronouns", "A1",
-                teach = w("jnk", "ntk", "ntf") + c("pronouns") + p("jnksAk", "ntkjtj")),
+                teach = w("jnk", "ntk", "ntT", "ntf", "nts") + c("pronouns") + p("jnksAk", "ntkjtj")),
             Lesson("l35", "In the house", "Saying where things are", "E9",
                 teach = s("E9") + w("jw") + c("sentence1") + p("jwfmpr", "jwramtpt")),
             Lesson("l36", "Good is he", "Saying what things are like", "F35",

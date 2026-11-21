@@ -13,11 +13,14 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import com.krbavcic.pentalingo.core.ui.GoldBar
 import com.krbavcic.pentalingo.core.ui.Glyphs
+import com.krbavcic.pentalingo.core.ui.glyphPaint
+import com.krbavcic.pentalingo.engine.itemTints
 import com.krbavcic.pentalingo.core.ui.PaintButton
 import com.krbavcic.pentalingo.core.ui.Palette
 import com.krbavcic.pentalingo.core.ui.Rubric
@@ -58,21 +61,24 @@ fun LessonSheet(
         Text(lesson.title, style = Type.display)
         Text(lesson.focus, style = Type.bodySoft)
 
+        // Each spelling with the item it belongs to, for its colours.
         fun spellings(ids: List<String>) = ids.mapNotNull { id ->
             when (val item = course[id]) {
-                is SignItem -> item.code
-                is WordItem -> item.mdc
+                is SignItem -> id to item.code
+                is WordItem -> id to item.mdc
                 is PhraseItem -> null
                 is ConceptItem -> null
                 null -> null
             }
         }
         @Composable
-        fun Spellings(mdcs: List<String>) = FlowRow(horizontalArrangement = Arrangement.spacedBy(14.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
-            mdcs.forEach { mdc ->
+        fun Spellings(spelled: List<Pair<String, String>>) = FlowRow(horizontalArrangement = Arrangement.spacedBy(14.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+            spelled.forEach { (id, mdc) ->
+                // Signs already learned take the learner's colours; the rest are still plain ink.
+                val paint = glyphPaint(course, remember(id, mdc) { itemTints(course, course[id], mdc) })
                 Glyphs(mdc, quadrat = 40.dp, color = { s ->
                     val sign = course.signFor(s.glyph.code)
-                    if (sign != null && progress.isIntroduced(sign.id)) Palette.paint(sign.paint) else Palette.ink
+                    if (sign != null && progress.isIntroduced(sign.id)) paint(s) else Palette.ink
                 })
             }
         }

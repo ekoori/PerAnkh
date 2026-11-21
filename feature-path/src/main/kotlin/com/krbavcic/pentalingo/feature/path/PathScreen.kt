@@ -33,7 +33,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -55,6 +58,7 @@ import com.krbavcic.pentalingo.core.ui.PageMargin
 import com.krbavcic.pentalingo.core.ui.PaintButton
 import com.krbavcic.pentalingo.core.ui.Palette
 import com.krbavcic.pentalingo.core.ui.ProgressRing
+import com.krbavcic.pentalingo.core.ui.ReportFlag
 import com.krbavcic.pentalingo.core.ui.RoundIconButton
 import com.krbavcic.pentalingo.core.ui.Rubric
 import com.krbavcic.pentalingo.core.ui.Type
@@ -132,6 +136,8 @@ private fun pathRows(course: Course, progress: Progress, revealAll: Boolean): Li
  * and, when memories are fading, the invitation to re-ink them.
  *
  * @param revealAll show sealed sections too (tester mode, where any lesson may be opened).
+ * @param focusLesson the lesson last opened from the path, where it opens next time; without
+ *   one, it opens at the next lesson to do.
  */
 @Composable
 fun PathScreen(
@@ -143,6 +149,7 @@ fun PathScreen(
     onSettings: () -> Unit,
     modifier: Modifier = Modifier,
     revealAll: Boolean = false,
+    focusLesson: String? = null,
 ) {
     val knowledge = remember(progress, now / 60_000) { Knowledge(course, progress, now) }
     val listState = rememberLazyListState()
@@ -154,11 +161,18 @@ fun PathScreen(
     val nextItem = rows.indexOfFirst { it is PathRow.Node && it.lesson == next }.takeIf { it >= 0 }?.plus(ROWS_START)
     fun scrollTo(item: Int) = scope.launch { listState.animateScrollToItem(item.coerceAtLeast(0)) }
 
-    // Open on the learner's place in the course rather than at the top of unit one. The header
-    // and the review card come before the rows.
+    // Open where the learner was, rather than at the top of unit one: at the lesson last opened
+    // from here (an old lesson gone back to, say), or else the next one to do. That happens once.
+    // After it the list keeps its own place, also while the learner is on another tab or in a
+    // lesson: the app holds each tab's state while it is away, this flag with it.
+    var placed by rememberSaveable { mutableStateOf(false) }
     LaunchedEffect(Unit) {
-        val row = rows.indexOfFirst { it is PathRow.Node && it.lesson == next }
-        val target = row + 2
+        if (placed) return@LaunchedEffect
+        placed = true
+        val row = rows.indexOfFirst { it is PathRow.Node && it.lesson.id == focusLesson }.takeIf { it >= 0 }
+            ?: rows.indexOfFirst { it is PathRow.Node && it.lesson == next }
+        // The header and the review card come before the rows; show the unit above the lesson too.
+        val target = row + ROWS_START
         if (row >= 0 && target > 4) listState.scrollToItem((target - 2).coerceAtLeast(0))
     }
 
@@ -170,7 +184,7 @@ fun PathScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             item {
-                Header(knowledge, progress, onSettings)
+                Header(knowledge, progress, next, onSettings)
             }
             item {
                 ReviewCard(knowledge, progress, onReview)
@@ -277,7 +291,7 @@ internal fun SealStamp(sign: String, modifier: Modifier = Modifier, size: Dp = 8
 }
 
 @Composable
-private fun Header(knowledge: Knowledge, progress: Progress, onSettings: () -> Unit) {
+private fun Header(knowledge: Knowledge, progress: Progress, next: Lesson?, onSettings: () -> Unit) {
     Column(
         Modifier
             .fillMaxWidth()
@@ -290,6 +304,20 @@ private fun Header(knowledge: Knowledge, progress: Progress, onSettings: () -> U
                 Text("Per Ankh", style = Type.display)
                 Rubric("Middle Egyptian")
             }
+            // A report about the app as a whole, a problem or an idea, from its front page; every
+            // other page reports about what is on it.
+            ReportFlag(
+                {
+                    val lessons = knowledge.course.lessons
+                    mapOf(
+                        "screen" to "path",
+                        "path.done" to "${lessons.count { progress.isCompleted(it.id) }} of ${lessons.size} lessons",
+                    ) + (next?.let { mapOf("path.next" to "${it.id} · ${it.title}") } ?: emptyMap())
+                },
+                Modifier.padding(end = 10.dp),
+                size = 42.dp,
+                general = true,
+            )
             RoundIconButton(IconKind.GEAR, onSettings, size = 42.dp, fill = Palette.sheetDeep, tint = Palette.inkSoft, description = "Settings")
         }
         // What could be read right now: learned and not yet faded. It falls as ink fades and

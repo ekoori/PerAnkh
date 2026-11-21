@@ -54,6 +54,7 @@ val REPORT_CATEGORIES = listOf(
     "Hieroglyphs or spelling",
     "Answer checking",
     "Lesson flow",
+    "Suggestion",
     "Other",
 )
 
@@ -62,18 +63,23 @@ val REPORT_CATEGORIES = listOf(
  *
  * [context] is read when the flag is tapped, so the report holds the screen as the learner saw it.
  * Sending it is the [Reporter]'s job, which also says how it went. Draws nothing without one.
+ *
+ * @param general a report about the app as a whole rather than one page: a problem anywhere, or
+ *   an idea. The path's flag is one.
  */
 @Composable
-fun ReportFlag(context: () -> Map<String, String>, modifier: Modifier = Modifier, size: Dp = 40.dp) {
+fun ReportFlag(context: () -> Map<String, String>, modifier: Modifier = Modifier, size: Dp = 40.dp, general: Boolean = false) {
     val reporter = LocalReporter.current ?: return
     var open by remember { mutableStateOf<Map<String, String>?>(null) }
     RoundIconButton(
         IconKind.FLAG, onClick = { open = context() }, modifier = modifier, size = size,
-        fill = Palette.sheetDeep, tint = Palette.inkSoft, description = "Report a problem",
+        fill = Palette.sheetDeep, tint = Palette.inkSoft,
+        description = if (general) "Report a problem or make a suggestion" else "Report a problem",
     )
     val snapshot = open ?: return
     ReportDialog(
         context = snapshot,
+        general = general,
         onSave = { category, note ->
             reporter.report(category, note, snapshot)
             open = null
@@ -86,6 +92,7 @@ fun ReportFlag(context: () -> Map<String, String>, modifier: Modifier = Modifier
 @Composable
 private fun ReportDialog(
     context: Map<String, String>,
+    general: Boolean,
     onSave: (category: String, note: String) -> Unit,
     onDismiss: () -> Unit,
 ) {
@@ -105,8 +112,12 @@ private fun ReportDialog(
                 .padding(20.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            Text("Report a problem", style = Type.title)
-            Text(summary(context), style = Type.small)
+            Text(if (general) "A problem, or an idea" else "Report a problem", style = Type.title)
+            if (general) {
+                Text("Anything about Per Ankh: something that does not work, or something it could do better.", style = Type.small)
+            } else {
+                Text(summary(context), style = Type.small)
+            }
             Text(
                 "It goes to the people who make Per Ankh, with what is on this screen. No name, account " +
                     "or device ID is sent.",
@@ -133,7 +144,12 @@ private fun ReportDialog(
                 value = note,
                 onValueChange = { note = it },
                 modifier = Modifier.fillMaxWidth(),
-                placeholder = { Text("What is wrong, and what did you expect?", style = Type.small) },
+                placeholder = {
+                    Text(
+                        if (general) "What is wrong, or what would you like?" else "What is wrong, and what did you expect?",
+                        style = Type.small,
+                    )
+                },
                 textStyle = Type.body,
                 minLines = 3,
                 colors = OutlinedTextFieldDefaults.colors(

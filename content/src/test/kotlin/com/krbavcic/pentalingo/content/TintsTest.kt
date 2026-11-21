@@ -2,7 +2,9 @@ package com.krbavcic.pentalingo.content
 
 import com.krbavcic.pentalingo.engine.LineTints
 import com.krbavcic.pentalingo.engine.grammarTints
+import com.krbavcic.pentalingo.engine.itemTints
 import com.krbavcic.pentalingo.engine.soundTints
+import com.krbavcic.pentalingo.script.Layout
 import com.krbavcic.pentalingo.model.PhraseItem
 import com.krbavcic.pentalingo.model.SignTint.DETERMINATIVE
 import com.krbavcic.pentalingo.model.SignTint.ECHO
@@ -24,6 +26,19 @@ class TintsTest {
     private val course = MIDDLE_EGYPTIAN
 
     private fun word(id: String) = course.require(id) as WordItem
+
+    @Test
+    fun `an item keeps its signs' roles wherever it is drawn, and other drawings get none`() {
+        val layout = Layout()
+        fun roles(itemId: String, mdc: String) = itemTints(course, course[itemId], mdc).let { f -> layout.layout(mdc).signs.map(f) }
+        // The determinative question shows wsjr without its god: the throne and the eye keep theirs.
+        assertEquals(listOf(READ_OTHER, READ), roles("w:wsjr", "Q1:D4"))
+        // Something that is not the word's spelling is not coloured as if it were.
+        assertEquals(listOf(null, null), roles("w:wsjr", "D4-Q1"))
+        // A sign on its own, by its own role.
+        assertEquals(listOf(DETERMINATIVE), roles("s:A40", "A40"))
+        assertEquals(listOf(READ), roles("s:G17", "G17"))
+    }
 
     @Test
     fun `in a word, each sign by how it is read`() {

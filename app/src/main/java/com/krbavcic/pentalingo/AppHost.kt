@@ -46,6 +46,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -129,8 +130,9 @@ private sealed interface Overlay {
 /**
  * The whole app: four tabs over the papyrus, and full-screen lessons on top.
  *
- * Navigation is a few pieces of state rather than a navigation library — there are four tabs,
- * one lesson flow and a reader, and the back stack is never deeper than two.
+ * Navigation is a few pieces of state rather than a navigation library: four tabs with the history
+ * of those visited, which the back button walks back through; one lesson flow; a reader. Each
+ * tab's own state is held while it is away, so it is found again where it was left.
  */
 /**
  * The reading options, around the whole app: high contrast repaints every colour drawn from
@@ -158,11 +160,24 @@ private fun AppScreens() {
     val store = remember(context) { ProgressStore(context) }
     val reports = remember(context) { ReportStore(context) }
     val loaded by store.progress.collectAsState(initial = null)
-    val settings by store.settings.collectAsState(initial = Settings())
+    // Waited for, like progress: the path opens where the learner left it, which is a setting.
+    val savedSettings by store.settings.collectAsState(initial = null)
     val course = MIDDLE_EGYPTIAN
     val voice = rememberVoice()
 
-    var tab by rememberSaveable { mutableStateOf(Tab.PATH) }
+    // The tabs visited, oldest first, always starting at the path: the back button walks back
+    // through them before it leaves the app. Going back to the path starts again from there.
+    // Kept as names in one string, which survives the app being stopped in the background.
+    var history by rememberSaveable { mutableStateOf(Tab.PATH.name) }
+    val visited = history.split(',').map(Tab::valueOf)
+    val tab = visited.last()
+    fun selectTab(next: Tab) {
+        if (next == tab) return
+        history = (if (next == Tab.PATH) listOf(Tab.PATH) else visited.filter { it != next } + next).joinToString(",") { it.name }
+    }
+    // Each tab's own state (its scroll, the codex's shelf and search), held while the tab is away:
+    // on another tab, in a lesson, in the reader. Coming back finds everything where it was.
+    val holder = rememberSaveableStateHolder()
     var screen by remember { mutableStateOf<Screen>(Screen.Home) }
     var overlay by remember { mutableStateOf<Overlay?>(null) }
 
@@ -176,6 +191,10 @@ private fun AppScreens() {
     }
 
     val progress = loaded ?: run {
+        Box(Modifier.fillMaxSize().papyrus())
+        return
+    }
+    val settings = savedSettings ?: run {
         Box(Modifier.fillMaxSize().papyrus())
         return
     }
@@ -365,7 +384,10 @@ private fun AppScreens() {
             is Screen.Reading -> {
                 BackHandler { screen = Screen.Home }
                 Box(Modifier.fillMaxSize().papyrus()) {
-                    ReaderScreen(knowledge, s.text, voice, onBack = { screen = Screen.Home })
+                    // Each text keeps its place too, for when it is opened again.
+                    holder.SaveableStateProvider("reader:${s.text.id}") {
+                        ReaderScreen(knowledge, s.text, voice, onBack = { screen = Screen.Home })
+                    }
                 }
                 return@CompositionLocalProvider
             }
@@ -375,38 +397,52 @@ private fun AppScreens() {
                 return@CompositionLocalProvider
             }
             Screen.Home -> if (toReveal != null) {
-                RevealScreen(course, toReveal, settings.sounds) {
+                fun revealed() {
                     revealedNow = revealedNow + toReveal.id
                     scope.launch { store.update { it.copy(revealed = it.revealed + toReveal.id) } }
-                    tab = Tab.PATH
+                    history = Tab.PATH.name
                 }
+                // Back ends the moment early, as its own button does, rather than leaving the app.
+                BackHandler { revealed() }
+                RevealScreen(course, toReveal, settings.sounds) { revealed() }
                 return@CompositionLocalProvider
             }
         }
 
         Box(Modifier.fillMaxSize().papyrus()) {
+            // Back steps back through the tabs. A sheet, the codex's panel or a lesson, all opened
+            // after this, take the button first.
+            BackHandler(enabled = visited.size > 1) {
+                history = visited.dropLast(1).joinToString(",") { it.name }
+            }
             Column(Modifier.fillMaxSize()) {
                 Box(Modifier.weight(1f)) {
-                    when (tab) {
-                        Tab.PATH -> PathScreen(
-                            course, progress, now,
-                            onOpenLesson = { overlay = Overlay.Preview(it) },
-                            onReview = ::startReview,
-                            onSettings = { overlay = Overlay.SettingsSheet },
-                            revealAll = revealAll,
-                        )
-                        Tab.CODEX -> CodexScreen(
-                            knowledge,
-                            onSign = { overlay = Overlay.SignInfo(it) },
-                            onWord = { overlay = Overlay.WordInfo(it) },
-                            onConcept = { overlay = Overlay.ConceptInfo(it) },
-                            hidden = hidden,
-                        )
-                        Tab.LIBRARY -> LibraryScreen(knowledge, onOpen = { screen = Screen.Reading(it) }, hidden = hidden)
-                        Tab.TREASURY -> TreasuryScreen(knowledge, onAward = { overlay = Overlay.AwardInfo(it) }, hidden = hidden)
+                    holder.SaveableStateProvider(tab.name) {
+                        when (tab) {
+                            Tab.PATH -> PathScreen(
+                                course, progress, now,
+                                onOpenLesson = {
+                                    overlay = Overlay.Preview(it)
+                                    scope.launch { store.setPathLesson(it.id) }
+                                },
+                                onReview = ::startReview,
+                                onSettings = { overlay = Overlay.SettingsSheet },
+                                revealAll = revealAll,
+                                focusLesson = settings.pathLesson,
+                            )
+                            Tab.CODEX -> CodexScreen(
+                                knowledge,
+                                onSign = { overlay = Overlay.SignInfo(it) },
+                                onWord = { overlay = Overlay.WordInfo(it) },
+                                onConcept = { overlay = Overlay.ConceptInfo(it) },
+                                hidden = hidden,
+                            )
+                            Tab.LIBRARY -> LibraryScreen(knowledge, onOpen = { screen = Screen.Reading(it) }, hidden = hidden)
+                            Tab.TREASURY -> TreasuryScreen(knowledge, onAward = { overlay = Overlay.AwardInfo(it) }, hidden = hidden)
+                        }
                     }
                 }
-                TabBar(tab) { tab = it }
+                TabBar(tab, ::selectTab)
             }
 
             val current = overlay
@@ -520,6 +556,7 @@ private fun AppScreens() {
                             projectUrl = BuildConfig.PROJECT_URL,
                             privacyUrl = BuildConfig.PRIVACY_URL,
                             storeUrl = BuildConfig.STORE_URL,
+                            sponsorUrl = BuildConfig.SPONSOR_URL,
                         ),
                     )
                     is Overlay.Message -> MessageSheet(current.text)

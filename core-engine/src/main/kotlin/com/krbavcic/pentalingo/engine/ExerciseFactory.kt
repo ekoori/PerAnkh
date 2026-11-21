@@ -605,6 +605,8 @@ class ExerciseFactory(
         val sign = course.signFor(reading.code)
         val sound = soundIn(course, reading)
         when {
+            // The word's determinative, even a sign that is read elsewhere (the sun disk in hrw "day").
+            sign != null && reading is SignReading.Silent && reading.classifies -> "${sign.name} (determinative: ${sign.meaning})"
             sign == null || sound == null -> signShort(reading.code)
             // A complement, named as one: learners sounding out ꜥꜣ + ꜥ did not know to read it once.
             reading is SignReading.Repeats -> "${sign.name} ${Translit.display(sound)} (repeating the ${Translit.display(sound)})"

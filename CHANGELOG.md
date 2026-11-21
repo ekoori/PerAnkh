@@ -2,6 +2,35 @@
 
 ## Unreleased
 
+- The Path remembers where you were. It opens at the lesson you last opened, not at the next one
+  to do, so going back over an old lesson no longer means finding it again each time; and coming
+  back from a lesson, another tab or the reader finds the Path where you left it. The Codex, the
+  Library and the Treasury keep their place too, and a text opens again where you left it.
+- The back button goes back through the tabs you visited before it leaves the app; during a new
+  section's reveal it ends the reveal.
+- A flag at the top of the Path, for reporting a problem anywhere in the app or making a
+  suggestion. Reports from any page can now be marked "Suggestion".
+- The hieroglyph colours you choose in Settings apply everywhere outside the Codex: in exercises,
+  answer choices and the answer shown after a mistake, on a new sign's card, in the lesson
+  summary, on the lesson sheet, in the Library and in the Codex's word and grammar sheets. Signs
+  spelled one by one (the palette for spelling a word) take the colour of their own role, so the
+  palette never shows which signs belong to the answer.
+- Settings explains each colour choice, and how near the tomb paints come to real painted
+  hieroglyphs; a new card in lesson 3, "Why the signs are coloured", tells what Egyptian painters
+  and scribes did.
+- A word's own determinative is shown as one in its breakdown and colours, even a sign that is read
+  in other words: the sun disk in hrw "day" marks a time, and is no longer said to be rꜥ. In
+  ẖrt-hrw, "daily course", the sun disk alone writes hrw, and the breakdown says so.
+- The walking legs' note says which way they walk: forward, the way the signs face.
+- Tapping a sign for a hint says, there and then, that a right answer now counts as nearly right,
+  so "Right — with a hint" comes as no surprise.
+- Cards open their lesson: a grammar table, a note on how something works or a piece of culture
+  comes before the words that use it, not after them.
+- Lesson 34 teaches all five pronouns its card lists: ntṯ, "you" to a woman, and nts, "she", join
+  jnk, ntk and ntf, each with its recording.
+- The Treasury gives time studied in hours and minutes ("16 h 39 min").
+- In the version from GitHub, Settings → About has a link for supporting Per Ankh on GitHub
+  Sponsors.
 - The app's code is optimised when it is built (R8, as Google Play asks of apps this size): the
   code is 3.2 MB instead of 21.2 MB, so there is less of it to load, and the APK on GitHub is
   44 MB instead of 50 MB.

@@ -336,9 +336,18 @@ internal class Planner(
     }
 
     fun lesson(lesson: Lesson): List<Planned> {
-        // A grammar card with a table opens its lesson: the pattern at a glance before its words.
+        // Cards open their lesson, a grammar table first: the pattern at a glance, how something
+        // works, or the culture behind the lesson, before the words that use it. A learner met
+        // the ka, ba and akh at the end of their lesson and asked for them first.
         val remaining = lesson.teach.filter { !progress.isIntroduced(it) && course[it] != null }
-            .sortedBy { if ((course[it] as? ConceptItem)?.table != null) 0 else 1 }
+            .sortedBy {
+                val card = course[it] as? ConceptItem
+                when {
+                    card?.table != null -> 0
+                    card != null -> 1
+                    else -> 2
+                }
+            }
         val newItems = batch(remaining)
         val finalBatch = newItems.size == remaining.size
         val replays = lesson.teach.filter { progress.isIntroduced(it) }

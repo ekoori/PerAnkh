@@ -60,8 +60,8 @@ update each other and keep progress.
   organisation account does not).
 - **1.0.0, public.** Play production (staged rollout) and a GitHub release with the same signed
   APK.
-- **1.x.** Donations; later, optional accounts and progress sync (`server/README.md`), each with
-  a privacy policy update first.
+- **1.x.** Optional accounts and progress sync (`server/README.md`), with a privacy policy update
+  first.
 
 ## Before the Play launch
 
@@ -89,13 +89,16 @@ update each other and keep progress.
 
 ## Donations
 
-The plan is Stripe, through LOVI Tech. Google Play allows payment links outside Play Billing only
-for validated tax-exempt charities; a donation to a company must go through Play Billing. In 2025
-Google made AnkiDroid remove its donation links from its Play build for exactly this. So:
+Support goes through GitHub Sponsors, https://github.com/sponsors/ekoori. Google Play allows
+payment links outside Play Billing only for validated tax-exempt charities; a donation to a person
+or a company must go through Play Billing. In 2025 Google made AnkiDroid remove its donation links
+from its Play build for exactly this. So:
 
-- **GitHub / F-Droid build**: a "Support Per Ankh" link to a Stripe Payment Link. Fine.
-- **Play build**: no external donation link. Either nothing, or "tips" as Play Billing in-app
-  products (Google keeps 15%).
+- **GitHub / F-Droid build**: Settings → About has "Support Per Ankh", linking to GitHub Sponsors
+  (`BuildConfig.SPONSOR_URL`). The repository's `.github/FUNDING.yml` puts a Sponsor button on its
+  GitHub page, and README.md links there too.
+- **Play build**: no external donation link (`SPONSOR_URL` is null there). Either nothing, or
+  "tips" as Play Billing in-app products (Google keeps 15%).
 
 The two product flavours exist since 0.3.2, for the About page's check for a newer version: Play
 does not allow an app to offer updates from elsewhere, so the `play` flavour links to the Play

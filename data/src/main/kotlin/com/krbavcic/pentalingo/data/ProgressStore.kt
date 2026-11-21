@@ -36,6 +36,8 @@ data class Settings(
     val glyphColours: GlyphColours = GlyphColours.BY_ROLE,
     /** Per Ankh from GitHub: look once a day for a new release, and say when there is one. */
     val updateNotices: Boolean = false,
+    /** The lesson last opened from the path: the path opens there, not at the next lesson to do. */
+    val pathLesson: String? = null,
 )
 
 /**
@@ -66,6 +68,7 @@ class ProgressStore(private val context: Context) {
             glyphColours = it[GLYPH_COLOURS]?.let { name -> GlyphColours.entries.firstOrNull { c -> c.name == name } }
                 ?: GlyphColours.BY_ROLE,
             updateNotices = it[UPDATE_NOTICES] ?: false,
+            pathLesson = it[PATH_LESSON],
         )
     }
 
@@ -112,8 +115,16 @@ class ProgressStore(private val context: Context) {
         context.store.edit { it[UPDATE_NOTICES] = on }
     }
 
+    suspend fun setPathLesson(id: String) {
+        context.store.edit { if (it[PATH_LESSON] != id) it[PATH_LESSON] = id }
+    }
+
+    /** Forgets all progress, and with it where the path was left. Settings stay. */
     suspend fun reset() {
-        context.store.edit { it.remove(PROGRESS) }
+        context.store.edit {
+            it.remove(PROGRESS)
+            it.remove(PATH_LESSON)
+        }
     }
 
     private fun decode(raw: String): Progress? = try {
@@ -135,5 +146,6 @@ class ProgressStore(private val context: Context) {
         val TEXT_SCALE = intPreferencesKey("text-scale")
         val GLYPH_COLOURS = stringPreferencesKey("glyph-colours")
         val UPDATE_NOTICES = booleanPreferencesKey("update-notices")
+        val PATH_LESSON = stringPreferencesKey("path-lesson")
     }
 }

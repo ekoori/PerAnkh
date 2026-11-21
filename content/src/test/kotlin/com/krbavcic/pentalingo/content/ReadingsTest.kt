@@ -31,7 +31,7 @@ class ReadingsTest {
         assertEquals(Reads("N37", "š"), r[0])
         assertEquals(Reads("H6", "šw"), r[1])
         assertEquals(Repeats("G43", "w"), r[2])
-        assertEquals(Silent("A40"), r[3])
+        assertEquals(Silent("A40", classifies = true), r[3])
         assertEquals(listOf("mꜣꜥt", "t", "-", "-"), said("w:mAat"))
     }
 
@@ -44,5 +44,23 @@ class ReadingsTest {
     @Test
     fun `complements repeat what the sign before them spelled`() {
         assertEquals(listOf(Reads("F35", "nfr"), Repeats("I9", "f"), Repeats("D21", "r")), readings("w:nfr"))
+    }
+
+    @Test
+    fun `a word's own determinative is silent, even a sign that is read in other words`() {
+        // The sun disk is the word rꜥ, but after hrw "day" it only marks a time.
+        assertEquals(Silent("N5", classifies = true), readings("w:hrw").last())
+        // The beer jug could repeat ḥnqt; it marks beer instead.
+        assertEquals(Silent("W22", classifies = true), readings("w:Hnqt").last())
+    }
+
+    @Test
+    fun `the sun disk alone writes hrw in ẖrt-hrw`() {
+        assertEquals(Reads("N5", "hrw"), readings("w:Xrthrw").last())
+    }
+
+    @Test
+    fun `ḏws reads its s, after a w that only repeats`() {
+        assertEquals(listOf(Reads("N26", "ḏw"), Repeats("G43", "w"), Reads("S29", "s")), readings("w:Dws"))
     }
 }

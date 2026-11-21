@@ -98,7 +98,12 @@ open About.
 has the details.
 
 **Something in a lesson looks wrong.** Tap the flag in the corner of the page, say what is wrong
-and tap Send. The report includes what was on screen, so a few words are enough.
+and tap Send. The report includes what was on screen, so a few words are enough. The flag at the
+top of the Path is for anything else: a problem anywhere in the app, or an idea.
+
+**How can I support Per Ankh?** It is free and stays free. If it helps you and you would like to
+give something back, you can [sponsor its maker on GitHub](https://github.com/sponsors/ekoori);
+the version from GitHub links there from Settings → About.
 
 **I have version 0.1.0, the test version.** Later versions are a separate app: install the latest
 one and it appears next to 0.1.0. Progress from 0.1.0 does not carry over. Once you have moved,

@@ -21273,6 +21273,18 @@
   "seed": null,
   "text": "نِسُوتْ"
  },
+ "w:ntT": {
+  "file": "2613d30a1f4c962a79f52952ca2e06fa.mp3",
+  "heard_ar": "نيتج",
+  "heard_en": "",
+  "ipa": "nɛtɛtʃ",
+  "lang": "ar",
+  "latin": "netetj",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "نِتِچْ"
+ },
  "w:ntf": {
   "file": "ec6430f551e0326a62715cc657c85c1b.mp3",
   "heard_ar": "ميتيف",
@@ -21305,6 +21317,18 @@
   "score": 1.0,
   "seed": null,
   "text": "نِتِكْ"
+ },
+ "w:nts": {
+  "file": "8d126bcd7883f812d66aeb3f825c12fe.mp3",
+  "heard_ar": "Nitis",
+  "heard_en": "",
+  "ipa": "nɛtɛs",
+  "lang": "ar",
+  "latin": "netes",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "نِتِسْ"
  },
  "w:nw": {
   "file": "57473075a85d23e6ddf6850bfbf5a971.mp3",

@@ -31,6 +31,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -44,6 +45,7 @@ import com.krbavcic.pentalingo.core.ui.Tile
 import com.krbavcic.pentalingo.core.ui.TileState
 import com.krbavcic.pentalingo.core.ui.Type
 import com.krbavcic.pentalingo.core.ui.Voice
+import com.krbavcic.pentalingo.core.ui.glyphPaint
 import com.krbavcic.pentalingo.core.ui.lineOf
 import com.krbavcic.pentalingo.engine.Answer
 import com.krbavcic.pentalingo.engine.Arrange
@@ -58,6 +60,9 @@ import com.krbavcic.pentalingo.engine.Pairs
 import com.krbavcic.pentalingo.engine.ReadNumber
 import com.krbavcic.pentalingo.engine.Spell
 import com.krbavcic.pentalingo.engine.Verdict
+import com.krbavcic.pentalingo.engine.itemTints
+import com.krbavcic.pentalingo.engine.loneTints
+import com.krbavcic.pentalingo.script.PlacedSign
 import com.krbavcic.pentalingo.model.Course
 import com.krbavcic.pentalingo.script.Mdc
 import com.krbavcic.pentalingo.script.Translit
@@ -81,6 +86,20 @@ internal class SignHint(val course: Course, val enabled: Boolean, private val on
     fun used() = onUsed()
 }
 
+/**
+ * An item's signs in the learner's colours (Settings → Reading): by what each sign does, in its
+ * tomb paint, or in plain ink. [mdc] or [words] is what is drawn; see [itemTints].
+ */
+@Composable
+internal fun itemPaint(course: Course, itemId: String?, mdc: String? = null, words: List<String> = emptyList()): (PlacedSign) -> Color {
+    val roles = remember(course, itemId, mdc, words) { itemTints(course, itemId?.let { course[it] }, mdc, words) }
+    return glyphPaint(course, roles)
+}
+
+/** Signs drawn one by one, a palette or a spelling being built: each in the learner's colour for its own role. */
+@Composable
+internal fun lonePaint(course: Course): (PlacedSign) -> Color = glyphPaint(course, remember(course) { loneTints(course) })
+
 @Composable
 internal fun Instruction(text: String) {
     Text(Translit.display(text), style = Type.title, modifier = Modifier.padding(top = 4.dp, bottom = 14.dp))
@@ -97,6 +116,8 @@ internal fun Prompt(
     autoplayAudio: Boolean = true,
     hint: SignHint? = null,
     quadrat: androidx.compose.ui.unit.Dp? = null,
+    /** The signs' colours, as the learner chose them: see [itemPaint]. */
+    paint: (PlacedSign) -> Color = { Palette.ink },
 ) {
     val audioOnly = display.audio != null && display.mdc == null && display.words.isEmpty() &&
         display.translit == null && display.text == null
@@ -113,13 +134,21 @@ internal fun Prompt(
         verticalArrangement = Arrangement.spacedBy(10.dp),
     ) {
         if (display.words.isNotEmpty()) {
-            GlyphLine(display.words, quadrat = 50.dp, mirrored = display.mirrored, onSign = onSign)
+            GlyphLine(display.words, quadrat = 50.dp, mirrored = display.mirrored, color = paint, onSign = onSign)
         } else display.mdc?.let { mdc ->
             val single = Mdc.parse(mdc).signs.size == 1
-            Glyphs(mdc, quadrat = quadrat ?: if (single) 104.dp else 64.dp, mirrored = display.mirrored, highlight = display.highlight, onSign = onSign)
+            Glyphs(
+                mdc, quadrat = quadrat ?: if (single) 104.dp else 64.dp, mirrored = display.mirrored,
+                color = paint, highlight = display.highlight, onSign = onSign,
+            )
         }
         when {
-            peek != null -> Text(peek!!, style = Type.body.copy(color = Palette.lapisDeep))
+            peek != null -> {
+                Text(peek!!, style = Type.body.copy(color = Palette.lapisDeep))
+                // Said when it happens, so "Right — with a hint" is no surprise: a learner who
+                // tapped a sign took the result for a wrong answer.
+                Text("With a hint, a right answer counts as nearly right.", style = Type.small)
+            }
             onSign != null -> Text("Tap a sign for a hint", style = Type.small)
         }
         display.translit?.let { Text(Translit.display(it), style = Type.translit.copy(fontSize = 26.sp, lineHeight = 32.sp)) }
@@ -160,9 +189,12 @@ private fun stateFor(index: Int, picked: Int?, correct: Int, verdict: Verdict?):
 }
 
 @Composable
-private fun ChoiceFace(choice: Choice, glyphSize: androidx.compose.ui.unit.Dp = 54.dp) {
+private fun ChoiceFace(choice: Choice, course: Course, glyphSize: androidx.compose.ui.unit.Dp = 54.dp) {
     when {
-        choice.mdc != null -> Glyphs(choice.mdc!!, quadrat = glyphSize, modifier = Modifier.padding(10.dp))
+        choice.mdc != null -> Glyphs(
+            choice.mdc!!, quadrat = glyphSize, modifier = Modifier.padding(10.dp),
+            color = itemPaint(course, choice.itemId, choice.mdc),
+        )
         choice.translit != null -> Text(
             Translit.display(choice.translit!!), style = Type.translit.copy(fontSize = 26.sp, lineHeight = 30.sp),
             modifier = Modifier.padding(vertical = 14.dp, horizontal = 12.dp), textAlign = TextAlign.Center,
@@ -177,6 +209,7 @@ private fun ChoiceFace(choice: Choice, glyphSize: androidx.compose.ui.unit.Dp = 
 @Composable
 internal fun ChoiceExercise(
     ex: MultipleChoice,
+    course: Course,
     verdict: Verdict?,
     voice: Voice,
     onTap: () -> Unit,
@@ -186,7 +219,10 @@ internal fun ChoiceExercise(
     var picked by remember { mutableStateOf<Int?>(null) }
     if (ex.kind == ExerciseKind.SOUND_OUT) ReadItYourself()
     Instruction(ex.instruction)
-    Prompt(ex.prompt, voice, autoplayAudio = ex.kind in AUDIO_KINDS, hint = hint)
+    Prompt(
+        ex.prompt, voice, autoplayAudio = ex.kind in AUDIO_KINDS, hint = hint,
+        paint = itemPaint(course, ex.itemId, ex.prompt.mdc, ex.prompt.words),
+    )
 
     fun pick(i: Int) {
         if (verdict != null) return
@@ -204,7 +240,7 @@ internal fun ChoiceExercise(
                     Tile(
                         stateFor(i, picked, ex.correct, verdict), { pick(i) },
                         Modifier.weight(1f).heightIn(min = 96.dp),
-                    ) { ChoiceFace(choice) }
+                    ) { ChoiceFace(choice, course) }
                 }
             }
         }
@@ -212,7 +248,7 @@ internal fun ChoiceExercise(
         Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
             ex.choices.forEachIndexed { i, choice ->
                 Tile(stateFor(i, picked, ex.correct, verdict), { pick(i) }, Modifier.fillMaxWidth().heightIn(min = 56.dp)) {
-                    ChoiceFace(choice)
+                    ChoiceFace(choice, course)
                 }
             }
         }
@@ -222,9 +258,12 @@ internal fun ChoiceExercise(
 private val AUDIO_KINDS = setOf(ExerciseKind.LISTEN_TO_SIGN, ExerciseKind.LISTEN_TO_WORD, ExerciseKind.SOUND_TO_SIGN)
 
 @Composable
-private fun TileFaceSmall(choice: Choice, glyphSize: androidx.compose.ui.unit.Dp = 38.dp) {
+private fun TileFaceSmall(choice: Choice, course: Course, glyphSize: androidx.compose.ui.unit.Dp = 38.dp) {
     when {
-        choice.mdc != null -> Glyphs(choice.mdc!!, quadrat = glyphSize, modifier = Modifier.padding(horizontal = 10.dp, vertical = 8.dp))
+        choice.mdc != null -> Glyphs(
+            choice.mdc!!, quadrat = glyphSize, modifier = Modifier.padding(horizontal = 10.dp, vertical = 8.dp),
+            color = itemPaint(course, choice.itemId, choice.mdc),
+        )
         choice.translit != null -> Text(
             Translit.display(choice.translit!!), style = Type.translit.copy(fontSize = 24.sp),
             modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp),
@@ -241,6 +280,7 @@ private fun TileFaceSmall(choice: Choice, glyphSize: androidx.compose.ui.unit.Dp
 @Composable
 internal fun ArrangeExercise(
     ex: Arrange,
+    course: Course,
     verdict: Verdict?,
     voice: Voice,
     onTap: () -> Unit,
@@ -254,7 +294,7 @@ internal fun ArrangeExercise(
         onPending(if (next.isEmpty()) null else Answer.Tiles(next.map { ex.tiles[it].face }))
     }
     Instruction(ex.instruction)
-    Prompt(ex.prompt, voice, autoplayAudio = false, hint = hint)
+    Prompt(ex.prompt, voice, autoplayAudio = false, hint = hint, paint = itemPaint(course, ex.itemId, ex.prompt.mdc, ex.prompt.words))
 
     val lineState = when (verdict?.outcome) {
         null -> TileState.IDLE
@@ -277,7 +317,7 @@ internal fun ArrangeExercise(
     ) {
         chosen.forEach { i ->
             Tile(lineState, if (verdict == null) ({ update(chosen - i) }) else null, Modifier.padding(top = 6.dp)) {
-                TileFaceSmall(ex.tiles[i])
+                TileFaceSmall(ex.tiles[i], course)
             }
         }
     }
@@ -296,11 +336,11 @@ internal fun ArrangeExercise(
                         .background(Palette.inkGhost)
                         .then(if (verdict == null) Modifier.clickable { update(chosen - i) } else Modifier),
                 ) {
-                    Box(Modifier.padding(2.dp).alpha(0.35f)) { TileFaceSmall(tile) }
+                    Box(Modifier.padding(2.dp).alpha(0.35f)) { TileFaceSmall(tile, course) }
                 }
             } else {
                 Tile(if (verdict == null) TileState.IDLE else TileState.DIM, if (verdict == null) ({ update(chosen + i) }) else null) {
-                    TileFaceSmall(tile)
+                    TileFaceSmall(tile, course)
                 }
             }
         }
@@ -357,7 +397,10 @@ internal fun SpellExercise(
         onPending(if (next.isEmpty()) null else Answer.Signs(next))
     }
     Instruction(ex.instruction)
-    Prompt(ex.prompt, voice, autoplayAudio = false)
+    Prompt(ex.prompt, voice, autoplayAudio = false, paint = itemPaint(course, ex.itemId, ex.prompt.mdc, ex.prompt.words))
+    // The palette and the spelling being built are coloured sign by sign, never by the answer:
+    // colouring them by the word would show which tiles belong to it.
+    val loose = lonePaint(course)
 
     Box(
         Modifier
@@ -370,9 +413,9 @@ internal fun SpellExercise(
         contentAlignment = Alignment.Center,
     ) {
         when {
-            verdict?.outcome == Outcome.CORRECT -> Glyphs(ex.mdc, quadrat = 64.dp)
+            verdict?.outcome == Outcome.CORRECT -> Glyphs(ex.mdc, quadrat = 64.dp, color = itemPaint(course, ex.itemId, ex.mdc))
             chosen.isEmpty() -> Text("Tap the signs in order", style = Type.bodySoft)
-            else -> Glyphs(chosen.joinToString("-"), quadrat = 56.dp)
+            else -> Glyphs(chosen.joinToString("-"), quadrat = 56.dp, color = loose)
         }
         if (chosen.isNotEmpty() && verdict == null) {
             RoundIconButton(
@@ -387,7 +430,7 @@ internal fun SpellExercise(
             row.forEach { code ->
                 Tile(if (verdict == null) TileState.IDLE else TileState.DIM, if (verdict == null) ({ update(chosen + code) }) else null,
                     Modifier.weight(1f).aspectRatio(1f)) {
-                    Glyphs(code, quadrat = 46.dp, description = course.signFor(code)?.name)
+                    Glyphs(code, quadrat = 46.dp, color = loose, description = course.signFor(code)?.name)
                 }
             }
             repeat(4 - row.size) { Spacer(Modifier.weight(1f)) }
@@ -418,7 +461,7 @@ private fun Keypad(onKey: (Char) -> Unit, onBack: () -> Unit, enabled: Boolean) 
 }
 
 @Composable
-internal fun ReadNumberExercise(ex: ReadNumber, verdict: Verdict?, onTap: () -> Unit, onPending: (Answer?) -> Unit, hint: SignHint? = null) {
+internal fun ReadNumberExercise(ex: ReadNumber, course: Course, verdict: Verdict?, onTap: () -> Unit, onPending: (Answer?) -> Unit, hint: SignHint? = null) {
     var typed by remember { mutableStateOf("") }
     fun update(next: String) {
         typed = next.take(8)
@@ -427,7 +470,7 @@ internal fun ReadNumberExercise(ex: ReadNumber, verdict: Verdict?, onTap: () -> 
     }
     Instruction(ex.instruction)
     // Numbers are counted sign by sign, so they are drawn large enough to count.
-    Prompt(Display(mdc = ex.mdc), voice = com.krbavcic.pentalingo.core.ui.rememberVoice(), hint = hint, quadrat = 104.dp)
+    Prompt(Display(mdc = ex.mdc), voice = com.krbavcic.pentalingo.core.ui.rememberVoice(), hint = hint, quadrat = 104.dp, paint = lonePaint(course))
     Text(
         typed.toIntOrNull()?.let(Numerals::format) ?: "?",
         style = Type.display.copy(fontSize = 40.sp, color = if (verdict == null) Palette.ink else Palette.inkSoft),
@@ -446,6 +489,7 @@ internal fun BuildNumberExercise(ex: BuildNumber, course: Course, verdict: Verdi
         onPending(if (next.isEmpty()) null else Answer.Signs(next))
     }
     Instruction(ex.instruction)
+    val loose = lonePaint(course)
     Text(Numerals.format(ex.value), style = Type.display.copy(fontSize = 44.sp), modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center)
     Spacer(Modifier.height(14.dp))
     Box(
@@ -459,7 +503,7 @@ internal fun BuildNumberExercise(ex: BuildNumber, course: Course, verdict: Verdi
         contentAlignment = Alignment.Center,
     ) {
         val mdc = Numerals.group(chosen)
-        if (mdc == null) Text("Tap the signs to write it", style = Type.bodySoft) else Glyphs(mdc, quadrat = 58.dp)
+        if (mdc == null) Text("Tap the signs to write it", style = Type.bodySoft) else Glyphs(mdc, quadrat = 58.dp, color = loose)
         if (chosen.isNotEmpty() && verdict == null) {
             RoundIconButton(
                 IconKind.BACKSPACE, { update(chosen.dropLast(1)) }, Modifier.align(Alignment.TopEnd),
@@ -474,7 +518,10 @@ internal fun BuildNumberExercise(ex: BuildNumber, course: Course, verdict: Verdi
                 Tile(if (verdict == null) TileState.IDLE else TileState.DIM, if (verdict == null) ({ update(chosen + code) }) else null,
                     Modifier.weight(1f).heightIn(min = 92.dp)) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Glyphs(code, quadrat = 40.dp, modifier = Modifier.padding(top = 8.dp), description = course.signFor(code)?.name)
+                        Glyphs(
+                            code, quadrat = 40.dp, modifier = Modifier.padding(top = 8.dp),
+                            color = loose, description = course.signFor(code)?.name,
+                        )
                         Text(Numerals.format(value), style = Type.small, modifier = Modifier.padding(bottom = 6.dp))
                     }
                 }
@@ -489,7 +536,7 @@ internal fun BuildNumberExercise(ex: BuildNumber, course: Course, verdict: Verdi
  * slip for both items, but the exercise simply carries on until everything is matched.
  */
 @Composable
-internal fun PairsExercise(ex: Pairs, verdict: Verdict?, voice: Voice, onTap: () -> Unit, onDone: (Answer) -> Unit) {
+internal fun PairsExercise(ex: Pairs, course: Course, verdict: Verdict?, voice: Voice, onTap: () -> Unit, onDone: (Answer) -> Unit) {
     var left by remember { mutableStateOf<Int?>(null) }
     var right by remember { mutableStateOf<Int?>(null) }
     var matched by remember { mutableStateOf(setOf<Int>()) }
@@ -530,7 +577,7 @@ internal fun PairsExercise(ex: Pairs, verdict: Verdict?, voice: Voice, onTap: ()
                 // A matched pair can be heard again, during the exercise and after it.
                 Tile(state, if (i in matched || verdict != null) ({ voice.play(c.itemId) }) else ({ onTap(); left = i; attempt(i, right) }),
                     Modifier.fillMaxWidth().height(76.dp)) {
-                    TileFaceSmall(c, glyphSize = 52.dp)
+                    TileFaceSmall(c, course, glyphSize = 52.dp)
                 }
             }
         }
@@ -546,7 +593,7 @@ internal fun PairsExercise(ex: Pairs, verdict: Verdict?, voice: Voice, onTap: ()
                 }
                 Tile(state, if (done || verdict != null) ({ ex.left.getOrNull(partner)?.let { voice.play(it.itemId) } }) else ({ onTap(); right = j; attempt(left, j) }),
                     Modifier.fillMaxWidth().height(76.dp)) {
-                    TileFaceSmall(c)
+                    TileFaceSmall(c, course)
                 }
             }
         }

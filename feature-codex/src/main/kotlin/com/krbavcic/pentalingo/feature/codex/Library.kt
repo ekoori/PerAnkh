@@ -52,6 +52,7 @@ import com.krbavcic.pentalingo.engine.Knowledge
 import com.krbavcic.pentalingo.model.PhraseItem
 import com.krbavcic.pentalingo.model.GlyphColours
 import com.krbavcic.pentalingo.engine.LineTints
+import com.krbavcic.pentalingo.engine.itemTints
 import com.krbavcic.pentalingo.core.ui.glyphPaint
 import com.krbavcic.pentalingo.core.ui.LocalGlyphColours
 import com.krbavcic.pentalingo.model.ReadingText
@@ -149,8 +150,12 @@ private fun TextCard(knowledge: Knowledge, text: ReadingText, onOpen: (ReadingTe
         }
         val first = course[text.lines.first()] as? PhraseItem
         first?.let { line ->
-            Glyphs(lineOf(line.tokens.map { it.mdc }), quadrat = 30.dp, color = { s ->
-                course.signFor(s.glyph.code)?.let { signColor(knowledge, it) } ?: Palette.ink
+            // Signs already learned in the learner's colours, the rest faint: what can be read shows.
+            val words = line.tokens.map { it.mdc }
+            val paint = glyphPaint(course, remember(line) { itemTints(course, line, words = words) })
+            Glyphs(lineOf(words), quadrat = 30.dp, color = { s ->
+                val sign = course.signFor(s.glyph.code)
+                if (sign != null && knowledge.isIntroduced(sign.id)) paint(s) else Palette.inkFaint
             })
         }
         Measured(r.fraction, "You can read ${r.readableWords} of ${r.words} words · ${r.knownSigns} of ${r.signs} signs")
