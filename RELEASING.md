@@ -54,7 +54,12 @@ update each other and keep progress.
   search and categories, hieroglyphs coloured by what each sign does, twelve culture cards, words
   said as written when tapped, recordings checked by ear, high contrast and text size, and
   new-version notices for the GitHub build.
-- **0.5.x, open testing.** Anyone can join the test from the Play listing. Fix what testers
+- **0.6.0, GitHub release, and the bundle for Play open testing (2026-11-22).** Release builds
+  optimised with R8 (Play's "DEX code optimisation" finding), a Path that remembers its place, the
+  back button through the tabs, a report flag on the Path, the hieroglyph colours applied
+  everywhere, cards with tables that can be heard, the whole codex for testers, and fixes from the
+  November reports.
+- **0.6.x, open testing.** Anyone can join the test from the Play listing. Fix what testers
   report; re-record the weak clips. A couple of weeks of testing before production (new
   *personal* Play accounts would need 12 testers for 14 days in closed testing; LOVI Tech's
   organisation account does not).

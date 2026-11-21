@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.6.0 (2026-11-22)
 
 - The Path remembers where you were. It opens at the lesson you last opened, not at the next one
   to do, so going back over an old lesson no longer means finding it again each time; and coming
