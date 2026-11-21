@@ -76,7 +76,7 @@ fun TeachCard(item: Item, course: Course, voice: Voice, autoplay: Boolean, first
             is SignItem -> SignCard(item, course, voice, firstTime)
             is WordItem -> WordCard(item, course, voice, firstTime)
             is PhraseItem -> PhraseCard(item, course, voice)
-            is ConceptItem -> ConceptCard(item, course)
+            is ConceptItem -> ConceptCard(item, course, voice)
         }
     }
 }
@@ -247,8 +247,8 @@ private fun PhraseCard(phrase: PhraseItem, course: Course, voice: Voice) {
 }
 
 @Composable
-private fun ConceptCard(concept: ConceptItem, course: Course) {
-    Rubric("How it works")
+private fun ConceptCard(concept: ConceptItem, course: Course, voice: Voice) {
+    Rubric(if (concept.culture) "Culture" else "How it works")
     Text(concept.title, style = Type.display)
     // A card's signs have no roles to show, so by role they stay in ink; paint follows the choice.
     val paint = itemPaint(course, concept.id)
@@ -256,7 +256,7 @@ private fun ConceptCard(concept: ConceptItem, course: Course) {
         Framed { Glyphs(mdc, quadrat = 64.dp, mirrored = concept.mirrored, color = paint) }
     }
     Text(Translit.display(concept.body), style = Type.body.copy(fontSize = 17.sp, lineHeight = 26.sp))
-    concept.table?.let { GrammarTableView(it, glyphColor = paint) }
+    concept.table?.let { GrammarTableView(it, glyphColor = paint, course = course, voice = voice) }
 }
 
 /** The finale of a reading lesson: a real text, as far as it has been learned, with every word tappable. */

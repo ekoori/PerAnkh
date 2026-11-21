@@ -214,11 +214,17 @@ fun AwardDetail(k: Knowledge, award: Award) {
     }
 }
 
-/** A grammar card or a note, opened from the codex: as it was taught, with its table. */
+/** A grammar card, a note or a culture card, opened from the codex: as it was taught, with its table. */
 @Composable
-fun ConceptDetail(k: Knowledge, concept: ConceptItem) {
+fun ConceptDetail(k: Knowledge, concept: ConceptItem, voice: Voice) {
     SheetColumn {
-        com.krbavcic.pentalingo.core.ui.Rubric(if (concept.table != null) "Grammar" else "Note")
+        com.krbavcic.pentalingo.core.ui.Rubric(
+            when {
+                concept.culture -> "Culture"
+                concept.table != null -> "Grammar"
+                else -> "Note"
+            },
+        )
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(concept.title, style = Type.display, modifier = Modifier.weight(1f))
             ReportFlag({ mapOf("screen" to "codex") + describeItem(k.course, concept.id, null) }, Modifier.padding(start = 8.dp))
@@ -227,7 +233,7 @@ fun ConceptDetail(k: Knowledge, concept: ConceptItem) {
         val paint = glyphPaint(k.course) { null }
         concept.mdc?.let { Glyphs(it, quadrat = 56.dp, mirrored = concept.mirrored, color = paint) }
         Text(Translit.display(concept.body), style = Type.body)
-        concept.table?.let { com.krbavcic.pentalingo.core.ui.GrammarTableView(it, glyphColor = paint) }
+        concept.table?.let { com.krbavcic.pentalingo.core.ui.GrammarTableView(it, glyphColor = paint, course = k.course, voice = voice) }
         k.course.lessonTeaching(concept.id)?.let { lesson ->
             Text("From lesson ${lesson.id.removePrefix("l")}, ${lesson.title}", style = Type.small)
         }

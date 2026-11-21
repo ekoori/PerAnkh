@@ -4,9 +4,11 @@ import com.krbavcic.pentalingo.model.GrammarTable
 import com.krbavcic.pentalingo.model.GrammarTable.Cell
 
 /**
- * The grammar cards' tables: each pattern at a glance, shown at the start of the lesson that
- * teaches it and kept in the codex. Spellings are the course's own (the words' entries), and a form
- * the course does not spell is given in transliteration only. Paradigms follow Allen's Middle
+ * The cards' tables: each pattern, or each set of things a card names, at a glance, shown with the
+ * card in its lesson and kept in the codex. Spellings are the course's own (the words' entries and
+ * the forms its sentences write), and a form the course does not spell is given in transliteration
+ * only. Every Egyptian form can be heard: tapped, it plays the recording of the word, sign or
+ * sentence that says it, or its own (`ExportSpeech.tableForms`). Paradigms follow Allen's Middle
  * Egyptian and Gardiner's Egyptian Grammar, in the course's transliteration (=ṯ, not =t).
  */
 private val SIGNS_SAID_MEANING = listOf(Cell.GLYPHS, Cell.TRANSLIT, Cell.TEXT)
@@ -178,5 +180,118 @@ internal val GRAMMAR_TABLES: Map<String, GrammarTable> = mapOf(
             listOf("jj.kw", "I have come", "come-I"),
         ),
         "What is happening, what will happen, what happened, and how things stand.",
+    ),
+
+    // Cards whose words or things come side by side read better as a table too: script notes,
+    // grammar notes and culture cards alike.
+    "c:sounds" to GrammarTable(
+        listOf("Signs", "Letter", "Said like"),
+        SIGNS_SAID_MEANING,
+        listOf(
+            listOf("O4", "h", "the h of “house”"),
+            listOf("V28", "ḥ", "an h breathed hard from the throat"),
+            listOf("Aa1", "ḫ", "the ch of Scottish “loch”"),
+            listOf("F32", "ẖ", "a softer ch, as in German “ich”"),
+        ),
+        "Written, they are four letters: the marks under the h tell them apart.",
+    ),
+    "c:complements" to paradigm(
+        listOf("Y5:N35", "mn", "the game board spells mn; the water ripple repeats its n"),
+        listOf("M17-Y5:N35-A40", "jmn", "Amun: the reed j, then mn with its n, then the god"),
+        listOf("", "nfr", "next lesson: the heart and windpipe spell nfr; f and r repeat its end"),
+        header = "What repeats",
+        note = "Read the sound once: the repeated signs only confirm it.",
+    ),
+    "c:kemet" to paradigm(
+        listOf("I6-G17-X1:O49", "kmt", "the Black Land: Egypt, dark with the silt of the flood"),
+        listOf("", "dšrt", "the Red Land: the desert around it"),
+        note = "kmt is km, “black”, written with a piece of crocodile skin; the town sign marks a place.",
+    ),
+    "c:judgement" to paradigm(
+        listOf("M17-N35:Q3-G43-E16", "jnpw", "Anubis, who worked the scales"),
+        listOf("G26-X1:Z4-A40", "ḏḥwtj", "Thoth, who wrote down the result"),
+        listOf("H6-X1:H8-C10", "mꜣꜥt", "Maat, truth: her feather against the heart"),
+        listOf("", "ꜥm-mwt", "Ammit, “devourer of the dead”, who swallowed a heavy heart"),
+        header = "At the weighing",
+    ),
+    "c:soul" to paradigm(
+        listOf("D28-Z1", "kꜣ", "the life force, born with you and fed by offerings after death"),
+        listOf("G29-Z1", "bꜣ", "the personality, drawn as a bird with a human head, free to leave the tomb by day"),
+        listOf("G25-Aa1", "ꜣḫ", "the shining spirit of one who passed the judgement"),
+        header = "What it was",
+        note = "Raised arms write the ka, the jabiru stork the ba, the crested ibis the akh.",
+    ),
+    "c:participle" to paradigm(
+        listOf("F21-G17", "sḏm", "one who hears, from sḏm, “hear”"),
+        listOf("D4-D21", "jrr", "one who does, from jrj, “do”"),
+        listOf("U7:D21-D21-A2", "mrr", "one who loves, from mrj, “love”"),
+        note = "mrr sḏm pw jrr ḏd.t, “one who loves to listen is one who does what is said”.",
+    ),
+    "c:story" to paradigm(
+        listOf("P6-D36:N35", "ꜥḥꜥ.n", "then: it moves the story on"),
+        listOf("I10:D46-N35-I9", "ḏd.n=f", "he said: the past, with .n"),
+        listOf("I10:D46-M17-N35-I9", "ḏd.jn=f", "then he said: .jn on the verb does both"),
+        note = "ꜥḥꜥ.n ḏd.n=f and ḏd.jn=f both mean “then he said”.",
+    ),
+    "c:future" to paradigm(
+        listOf("", "jw dpt r jj.t", "a ship will come: “a ship is towards coming”"),
+        listOf("N40-G17-D54-V31", "šm=k", "you will go: the plain verb can promise too"),
+    ),
+    "c:bodywords" to paradigm(
+        listOf("D2:Z1", "ḥr", "face; and on, upon"),
+        listOf("D1:Z1", "tp", "head; and upon"),
+        listOf("D36:Z1", "ꜥ", "arm; and m-ꜥ, “from”"),
+        listOf("D21:Z1", "r", "mouth; and r, “to”"),
+        header = "The body, and the little word",
+        note = "Each little word began as a part of the body.",
+    ),
+    "c:relative" to paradigm(
+        listOf("W14-O34-O34-X1", "ḥzzt", "what is praised: ḥzzt nswt, “what the king praises”"),
+        listOf("U7:D21-D21-X1", "mrrt", "what is loved: mrrt rmṯ, “what people love”"),
+        note = "The verb, a -t for the thing, then whoever does it.",
+    ),
+    "c:justified" to paradigm(
+        listOf("Aa11:P8", "mꜣꜥ-ḫrw", "true of voice: said of a man"),
+        listOf("Aa11:X1-P8", "mꜣꜥt-ḫrw", "true of voice: said of a woman"),
+        listOf("F31-S29-N35", "msj.n", "born of: Ky msj.n Mrtj, “Ky, born of Merti”"),
+        note = "Titles, the name, then mꜣꜥ-ḫrw: the way a stela names its owner.",
+    ),
+    "c:wishes" to paradigm(
+        listOf("X8-I9", "dj=f", "may he give: a verb and its subject can wish"),
+        listOf("M17-Aa1-Y1", "jḫ", "may…: it makes the wish plain, jḫ ḏd=sn, “may they say”"),
+        listOf("F31-S29-X1-D37", "ms.tw", "may (they) be held out: .tw makes it passive"),
+    ),
+    "c:causative" to paradigm(
+        listOf("S29-D21-G17-D9", "srmj", "to make weep, from rmj, “weep”"),
+        listOf("S29-V28-N29-D21-G37", "sḥqr", "to starve, from ḥqr, “hungry”"),
+        listOf("S29-S34-N35:Aa1", "sꜥnḫ", "to keep alive, from ꜥnḫ, “live”"),
+        listOf("S29-L1-D21", "sḫpr", "to bring about, from ḫpr, “come about”"),
+        note = "The folded cloth s in front makes the word cause it.",
+    ),
+    "c:sdmtf" to paradigm(
+        listOf("M18-M17-X1-D54-I9", "jj.t=f", "n jj.t=f, “before it came”"),
+        listOf("L1-D21-X1-I9", "ḫpr.t=f", "n ḫpr.t=f, “before it happened”"),
+        note = "n, then the verb with .t and its subject.",
+    ),
+    "c:myrrh" to paradigm(
+        listOf("D36-N35-G4-W23-Z2", "ꜥntjw", "myrrh"),
+        listOf("", "sntr", "incense"),
+        listOf("", "tꜣ-nṯr", "god’s land: what Punt was called"),
+    ),
+    "c:jwtj" to paradigm(
+        listOf("N35-X1-Z4", "ntj", "who, which"),
+        listOf("D35-X1-G43-G37", "jwtj", "who does not, which does not"),
+        note = "wḫꜣ jwtj sḏm=f, “the fool who does not listen”.",
+    ),
+    "c:admire" to paradigm(
+        listOf("F35-I9:D21-G43-Z4", "nfr.wj", "how good!"),
+        listOf("D21-N37-D19-A2-G43-Z4", "rš.wj", "how happy!"),
+        note = "Add .wj to an adjective; what is admired follows it.",
+    ),
+    "c:article" to paradigm(
+        listOf("G41-G1", "pꜣ", "this, becoming “the”: pꜣ š, “the lake”"),
+        listOf("G41-G1-M17-M17-S29", "pꜣy=s", "her, before its noun: pꜣy=s rmn, “her side”"),
+        listOf("X1-G1-M17-M17-N35:Z2", "tꜣy=n", "our, before a feminine noun: tꜣy=n štyt, “our lead rower”"),
+        note = "Later Egyptian, and Coptic after it, use these everywhere.",
     ),
 )

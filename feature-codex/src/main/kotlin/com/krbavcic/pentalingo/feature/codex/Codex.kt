@@ -91,11 +91,12 @@ private enum class Shelf(val label: String) { SIGNS("Signs"), WORDS("Words"), GR
 private fun categoriesOf(shelf: Shelf): List<String> = when (shelf) {
     Shelf.SIGNS -> SIGN_GROUPS
     Shelf.WORDS -> Pos.entries.map(::posLabel)
-    Shelf.GRAMMAR -> listOf(TABLES, NOTES)
+    Shelf.GRAMMAR -> listOf(TABLES, NOTES, CULTURE)
 }
 
 private const val TABLES = "Tables"
 private const val NOTES = "Other notes"
+private const val CULTURE = "Culture"
 
 private fun posLabel(pos: Pos): String = when (pos) {
     Pos.NOUN -> "Nouns"
@@ -108,31 +109,31 @@ private fun posLabel(pos: Pos): String = when (pos) {
     Pos.EXPRESSION -> "Expressions"
 }
 
-/** Signs are found by code or name, and once met by sound or meaning. */
-private fun matches(k: Knowledge, sign: SignItem, query: String): Boolean {
+/** Signs are found by code or name, and once met (or by a tester) by sound or meaning. */
+private fun matches(k: Knowledge, sign: SignItem, query: String, openUnmet: Boolean = false): Boolean {
     if (query.isBlank()) return true
     val q = query.trim().lowercase()
     if (sign.code.lowercase() == q || sign.name.lowercase().contains(q)) return true
-    if (!k.isIntroduced(sign.id)) return false
+    if (!k.isIntroduced(sign.id) && !openUnmet) return false
     val sound = Translit.normalize(q)
     return (sound.isNotEmpty() && sign.sounds.any { Translit.normalize(it).startsWith(sound) }) ||
         sign.meaning?.lowercase()?.contains(q) == true
 }
 
-/** Words once met, by sound or sense. */
-private fun matches(k: Knowledge, word: WordItem, query: String): Boolean {
+/** Words once met (any word, for a tester), by sound or sense. */
+private fun matches(k: Knowledge, word: WordItem, query: String, openUnmet: Boolean = false): Boolean {
     if (query.isBlank()) return true
-    if (!k.isIntroduced(word.id)) return false
+    if (!k.isIntroduced(word.id) && !openUnmet) return false
     val q = query.trim().lowercase()
     val sound = Translit.normalize(q)
     return (sound.isNotEmpty() && Translit.normalize(word.translit).contains(sound)) ||
         word.gloss.lowercase().contains(q) || word.accepts.any { it.lowercase().contains(q) }
 }
 
-/** Grammar cards once met, by title, text or anything in their table. */
-private fun matches(k: Knowledge, concept: ConceptItem, query: String): Boolean {
+/** Cards once met (any card, for a tester), by title, text or anything in their table. */
+private fun matches(k: Knowledge, concept: ConceptItem, query: String, openUnmet: Boolean = false): Boolean {
     if (query.isBlank()) return true
-    if (!k.isIntroduced(concept.id)) return false
+    if (!k.isIntroduced(concept.id) && !openUnmet) return false
     val q = query.trim().lowercase()
     val cells = concept.table?.rows.orEmpty().flatten() + listOfNotNull(concept.table?.note)
     return concept.title.lowercase().contains(q) || concept.body.lowercase().contains(q) ||
@@ -156,6 +157,8 @@ fun CodexScreen(
     onConcept: (ConceptItem) -> Unit = {},
     /** Items of sections still sealed: not listed until their seal breaks, unless already met. */
     hidden: Set<String> = emptySet(),
+    /** Tester mode: words and cards not met yet open, and are found, as signs always open. */
+    openUnmet: Boolean = false,
 ) {
     var shelf by rememberSaveable { mutableStateOf(Shelf.SIGNS) }
     var query by rememberSaveable { mutableStateOf("") }
@@ -165,9 +168,9 @@ fun CodexScreen(
 
     @Composable
     fun ShelfContent(header: (@Composable () -> Unit)?, sideMargin: Dp) = when (shelf) {
-        Shelf.SIGNS -> SignShelf(knowledge, course, hidden, sideMargin, header, query, category, onSign)
-        Shelf.WORDS -> WordShelf(knowledge, course, hidden, sideMargin, header, query, category, onWord)
-        Shelf.GRAMMAR -> GrammarShelf(knowledge, course, hidden, sideMargin, header, query, category, onConcept)
+        Shelf.SIGNS -> SignShelf(knowledge, course, hidden, sideMargin, header, query, category, onSign, openUnmet)
+        Shelf.WORDS -> WordShelf(knowledge, course, hidden, sideMargin, header, query, category, onWord, openUnmet)
+        Shelf.GRAMMAR -> GrammarShelf(knowledge, course, hidden, sideMargin, header, query, category, onConcept, openUnmet)
     }
 
     PageMargin(modifier.fillMaxSize()) { margin ->
@@ -455,11 +458,12 @@ private fun SignShelf(
     query: String,
     category: String?,
     onSign: (SignItem) -> Unit,
+    openUnmet: Boolean = false,
 ) {
-    val groups = remember(course, hidden, query, category, k) {
+    val groups = remember(course, hidden, query, category, k, openUnmet) {
         course.signs.filter { it.id !in hidden || k.isIntroduced(it.id) }
             .filter { category == null || groupOf(it) == category }
-            .filter { matches(k, it, query) }
+            .filter { matches(k, it, query, openUnmet) }
             .groupBy(::groupOf)
     }
     LazyVerticalGrid(
@@ -547,12 +551,13 @@ private fun WordShelf(
     query: String,
     category: String?,
     onWord: (WordItem) -> Unit,
+    openUnmet: Boolean = false,
 ) {
-    val order = remember(course, hidden, query, category, k) {
+    val order = remember(course, hidden, query, category, k, openUnmet) {
         val lessonIndex = course.lessons.flatMapIndexed { i, l -> l.teach.map { it to i } }.toMap()
         course.words.filter { it.id !in hidden || k.isIntroduced(it.id) }
             .filter { category == null || posLabel(it.pos) == category }
-            .filter { matches(k, it, query) }
+            .filter { matches(k, it, query, openUnmet) }
             .sortedBy { lessonIndex[it.id] ?: Int.MAX_VALUE }
     }
     androidx.compose.foundation.lazy.LazyColumn(
@@ -576,7 +581,7 @@ private fun WordShelf(
                     .clip(RoundedCornerShape(16.dp))
                     .background(if (met) Palette.sheetLight.copy(alpha = 0.8f) else Palette.sheet.copy(alpha = 0.4f))
                     .border(1.5.dp, if (k.isMastered(word.id)) Palette.gold else Palette.edge.copy(alpha = 0.4f), RoundedCornerShape(16.dp))
-                    .clickable(enabled = met) { onWord(word) }
+                    .clickable(enabled = met || openUnmet) { onWord(word) }
                     .padding(12.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(14.dp),
@@ -590,10 +595,10 @@ private fun WordShelf(
                     Glyphs(word.mdc, quadrat = 34.dp, color = paint)
                 }
                 Column(Modifier.weight(1f)) {
-                    if (met) {
+                    if (met || openUnmet) {
                         Text(Translit.display(word.translit), style = Type.translit)
                         Text(word.gloss, style = Type.body)
-                        InkBar(k.recall(word.id).toFloat())
+                        if (met) InkBar(k.recall(word.id).toFloat()) else Text("Not met yet", style = Type.small)
                     } else {
                         Text("Not met yet", style = Type.small)
                     }
@@ -627,14 +632,19 @@ private fun GrammarShelf(
     query: String,
     category: String?,
     onConcept: (ConceptItem) -> Unit,
+    openUnmet: Boolean = false,
 ) {
     val lessons = remember(course) { course.lessons.flatMap { l -> l.teach.map { it to l } }.toMap() }
-    val sections = remember(course, hidden, query, category, k) {
+    val sections = remember(course, hidden, query, category, k, openUnmet) {
         val cards = course.items.filterIsInstance<ConceptItem>()
             .filter { it.id !in hidden || k.isIntroduced(it.id) }
-            .filter { matches(k, it, query) }
+            .filter { matches(k, it, query, openUnmet) }
             .sortedBy { lessons[it.id]?.let(course.lessons::indexOf) ?: Int.MAX_VALUE }
-        listOf(TABLES to cards.filter { it.table != null }, NOTES to cards.filter { it.table == null })
+        listOf(
+            TABLES to cards.filter { !it.culture && it.table != null },
+            NOTES to cards.filter { !it.culture && it.table == null },
+            CULTURE to cards.filter { it.culture },
+        )
             .filter { (name, list) -> list.isNotEmpty() && (category == null || category == name) }
     }
     androidx.compose.foundation.lazy.LazyColumn(
@@ -663,13 +673,14 @@ private fun GrammarShelf(
                         .clip(RoundedCornerShape(16.dp))
                         .background(if (met) Palette.sheetLight.copy(alpha = 0.8f) else Palette.sheet.copy(alpha = 0.4f))
                         .border(1.5.dp, Palette.edge.copy(alpha = 0.4f), RoundedCornerShape(16.dp))
-                        .clickable(enabled = met) { onConcept(card) }
+                        .clickable(enabled = met || openUnmet) { onConcept(card) }
                         .padding(12.dp),
                     verticalArrangement = Arrangement.spacedBy(2.dp),
                 ) {
-                    if (met) {
+                    if (met || openUnmet) {
                         Text(card.title, style = Type.heading)
                         lesson?.let { Text("Lesson ${it.id.removePrefix("l")} · ${it.title}", style = Type.small) }
+                        if (!met) Text("Not met yet", style = Type.small)
                     } else {
                         Text("Not met yet", style = Type.small)
                         lesson?.let { Text("Lesson ${it.id.removePrefix("l")}", style = Type.small) }

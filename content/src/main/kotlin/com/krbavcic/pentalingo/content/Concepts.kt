@@ -13,7 +13,19 @@ private fun concept(
     mdc: String? = null,
     mirrored: Boolean = false,
     said: String? = null,
-) = ConceptItem("c:$key", title, body, question, answer, wrong, explain, mdc, mirrored, said, GRAMMAR_TABLES["c:$key"])
+) = ConceptItem(
+    "c:$key", title, body, question, answer, wrong, explain, mdc, mirrored, said, GRAMMAR_TABLES["c:$key"],
+    culture = key in CULTURE,
+)
+
+/** The cards about Egypt rather than its language and script: labelled and shelved as culture. */
+private val CULTURE = setOf(
+    "scribes", "anubis", "kemet", "judgement", "soul", "cartouche", "champollion", "offering", "literature",
+    "teaching", "biography", "abydos", "goingforth", "weighing", "shabti", "hall", "measures", "soundeye",
+    "sea", "twice", "storywithin", "punt", "lifespan", "westcar", "colours", "lettersdead", "uraeus",
+    "appeal", "itjtawy", "firedrill", "goldlapis", "myrrh", "sailnorth", "colophon", "oldagestaff",
+    "beadnet", "lector",
+)
 
 internal val CONCEPTS: List<ConceptItem> = listOf(
     concept("consonants", "Only the consonants",

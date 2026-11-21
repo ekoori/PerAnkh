@@ -436,6 +436,7 @@ private fun AppScreens() {
                                 onWord = { overlay = Overlay.WordInfo(it) },
                                 onConcept = { overlay = Overlay.ConceptInfo(it) },
                                 hidden = hidden,
+                                openUnmet = settings.tester,
                             )
                             Tab.LIBRARY -> LibraryScreen(knowledge, onOpen = { screen = Screen.Reading(it) }, hidden = hidden)
                             Tab.TREASURY -> TreasuryScreen(knowledge, onAward = { overlay = Overlay.AwardInfo(it) }, hidden = hidden)
@@ -465,7 +466,7 @@ private fun AppScreens() {
                     )
                     is Overlay.SignInfo -> SignDetail(knowledge, current.sign, voice)
                     is Overlay.WordInfo -> WordDetail(knowledge, current.word, voice)
-                    is Overlay.ConceptInfo -> ConceptDetail(knowledge, current.concept)
+                    is Overlay.ConceptInfo -> ConceptDetail(knowledge, current.concept, voice)
                     is Overlay.AwardInfo -> AwardDetail(knowledge, current.award)
                     is Overlay.SettingsSheet -> SettingsSheet(
                         settings,

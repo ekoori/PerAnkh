@@ -63,13 +63,43 @@ class CourseTest {
     fun `a grammar table writes only signs met by the lesson that shows it`() {
         val order = course.lessons.map { it.id }
         val taughtIn = course.lessons.flatMap { l -> l.teach.map { it to order.indexOf(l.id) } }.toMap()
+        // Met: taught as a sign, or written in a word, sentence or card taught by then — the stroke
+        // after kꜣ is seen in lesson 24, long before the stroke is taught as the numeral one.
+        val metAt = HashMap<String, Int>()
+        course.lessons.forEachIndexed { at, lesson ->
+            lesson.teach.mapNotNull { course[it] }.flatMap { item ->
+                when (item) {
+                    is SignItem -> listOf(item.code)
+                    is WordItem -> listOf(item.mdc) + item.variants
+                    is PhraseItem -> item.tokens.map { it.mdc }
+                    is ConceptItem -> listOfNotNull(item.mdc)
+                    else -> emptyList()
+                }
+            }.flatMap { Mdc.parse(it).signs }.forEach { metAt.putIfAbsent(it, at) }
+        }
         val late = course.items.filterIsInstance<ConceptItem>().flatMap { concept ->
             val at = taughtIn[concept.id] ?: return@flatMap emptyList()
             tableSpellings(concept).flatMap { Mdc.parse(it).signs }.distinct()
-                .filter { code -> (taughtIn["s:$code"] ?: Int.MAX_VALUE) > at }
+                .filter { code -> (metAt[code] ?: Int.MAX_VALUE) > at }
                 .map { "$it in ${concept.id}" }
         }
-        assertTrue("signs not yet taught: $late", late.isEmpty())
+        assertTrue("signs not yet met: $late", late.isEmpty())
+    }
+
+    @Test
+    fun `every Egyptian form in a table has a recording in the app`() {
+        // The clip the table plays: the word, sign, sentence or card that says the form, or its own.
+        // Missing ones are recorded with `gradlew :content:run` and `tools/voice.py generate`.
+        val manifest = java.io.File("../app/src/main/assets/audio/manifest.json").readText()
+        fun has(id: String) = "\"${id.replace("\"", "\\\"")}\":" in manifest
+        val silent = course.items.filterIsInstance<ConceptItem>().mapNotNull { it.table }.flatMap { table ->
+            val said = table.kinds.indices.filter { table.kinds[it] == com.krbavcic.pentalingo.model.GrammarTable.Cell.TRANSLIT }
+            table.rows.flatMap { row -> said.map { row[it] to table.spelling(row) } }
+        }.filter { (cell, spelling) ->
+            com.krbavcic.pentalingo.model.GrammarTable.sayable(cell) &&
+                course.itemSaying(cell, spelling)?.id?.let(::has) != true && !has("f:$cell")
+        }.map { it.first }.distinct()
+        assertTrue("no recording for $silent", silent.isEmpty())
     }
 
     @Test

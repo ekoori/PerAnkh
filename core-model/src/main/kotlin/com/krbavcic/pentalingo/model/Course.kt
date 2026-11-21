@@ -1,5 +1,7 @@
 package com.krbavcic.pentalingo.model
 
+import com.krbavcic.pentalingo.script.Pronounce
+
 /** The painted colours units are told apart by on the path. */
 enum class UnitColor { LAPIS, OCHRE, TURQUOISE, CARNELIAN, GOLD, MALACHITE }
 
@@ -113,6 +115,35 @@ data class Course(
 
     /** The sign item teaching a Gardiner code, if the course teaches it. */
     fun signFor(code: String): SignItem? = signs.firstOrNull { it.code == code }
+
+    /** Every item with a recording, by what the recording says, as the voice is given it. */
+    private val bySound: Map<String, List<Item>> by lazy {
+        items.mapNotNull { item ->
+            when (item) {
+                is WordItem -> item.translit
+                is PhraseItem -> item.translit
+                is SignItem -> item.spoken
+                is ConceptItem -> item.said
+                else -> null
+            }?.let { Pronounce.arabic(it) to item }
+        }.groupBy({ it.first }, { it.second })
+    }
+
+    /**
+     * The item whose own recording says [translit], to play it where the course writes that form
+     * again — in a card's table, say. Of the items that sound alike, a word spelled [mdc] comes
+     * first, then a sign drawn alone as [mdc], then any word, sentence, card or sign.
+     */
+    fun itemSaying(translit: String, mdc: String? = null): Item? {
+        val alike = bySound[Pronounce.arabic(translit)] ?: return null
+        val spelled = mdc?.takeIf { it.isNotBlank() }
+        return alike.firstOrNull { it is WordItem && spelled != null && (it.mdc == spelled || spelled in it.variants) }
+            ?: alike.firstOrNull { it is SignItem && it.code == spelled }
+            ?: alike.firstOrNull { it is WordItem }
+            ?: alike.firstOrNull { it is PhraseItem }
+            ?: alike.firstOrNull { it is ConceptItem }
+            ?: alike.firstOrNull()
+    }
 
     /** The lesson that first teaches an item. */
     fun lessonTeaching(itemId: String): Lesson? = lessons.firstOrNull { itemId in it.teach }

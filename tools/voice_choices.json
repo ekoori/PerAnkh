@@ -826,6 +826,18 @@
   "seed": null,
   "text": "دِوَاتُو"
  },
+ "f:dšrt": {
+  "file": "01bb8bf2b68497fa6ad0dd736270b15f.mp3",
+  "heard_ar": "ديشيريت",
+  "heard_en": "",
+  "ipa": "dɛʃɛrɛt",
+  "lang": "ar",
+  "latin": "desheret",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "دِشِرِتْ"
+ },
  "f:dꜣbw": {
   "file": "df4945ae5414d9dca860a3433f46626a.mp3",
   "heard_ar": "دابو",
@@ -1175,6 +1187,32 @@
   "seed": null,
   "text": "إِييْتِي"
  },
+ "f:jj.w": {
+  "file": "ca1e214205ad8dc1d00f7b502b63a6cd.mp3",
+  "framed": true,
+  "heard_ar": "EU",
+  "heard_en": "",
+  "heard_framed": "قل أيوا",
+  "ipa": "iju",
+  "lang": "ar",
+  "latin": "iyu",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "إِييُو"
+ },
+ "f:jj.wjn": {
+  "file": "6575020c7f6249ebc7f61579572c1d95.mp3",
+  "heard_ar": "Ewin",
+  "heard_en": "",
+  "ipa": "ijwin",
+  "lang": "ar",
+  "latin": "iywin",
+  "passed": true,
+  "score": 0.67,
+  "seed": null,
+  "text": "إِييْوِينْ"
+ },
  "f:jj=n": {
   "file": "95ad1095f9f106dabc664b51e5b5bbf2.mp3",
   "heard_ar": "إين",
@@ -1347,6 +1385,18 @@
   "score": 1.0,
   "seed": 11,
   "text": "إِينِفْ"
+ },
+ "f:jnn": {
+  "file": "6d806be6e5e208bcf316f15d659d94c0.mp3",
+  "heard_ar": "دينن",
+  "heard_en": "",
+  "ipa": "inɛn",
+  "lang": "ar",
+  "latin": "inen",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "إِينِنْ"
  },
  "f:jnn.tw": {
   "file": "68826e0aac1ebed00ffc058ecaa1472b.mp3",
@@ -3258,6 +3308,18 @@
   "seed": null,
   "text": "نِبِتْ"
  },
+ "f:nbtj": {
+  "file": "6a91b045f01eabcba941ea641b83550f.mp3",
+  "heard_ar": "Nibiti",
+  "heard_en": "",
+  "ipa": "nɛbɛti",
+  "lang": "ar",
+  "latin": "nebeti",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "نِبِتِي"
+ },
  "f:nbw": {
   "file": "75741668502a3ee27da0f3eec603042d.mp3",
   "heard_ar": "نيبو",
@@ -3447,6 +3509,18 @@
   "seed": null,
   "text": "نِمِحِي"
  },
+ "f:nn sḏm=f": {
+  "file": "e43f20a27f8d031fffc32500cfea5d5d.mp3",
+  "heard_ar": "Nin sigimif",
+  "heard_en": "",
+  "ipa": "nɛn sɛdʒɛmɛf",
+  "lang": "ar",
+  "latin": "nen sedjemef",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "نِنْ سِجِمِفْ"
+ },
  "f:nnm.n": {
   "file": "4b6fe61c8986a5d50a4337255707dc33.mp3",
   "heard_ar": "نينيمين",
@@ -3506,6 +3580,18 @@
   "seed": null,
   "text": "نِتِيو"
  },
+ "f:ntsn": {
+  "file": "0ed116bc09fe541ebcd9d5ccd02470b1.mp3",
+  "heard_ar": "Nittisen",
+  "heard_en": "",
+  "ipa": "nɛtɛsɛn",
+  "lang": "ar",
+  "latin": "netesen",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "نِتِسِنْ"
+ },
  "f:ntt": {
   "file": "80ba8398810d3cec8b7b54471bfdd3ac.mp3",
   "heard_ar": "knitted",
@@ -3517,6 +3603,18 @@
   "score": 1.0,
   "seed": null,
   "text": "نِتِتْ"
+ },
+ "f:ntṯn": {
+  "file": "dcac3031ef8e590f9cbbfa6c6e866068.mp3",
+  "heard_ar": "نيتيتشين",
+  "heard_en": "",
+  "ipa": "nɛtɛtʃɛn",
+  "lang": "ar",
+  "latin": "netetjen",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "نِتِچِنْ"
  },
  "f:nw": {
   "file": "57473075a85d23e6ddf6850bfbf5a971.mp3",
@@ -4687,6 +4785,30 @@
   "seed": null,
   "text": "سِنِنِوِي"
  },
+ "f:sntr": {
+  "file": "f0a33c173d55abd23e974859ffdf3ed7.mp3",
+  "heard_ar": "Senator",
+  "heard_en": "",
+  "ipa": "sɛnɛtɛr",
+  "lang": "ar",
+  "latin": "seneter",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "سِنِتِرْ"
+ },
+ "f:snw": {
+  "file": "942c1da42eb20fe3ae3f76751bc99a46.mp3",
+  "heard_ar": "Sinno",
+  "heard_en": "",
+  "ipa": "sɛnu",
+  "lang": "ar",
+  "latin": "senu",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "سِنُو"
+ },
  "f:snw=j": {
   "file": "fc55e6074a9a4398c6e0005fc48b66db.mp3",
   "heard_ar": "سينيوي",
@@ -4710,6 +4832,30 @@
   "score": 1.0,
   "seed": null,
   "text": "سِنُوكْ"
+ },
+ "f:snwj": {
+  "file": "fc55e6074a9a4398c6e0005fc48b66db.mp3",
+  "heard_ar": "سينيوي",
+  "heard_en": "",
+  "ipa": "sɛnɛwi",
+  "lang": "ar",
+  "latin": "senewi",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "سِنِوِي"
+ },
+ "f:snwt": {
+  "file": "e4081bb9ecbb866ca7092129962553e8.mp3",
+  "heard_ar": "سينوت",
+  "heard_en": "",
+  "ipa": "sɛnut",
+  "lang": "ar",
+  "latin": "senut",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "سِنُوتْ"
  },
  "f:sp=f": {
   "file": "048adb6fa2d8242528c38030e0f753ed.mp3",
@@ -4975,6 +5121,54 @@
   "seed": null,
   "text": "سِجِمِنِي"
  },
+ "f:sḏm.n=k": {
+  "file": "669646e61870b016673ef63ac1a2c797.mp3",
+  "heard_ar": "Sijiminic",
+  "heard_en": "",
+  "ipa": "sɛdʒɛmɛnɛk",
+  "lang": "ar",
+  "latin": "sedjemenek",
+  "passed": true,
+  "score": 1.0,
+  "seed": 11,
+  "text": "سِجِمِنِكْ"
+ },
+ "f:sḏm.n=n": {
+  "file": "0bc5ec30c02953fdcda55798d60902dc.mp3",
+  "heard_ar": "سيجي مينين",
+  "heard_en": "",
+  "ipa": "sɛdʒɛmɛnɛn",
+  "lang": "ar",
+  "latin": "sedjemenen",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "سِجِمِنِنْ"
+ },
+ "f:sḏm.n=s": {
+  "file": "9e9b7e61c4f1637d1b00677efe05d9bc.mp3",
+  "heard_ar": "Sigiminus",
+  "heard_en": "",
+  "ipa": "sɛdʒɛmɛnɛs",
+  "lang": "ar",
+  "latin": "sedjemenes",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "سِجِمِنِسْ"
+ },
+ "f:sḏm.n=sn": {
+  "file": "de3f0f1fe232a322d2917785e7fdf2be.mp3",
+  "heard_ar": "سيجمينيسن",
+  "heard_en": "",
+  "ipa": "sɛdʒɛmɛnɛsɛn",
+  "lang": "ar",
+  "latin": "sedjemenesen",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "سِجِمِنِسِنْ"
+ },
  "f:sḏm.w": {
   "file": "e267248b23f27fd3075aa17fd436a18c.mp3",
   "heard_ar": "سيجمو",
@@ -5020,6 +5214,54 @@
   "score": 1.0,
   "seed": null,
   "text": "سِجِمِكْ"
+ },
+ "f:sḏm=n": {
+  "file": "5055f574c95326791fb0175ce8e044b4.mp3",
+  "heard_ar": "سيجيمين",
+  "heard_en": "",
+  "ipa": "sɛdʒɛmɛn",
+  "lang": "ar",
+  "latin": "sedjemen",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "سِجِمِنْ"
+ },
+ "f:sḏm=sn": {
+  "file": "0d636c3de662ebe98f4410e68b341f26.mp3",
+  "heard_ar": "سيجي مسن",
+  "heard_en": "",
+  "ipa": "sɛdʒɛmɛsɛn",
+  "lang": "ar",
+  "latin": "sedjemesen",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "سِجِمِسِنْ"
+ },
+ "f:sḏm=ṯ": {
+  "file": "a75f645dfab15d21366d9a553b068ca4.mp3",
+  "heard_ar": "سيجميتش",
+  "heard_en": "",
+  "ipa": "sɛdʒɛmɛtʃ",
+  "lang": "ar",
+  "latin": "sedjemetj",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "سِجِمِچْ"
+ },
+ "f:sḏm=ṯn": {
+  "file": "485fd2f9f503042677214e0339ab4ef9.mp3",
+  "heard_ar": "سيجي ميتشين",
+  "heard_en": "",
+  "ipa": "sɛdʒɛmɛtʃɛn",
+  "lang": "ar",
+  "latin": "sedjemetjen",
+  "passed": true,
+  "score": 1.0,
+  "seed": 11,
+  "text": "سِجِمِچِنْ"
  },
  "f:sḏmtj=sn": {
   "file": "71c11bfbe34b342020f65c4717802c5f.mp3",
@@ -5404,6 +5646,18 @@
   "score": 1.0,
   "seed": null,
   "text": "تُو"
+ },
+ "f:tꜣ-nṯr": {
+  "file": "a7ac9d63dd5a8f702f97113bbcdf8d4f.mp3",
+  "heard_ar": "ثانيتشير",
+  "heard_en": "",
+  "ipa": "ta nɛtʃɛr",
+  "lang": "ar",
+  "latin": "ta netjer",
+  "passed": true,
+  "score": 0.75,
+  "seed": null,
+  "text": "تَا نِچِرْ"
  },
  "f:tꜣ=n": {
   "file": "d2a7c49767dc9bd3241f5c28ebfb2bd5.mp3",
@@ -6106,6 +6360,18 @@
   "score": 1.0,
   "seed": null,
   "text": "شِمِسْ"
+ },
+ "f:šmw": {
+  "file": "5eabb78034ddc721c792ef6ec4e57612.mp3",
+  "heard_ar": "شيمو",
+  "heard_en": "",
+  "ipa": "ʃɛmu",
+  "lang": "ar",
+  "latin": "shemu",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "شِمُو"
  },
  "f:šns wꜥ": {
   "file": "70430ed6e7ecc9e5352ccf9957ea744b.mp3",
@@ -6833,6 +7099,18 @@
   "score": 1.0,
   "seed": null,
   "text": "حِرْ نِبْ"
+ },
+ "f:ḥr nbw": {
+  "file": "cbe47d9854b8cd48944afc4de3cffed7.mp3",
+  "heard_ar": "حِرْنِبُ",
+  "heard_en": "",
+  "ipa": "ħɛr nɛbu",
+  "lang": "ar",
+  "latin": "ḥer nebu",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "حِرْ نِبُو"
  },
  "f:ḥr=f": {
   "file": "c6ced7458e7ef55ad7aef9d19b31a8e7.mp3",
@@ -7690,6 +7968,18 @@
   "score": 1.0,
   "seed": null,
   "text": "عَبْوِي"
+ },
+ "f:ꜥm-mwt": {
+  "file": "61cc066b92c582eac53eb7fa014fb185.mp3",
+  "heard_ar": "عم موت",
+  "heard_en": "",
+  "ipa": "ʕam mut",
+  "lang": "ar",
+  "latin": "ʿam mut",
+  "passed": true,
+  "score": 1.0,
+  "seed": null,
+  "text": "عَمْ مُوتْ"
  },
  "f:ꜥn=f": {
   "file": "9ab8b84315bc462081ac57a1fb3e613e.mp3",

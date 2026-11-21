@@ -2,6 +2,7 @@ package com.krbavcic.pentalingo.content
 
 import com.krbavcic.pentalingo.model.ConceptItem
 import com.krbavcic.pentalingo.model.Course
+import com.krbavcic.pentalingo.model.GrammarTable
 import com.krbavcic.pentalingo.model.PhraseItem
 import com.krbavcic.pentalingo.model.SignItem
 import com.krbavcic.pentalingo.model.SignRole
@@ -97,7 +98,20 @@ fun clips(course: Course): List<Clip> = course.items.mapNotNull { item ->
         is ConceptItem -> item.said?.let { wordClip(item.id, it) }
         else -> null
     }
-} + formsToRecord(course).map { wordClip(Token.formClipId(it), it) }
+} + (formsToRecord(course) + tableForms(course)).distinct().map { wordClip(Token.formClipId(it), it) }
+
+/**
+ * The Egyptian forms the cards' tables write that no word, sign, sentence or card already says,
+ * each once: tapped in a table, they play their own clip.
+ */
+fun tableForms(course: Course): List<String> =
+    course.items.filterIsInstance<ConceptItem>().mapNotNull { it.table }.flatMap { table ->
+        val said = table.kinds.indices.filter { table.kinds[it] == GrammarTable.Cell.TRANSLIT }
+        table.rows.flatMap { row -> said.map { row[it] to table.spelling(row) } }
+    }
+        .filter { (cell, spelling) -> GrammarTable.sayable(cell) && course.itemSaying(cell, spelling) == null }
+        .map { it.first }
+        .distinct()
 
 /** The word forms phrases write that do not sound like their word's own clip, each once, in course order. */
 fun formsToRecord(course: Course): List<String> =
@@ -124,7 +138,15 @@ private fun contextOf(course: Course, id: String): Context {
         val translit = id.removePrefix("f:")
         val phrase = course.items.filterIsInstance<PhraseItem>().firstOrNull { p -> p.tokens.any { it.translit == translit } }
         val token = phrase?.tokens?.first { it.translit == translit }
-        return Context(token?.mdc, token?.gloss, phrase?.let { lessonOf(it.id) }, phrase)
+        if (token != null) return Context(token.mdc, token.gloss, phrase.let { lessonOf(it.id) }, phrase)
+        // A form only a card's table writes: that row's spelling and meaning, and the card's lesson.
+        for (card in course.items.filterIsInstance<ConceptItem>()) {
+            val table = card.table ?: continue
+            val row = table.rows.firstOrNull { translit in it } ?: continue
+            val meaning = table.kinds.indexOf(GrammarTable.Cell.TEXT).takeIf { it >= 0 }?.let { row[it] }
+            return Context(table.spelling(row), meaning, lessonOf(card.id))
+        }
+        return Context(null, null, null)
     }
     return when (val item = course[id]) {
         is SignItem -> Context(item.code, listOfNotNull(item.name, item.meaning).joinToString(": "), lessonOf(id))

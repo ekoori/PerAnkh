@@ -155,15 +155,17 @@ data class ConceptItem(
     /** The illustration read aloud, as a transliteration, when it is Egyptian to be heard. */
     val said: String? = null,
     /**
-     * The pattern at a glance — a table of the pronouns, the endings, the forms — shown at the start
-     * of the lesson that teaches it and kept in the codex's grammar shelf.
+     * The card at a glance — the pronouns, the endings, the forms, or the things a culture card
+     * names side by side — shown at the start of the lesson that teaches it and kept in the codex.
      */
     val table: GrammarTable? = null,
+    /** About Egypt rather than its language: the ka and ba, the weighing of the heart, Punt. */
+    val culture: Boolean = false,
 ) : Item {
     override val kind get() = ItemKind.CONCEPT
 }
 
-/** A grammar card's table: a header row, then rows of cells, each column one [Cell] kind. */
+/** A card's table: a header row, then rows of cells, each column one [Cell] kind. */
 data class GrammarTable(
     val columns: List<String>,
     val kinds: List<Cell>,
@@ -177,5 +179,21 @@ data class GrammarTable(
     init {
         require(columns.size == kinds.size) { "a kind for every column" }
         require(rows.all { it.size == columns.size }) { "every row fills every column" }
+    }
+
+    /** A row's spelling, its first hieroglyph cell, when it has one. */
+    fun spelling(row: List<String>): String? =
+        kinds.indexOf(Cell.GLYPHS).takeIf { it >= 0 }?.let { row[it] }?.takeIf { it.isNotBlank() }
+
+    companion object {
+        /**
+         * Whether a transliteration cell is Egyptian to be heard, with its pronunciation and clip:
+         * a word or a phrase, not an ending or an affix on its own (.kw, =f), not a dash, not a
+         * pattern with English in it ("nn + a noun").
+         */
+        fun sayable(cell: String): Boolean {
+            val c = cell.trim()
+            return c.isNotEmpty() && c[0] != '.' && c[0] != '=' && c.none { it == '+' || it == '…' || it == '—' || it.isDigit() }
+        }
     }
 }

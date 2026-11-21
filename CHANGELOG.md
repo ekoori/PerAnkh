@@ -28,6 +28,16 @@
   comes before the words that use it, not after them.
 - Lesson 34 teaches all five pronouns its card lists: ntṯ, "you" to a woman, and nts, "she", join
   jnk, ntk and ntf, each with its recording.
+- Cards that name things side by side show them in a table, as the grammar tables do: ka, ba and
+  akh; the four h's; the gods at the weighing of the heart; the Black Land and the Red; words from
+  the body; the s that makes a verb cause; "true of voice"; wishes; "then he said"; "how good!";
+  who and who does not; the new "the"; myrrh and incense; and more, 18 cards in all.
+- In every table each Egyptian form shows how it is said, and can be heard: tap it. It plays the
+  word, sign or sentence that says it, or a recording of its own (24 new ones).
+- Culture cards are labelled as culture, in lessons and in the Codex, where the Grammar shelf has a
+  Culture category of its own.
+- In tester mode the Codex opens words and cards not met yet, as it always did signs, and its search
+  finds them.
 - The Treasury gives time studied in hours and minutes ("16 h 39 min").
 - In the version from GitHub, Settings → About has a link for supporting Per Ankh on GitHub
   Sponsors.
